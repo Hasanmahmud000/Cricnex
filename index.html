@@ -1,19 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
+  <meta charset="UTF-8" />
   <title>Live Matches</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body { font-family: sans-serif; padding: 10px; }
-    .match-card {
-      border: 1px solid #ccc; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center;
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    body {
+      font-family: sans-serif;
+      padding: 10px;
+      background-color: #121212;
+      color: #ffffff;
     }
-    .team-logo { width: 60px; height: 60px; object-fit: contain; }
-    .live-tag { color: red; font-size: 20px; font-weight: bold; animation: bounce 1s infinite; display: none; }
-    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-    .countdown { font-size: 18px; margin: 10px; }
-    iframe, video { width: 100%; height: 300px; margin-top: 10px; display: none; }
+    .match-card {
+      border: 1px solid #444;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      text-align: center;
+      background-color: #1e1e1e;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    }
+    .team-logo {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
+    .live-tag {
+      color: red;
+      font-size: 20px;
+      font-weight: bold;
+      animation: bounce 1s infinite;
+      display: none;
+      margin: 10px 0;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .countdown {
+      font-size: 18px;
+      margin: 10px;
+    }
+    .play-button {
+      background-color: #0b7dda;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    iframe, video {
+      width: 100%;
+      height: 300px;
+      margin-top: 10px;
+      border-radius: 10px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -41,9 +84,10 @@
               <span>${match.team2}</span>
               <img src="${match.logo2}" class="team-logo" />
             </div>
-            <div id="countdown${idx}" class="countdown">Loading...</div>
+            <div id="countdown${idx}" class="countdown">লোড হচ্ছে...</div>
             <div id="live${idx}" class="live-tag">LIVE NOW</div>
-            <div id="video${idx}"></div>
+            <div id="videoButtons${idx}"></div>
+            <div id="videoArea${idx}"></div>
           `;
 
           container.appendChild(card);
@@ -51,7 +95,8 @@
           const matchTime = new Date(match.matchtime).getTime();
           const countdownEl = document.getElementById(`countdown${idx}`);
           const liveTag = document.getElementById(`live${idx}`);
-          const videoArea = document.getElementById(`video${idx}`);
+          const buttonArea = document.getElementById(`videoButtons${idx}`);
+          const videoArea = document.getElementById(`videoArea${idx}`);
 
           const interval = setInterval(() => {
             const now = new Date().getTime();
@@ -61,30 +106,39 @@
               clearInterval(interval);
               countdownEl.innerText = "";
               liveTag.style.display = "block";
-              match.links.forEach((link, i) => {
-                const label = document.createElement("div");
-                label.innerText = `Server ${i + 1}`;
-                videoArea.appendChild(label);
 
-                if (link.includes(".m3u8") || link.includes(".mpd")) {
-                  const video = document.createElement("video");
-                  video.controls = true;
-                  video.autoplay = true;
-                  video.src = link;
-                  video.style.display = "block";
-                  videoArea.appendChild(video);
-                } else {
-                  const iframe = document.createElement("iframe");
-                  iframe.src = link;
-                  iframe.style.display = "block";
-                  videoArea.appendChild(iframe);
-                }
+              match.links.forEach((link, i) => {
+                const btn = document.createElement("button");
+                btn.className = "play-button";
+                btn.innerText = `Play Server ${i + 1}`;
+                btn.onclick = () => {
+                  videoArea.innerHTML = "";
+
+                  if (link.includes(".m3u8") || link.includes(".mp4") || link.includes(".mpd")) {
+                    const video = document.createElement("video");
+                    video.controls = true;
+                    video.autoplay = true;
+                    video.src = link;
+                    video.type = "application/x-mpegURL";
+                    video.style.display = "block";
+                    videoArea.appendChild(video);
+                  } else {
+                    const iframe = document.createElement("iframe");
+                    iframe.src = link;
+                    iframe.style.display = "block";
+                    iframe.allowFullscreen = true;
+                    iframe.frameBorder = 0;
+                    videoArea.appendChild(iframe);
+                  }
+                };
+                buttonArea.appendChild(btn);
               });
+
             } else {
               const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
               const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
               const s = Math.floor((distance % (1000 * 60)) / 1000);
-              countdownEl.innerText = `Starts in: ${h}h ${m}m ${s}s`;
+              countdownEl.innerText = `ম্যাচ শুরু হতে: ${h} ঘণ্টা ${m} মিনিট ${s} সেকেন্ড বাকি`;
             }
           }, 1000);
         });
