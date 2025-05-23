@@ -48,7 +48,7 @@
 
           container.appendChild(card);
 
-          const matchTime = new Date(match.matchTime).getTime();
+          const matchTime = new Date(match.matchtime).getTime();
           const countdownEl = document.getElementById(`countdown${idx}`);
           const liveTag = document.getElementById(`live${idx}`);
           const videoArea = document.getElementById(`video${idx}`);
@@ -61,6 +61,7 @@
               clearInterval(interval);
               countdownEl.innerText = "";
               liveTag.style.display = "block";
+
               match.links.forEach((link, i) => {
                 const label = document.createElement("div");
                 label.innerText = `Server ${i + 1}`;
