@@ -21,7 +21,7 @@
   <div id="matchesContainer"></div>
 
   <script>
-    const url = "https://script.google.com/macros/s/AKfycbweEpGibocOtY7V5_Y9CxU2UuiFOjjV6hQUq2daBxiBFnOjs9BmIFCqpOQX4GcIB5UwIA/exec?action=getAllMatches";
+    const url = "https://script.google.com/macros/s/AKfycbyijJ7N3HWn11qLz3ZsIrbkZQNLy2gYWZgSZpKWoovjjxp1Tm-3lY-JnUyAWcADlAzZkw/exec?action=getAllMatches";
 
     fetch(url)
       .then(res => res.json())
@@ -61,7 +61,6 @@
               clearInterval(interval);
               countdownEl.innerText = "";
               liveTag.style.display = "block";
-
               match.links.forEach((link, i) => {
                 const label = document.createElement("div");
                 label.innerText = `Server ${i + 1}`;
