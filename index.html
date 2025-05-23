@@ -1,90 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-  <title>Live Matches</title>
+  <meta charset="UTF-8" />
+  <title>Live Match</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .match { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
-    .live { background-color: #e0ffe0; }
-    .countdown { background-color: #ffe0e0; }
-    .links button { margin-right: 5px; }
+    body { font-family: sans-serif; background: #111; color: #fff; }
+    .match { margin: 10px; padding: 10px; background: #222; border-radius: 10px; }
+    .live { border: 2px solid red; animation: bounce 0.5s infinite alternate; }
+    .logo { width: 50px; height: 50px; border-radius: 50%; }
+    button { margin: 5px; padding: 10px; }
+    @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.05); } }
   </style>
 </head>
 <body>
-  <h1>Live Matches</h1>
+  <h1 id="notice"></h1>
   <div id="matches"></div>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxCQzq5jEQypyO626Xxc4__Ss8CorecGd9jwEylX177fSza0R7kSM6OfCVQkPjoTyXeEA/exec';
+    const api = 'https://script.google.com/macros/s/AKfycbxt0peFOvLHEPNt54H0Cf3yXBVA6PHGOD680jk8hf_Qo3-pPzv-kJAnRWDv1VBUJAwo/exec'; // Replace with deployed Apps Script URL
 
-    function fetchMatches() {
-      fetch(`${scriptURL}?action=getAllMatches`)
-        .then(res => res.json())
-        .then(data => {
-          const now = new Date();
-          const liveMatches = [];
-          const upcomingMatches = [];
+    async function loadData() {
+      const res = await fetch(api);
+      const data = await res.json();
+      document.getElementById('notice').innerText = data.notice;
 
-          data.matches.forEach(match => {
-            const matchTime = new Date(match.matchtime);
-            const matchDiv = document.createElement('div');
-            matchDiv.className = 'match';
+      const now = new Date();
+      const container = document.getElementById('matches');
+      container.innerHTML = '';
 
-            const title = document.createElement('h3');
-            title.textContent = `${match.team1} vs ${match.team2}`;
-            matchDiv.appendChild(title);
+      let live = [], upcoming = [];
 
-            const timeInfo = document.createElement('p');
-            matchDiv.appendChild(timeInfo);
+      data.matches.forEach(m => {
+        const start = new Date(m.time);
+        const diff = (start - now) / 1000;
+        const liveStatus = diff <= 0;
 
-            const linksDiv = document.createElement('div');
-            linksDiv.className = 'links';
-            match.links.forEach(link => {
-              const btn = document.createElement('button');
-              btn.textContent = link.name;
-              btn.onclick = () => window.open(link.url, '_blank');
-              linksDiv.appendChild(btn);
-            });
-            matchDiv.appendChild(linksDiv);
+        const div = document.createElement("div");
+        div.className = "match " + (liveStatus ? "live" : "");
 
-            if (matchTime <= now) {
-              matchDiv.classList.add('live');
-              timeInfo.textContent = 'Live Now';
-              liveMatches.push(matchDiv);
-            } else {
-              matchDiv.classList.add('countdown');
-              const countdown = document.createElement('span');
-              timeInfo.appendChild(countdown);
-              upcomingMatches.push({ matchDiv, matchTime, countdown });
-            }
-          });
+        div.innerHTML = `
+          <h2>${m.title}</h2>
+          <img src="${m.logo1}" class="logo"/> ${m.team1} vs ${m.team2} <img src="${m.logo2}" class="logo"/>
+          <p>${liveStatus ? 'লাইভ চলছে' : 'শুরু হবে: ' + start.toLocaleString()}</p>
+          <div>${m.links.map((l, i) => `<button onclick="play('${l}')">Link ${i+1}</button>`).join(' ')}</div>
+        `;
 
-          const container = document.getElementById('matches');
-          container.innerHTML = '';
-          liveMatches.forEach(div => container.appendChild(div));
-          upcomingMatches.forEach(item => container.appendChild(item.matchDiv));
+        if (liveStatus) live.push(div);
+        else upcoming.push(div);
+      });
 
-          // Update countdowns every second
-          setInterval(() => {
-            const now = new Date();
-            upcomingMatches.forEach(item => {
-              const diff = item.matchTime - now;
-              if (diff <= 0) {
-                item.countdown.textContent = 'Live Now';
-                item.matchDiv.classList.remove('countdown');
-                item.matchDiv.classList.add('live');
-              } else {
-                const hours = Math.floor(diff / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                item.countdown.textContent = `Starts in ${hours}h ${minutes}m ${seconds}s`;
-              }
-            });
-          }, 1000);
-        });
+      [...live, ...upcoming].forEach(el => container.appendChild(el));
     }
 
-    fetchMatches();
+    function play(url) {
+      window.open(url, '_blank');
+    }
+
+    loadData();
+    setInterval(loadData, 30000); // auto refresh every 30s
   </script>
 </body>
 </html>
