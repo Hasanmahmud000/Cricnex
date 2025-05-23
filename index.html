@@ -16,7 +16,8 @@
   <video id="liveVideo" controls autoplay></video>
 
   <script>
-    fetch("https://script.google.com/macros/s/AKfycbz3SSqSKUJf7UnEEoBAhPpul08_816H5u3_mKP1fhSsP2pVQUmp5Bb_MFAnwiihysWNBg/exec?action=getData")
+    const url = "https://script.google.com/macros/s/AKfycbyefHK-JnJnzkKKl3wpB-3b-j0GUTl3iwYCHKk2exp52BUiGNv6IApN5BzteYAzHuTXFg/exec?action=getData";
+    fetch(url)
       .then(res => res.json())
       .then(data => {
         document.getElementById("channel").innerText = data.channel;
