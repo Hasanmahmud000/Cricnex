@@ -1,31 +1,52 @@
 <!DOCTYPE html>
 <html>
-<head><title>Admin Panel</title></head>
+<head>
+  <title>Admin Panel</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input, textarea { width: 100%; margin-bottom: 10px; }
+    button { padding: 10px 20px; }
+  </style>
+</head>
 <body>
   <h2>Add Match</h2>
-  <input id="title" placeholder="Title"><br>
-  <input id="team1" placeholder="Team 1"><br>
-  <input id="team2" placeholder="Team 2"><br>
-  <input id="logo1" placeholder="Logo1 URL"><br>
-  <input id="logo2" placeholder="Logo2 URL"><br>
-  <input id="matchTime" placeholder="Match Time (YYYY-MM-DDTHH:MM:SSZ)"><br>
-  <textarea id="links" placeholder="Server 1)url, Server 2)url"></textarea><br>
-  <button onclick="addMatch()">Add</button>
+  <input id="title" placeholder="Match Title" />
+  <input id="team1" placeholder="Team 1" />
+  <input id="team2" placeholder="Team 2" />
+  <input id="logo1" placeholder="Logo 1 URL" />
+  <input id="logo2" placeholder="Logo 2 URL" />
+  <input id="matchTime" type="datetime-local" />
+  <textarea id="links" placeholder="Links (e.g., Server 1|https://link1.m3u8,Server 2|https://link2.mpd)"></textarea>
+  <button onclick="addMatch()">Add Match</button>
 
   <h2>Delete Match</h2>
-  <input id="deleteTitle" placeholder="Title"><button onclick="deleteMatch()">Delete</button>
+  <input id="deleteTitle" placeholder="Match Title to Delete" />
+  <button onclick="deleteMatch()">Delete Match</button>
 
   <script>
-    const api = 'https://script.google.com/macros/s/AKfycbzFhG3Vudwoyw6OKLPyuod7VidhTLswsPprNCgy2ck-yxh5ipuxAbE3op7ztPQIkyt61Q/exec'; // replace this
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwIUjJDz6IDxLyZu-gs3bfoZvPs_FNn0oAGPAeVGtSalMjYkn8D4QDyxMlZ9XjD4icJFg/exec';
 
     function addMatch() {
-      const url = `${api}?action=addMatch&title=${encodeURIComponent(title.value)}&team1=${team1.value}&team2=${team2.value}&logo1=${logo1.value}&logo2=${logo2.value}&matchTime=${matchTime.value}&links=${encodeURIComponent(links.value)}`;
-      fetch(url).then(res => res.text()).then(alert);
+      const params = new URLSearchParams({
+        action: 'addMatch',
+        title: document.getElementById('title').value,
+        team1: document.getElementById('team1').value,
+        team2: document.getElementById('team2').value,
+        logo1: document.getElementById('logo1').value,
+        logo2: document.getElementById('logo2').value,
+        matchTime: document.getElementById('matchTime').value,
+        links: document.getElementById('links').value
+      });
+      fetch(`${scriptURL}?${params}`)
+        .then(res => res.text())
+        .then(alert);
     }
 
     function deleteMatch() {
-      const url = `${api}?action=deleteMatch&title=${encodeURIComponent(deleteTitle.value)}`;
-      fetch(url).then(res => res.text()).then(alert);
+      const title = document.getElementById('deleteTitle').value;
+      fetch(`${scriptURL}?action=deleteMatch&title=${encodeURIComponent(title)}`)
+        .then(res => res.text())
+        .then(alert);
     }
   </script>
 </body>
