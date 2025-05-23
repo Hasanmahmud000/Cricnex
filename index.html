@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html>
 <head>
-  <meta charset="UTF-8" />
   <title>Live Matches</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
     body {
       font-family: sans-serif;
       padding: 10px;
       background-color: #121212;
-      color: #ffffff;
+      color: #fff;
     }
     .match-card {
+      background: #1e1e1e;
       border: 1px solid #444;
       border-radius: 10px;
       padding: 15px;
       margin-bottom: 20px;
       text-align: center;
-      background-color: #1e1e1e;
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 10px rgba(255, 255, 255, 0.05);
     }
     .team-logo {
       width: 60px;
@@ -26,12 +26,11 @@
       object-fit: contain;
     }
     .live-tag {
-      color: red;
+      color: #f44336;
       font-size: 20px;
       font-weight: bold;
       animation: bounce 1s infinite;
       display: none;
-      margin: 10px 0;
     }
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
@@ -41,21 +40,14 @@
       font-size: 18px;
       margin: 10px;
     }
-    .play-button {
-      background-color: #0b7dda;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 5px;
+    .video-wrapper {
+      margin-top: 10px;
     }
-    iframe, video {
+    video, iframe {
       width: 100%;
       height: 300px;
       margin-top: 10px;
       border-radius: 10px;
-      display: none;
     }
   </style>
 </head>
@@ -66,12 +58,19 @@
   <script>
     const url = "https://script.google.com/macros/s/AKfycbyijJ7N3HWn11qLz3ZsIrbkZQNLy2gYWZgSZpKWoovjjxp1Tm-3lY-JnUyAWcADlAzZkw/exec?action=getAllMatches";
 
+    // Load Shaka Player
+    const shakaScript = document.createElement("script");
+    shakaScript.src = "https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.8.1/shaka-player.compiled.min.js";
+    document.head.appendChild(shakaScript);
+
     fetch(url)
       .then(res => res.json())
       .then(data => {
         const container = document.getElementById("matchesContainer");
+        const now = new Date().getTime();
+        const sortedMatches = data.matches.sort((a, b) => new Date(a.matchtime) - new Date(b.matchtime));
 
-        data.matches.forEach((match, idx) => {
+        sortedMatches.forEach((match, idx) => {
           const card = document.createElement("div");
           card.className = "match-card";
 
@@ -84,10 +83,9 @@
               <span>${match.team2}</span>
               <img src="${match.logo2}" class="team-logo" />
             </div>
-            <div id="countdown${idx}" class="countdown">লোড হচ্ছে...</div>
+            <div id="countdown${idx}" class="countdown">Loading...</div>
             <div id="live${idx}" class="live-tag">LIVE NOW</div>
-            <div id="videoButtons${idx}"></div>
-            <div id="videoArea${idx}"></div>
+            <div class="video-wrapper" id="video${idx}"></div>
           `;
 
           container.appendChild(card);
@@ -95,8 +93,7 @@
           const matchTime = new Date(match.matchtime).getTime();
           const countdownEl = document.getElementById(`countdown${idx}`);
           const liveTag = document.getElementById(`live${idx}`);
-          const buttonArea = document.getElementById(`videoButtons${idx}`);
-          const videoArea = document.getElementById(`videoArea${idx}`);
+          const videoArea = document.getElementById(`video${idx}`);
 
           const interval = setInterval(() => {
             const now = new Date().getTime();
@@ -108,37 +105,81 @@
               liveTag.style.display = "block";
 
               match.links.forEach((link, i) => {
-                const btn = document.createElement("button");
-                btn.className = "play-button";
-                btn.innerText = `Play Server ${i + 1}`;
-                btn.onclick = () => {
-                  videoArea.innerHTML = "";
+                const label = document.createElement("div");
+                label.innerText = `Server ${i + 1}`;
+                label.style.margin = "10px 0";
+                label.style.fontWeight = "bold";
+                videoArea.appendChild(label);
 
-                  if (link.includes(".m3u8") || link.includes(".mp4") || link.includes(".mpd")) {
-                    const video = document.createElement("video");
-                    video.controls = true;
-                    video.autoplay = true;
+                if (link.includes(".mpd")) {
+                  const video = document.createElement("video");
+                  video.controls = true;
+                  video.autoplay = true;
+                  video.style.display = "block";
+                  videoArea.appendChild(video);
+
+                  const waitForShaka = setInterval(() => {
+                    if (window.shaka && shaka.Player) {
+                      clearInterval(waitForShaka);
+                      shaka.polyfill.installAll();
+                      if (shaka.Player.isBrowserSupported()) {
+                        const player = new shaka.Player(video);
+
+                        // Optional DRM config — modify if needed
+                        player.configure({
+                          drm: {
+                            servers: {
+                              'com.widevine.alpha': 'https://your-license-server.com'
+                            }
+                          }
+                        });
+
+                        // Optional headers
+                        player.getNetworkingEngine().registerRequestFilter((type, request) => {
+                          if (type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+                              type === shaka.net.NetworkingEngine.RequestType.SEGMENT) {
+                            request.headers['Referer'] = 'https://example.com/';
+                            request.headers['Authorization'] = 'Bearer YOUR_TOKEN';
+                          }
+                        });
+
+                        player.load(link).then(() => {
+                          console.log("Shaka loaded:", link);
+                        }).catch(err => {
+                          console.error("Shaka error:", err);
+                        });
+                      } else {
+                        videoArea.innerHTML += "<div style='color:red'>Browser doesn't support DRM playback.</div>";
+                      }
+                    }
+                  }, 100);
+                } else if (link.includes(".m3u8")) {
+                  const video = document.createElement("video");
+                  video.controls = true;
+                  video.autoplay = true;
+                  video.style.display = "block";
+                  videoArea.appendChild(video);
+
+                  if (Hls.isSupported()) {
+                    const hls = new Hls();
+                    hls.loadSource(link);
+                    hls.attachMedia(video);
+                  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                     video.src = link;
-                    video.type = "application/x-mpegURL";
-                    video.style.display = "block";
-                    videoArea.appendChild(video);
-                  } else {
-                    const iframe = document.createElement("iframe");
-                    iframe.src = link;
-                    iframe.style.display = "block";
-                    iframe.allowFullscreen = true;
-                    iframe.frameBorder = 0;
-                    videoArea.appendChild(iframe);
                   }
-                };
-                buttonArea.appendChild(btn);
+                } else {
+                  const iframe = document.createElement("iframe");
+                  iframe.src = link;
+                  iframe.allowFullscreen = true;
+                  iframe.style.display = "block";
+                  videoArea.appendChild(iframe);
+                }
               });
-
             } else {
               const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
               const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
               const s = Math.floor((distance % (1000 * 60)) / 1000);
-              countdownEl.innerText = `ম্যাচ শুরু হতে: ${h} ঘণ্টা ${m} মিনিট ${s} সেকেন্ড বাকি`;
+              countdownEl.innerText = `Starts in: ${h}h ${m}m ${s}s`;
             }
           }, 1000);
         });
