@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Live Matches</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .match { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+    .live { background-color: #e0ffe0; }
+    .countdown { background-color: #ffe0e0; }
+    .links button { margin-right: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Live Matches</h1>
+  <div id="matches"></div>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwIUjJDz6IDxLyZu-gs3bfoZvPs_FNn0oAGPAeVGtSalMjYkn8D4QDyxMlZ9XjD4icJFg/exec';
+
+    function fetchMatches() {
+      fetch(`${scriptURL}?action=getAllMatches`)
+        .then(res => res.json())
+        .then(data => {
+          const now = new Date();
+          const liveMatches = [];
+          const upcomingMatches = [];
+
+          data.matches.forEach(match => {
+            const matchTime = new Date(match.matchtime);
+            const matchDiv = document.createElement('div');
+            matchDiv.className = 'match';
+
+            const title = document.createElement('h3');
+            title.textContent = `${match.team1} vs ${match.team2}`;
+            matchDiv.appendChild(title);
+
+            const timeInfo = document.createElement('p');
+            matchDiv.appendChild(timeInfo);
+
+            const linksDiv = document.createElement('div');
+            linksDiv.className = 'links';
+            match.links.forEach(link => {
+              const btn = document.createElement('button');
+              btn.textContent = link.name;
+              btn.onclick = () => window.open(link.url, '_blank');
+              linksDiv.appendChild(btn);
+            });
+            matchDiv.appendChild(linksDiv);
+
+            if (matchTime <= now) {
+              matchDiv.classList.add('live');
+              timeInfo.textContent = 'Live Now';
+              liveMatches.push(matchDiv);
+            } else {
+              matchDiv.classList.add('countdown');
+              const countdown = document.createElement('span');
+              timeInfo.appendChild(countdown);
+              upcomingMatches.push({ matchDiv, matchTime, countdown });
+            }
+          });
+
+          const container = document.getElementById('matches');
+          container.innerHTML = '';
+          liveMatches.forEach(div => container.appendChild(div));
+          upcomingMatches.forEach(item => container.appendChild(item.matchDiv));
+
+          // Update countdowns every second
+          setInterval(() => {
+            const now = new Date();
+            upcomingMatches.forEach(item => {
+              const diff = item.matchTime - now;
+              if (diff <= 0) {
+                item.countdown.textContent = 'Live Now';
+                item.matchDiv.classList.remove('countdown');
+                item.matchDiv.classList.add('live');
+              } else {
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                item.countdown.textContent = `Starts in ${hours}h ${minutes}m ${seconds}s`;
+              }
+            });
+          }, 1000);
+        });
+    }
+
+    fetchMatches();
+  </script>
+</body>
+</html>
