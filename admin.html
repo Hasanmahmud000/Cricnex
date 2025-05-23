@@ -1,131 +1,65 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>অ্যাডমিন প্যানেল - সেটিংস আপডেট</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    max-width: 600px;
-    margin: 30px auto;
-    padding: 20px;
-    background-color: #fefefe;
-    color: #222;
-  }
-  h1 {
-    text-align: center;
-    color: #007bff;
-  }
-  label {
-    display: block;
-    margin: 15px 0 5px;
-    font-weight: bold;
-  }
-  textarea, input[type="text"], select {
-    width: 100%;
-    padding: 8px;
-    font-size: 16px;
-    box-sizing: border-box;
-  }
-  button {
-    margin-top: 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 12px;
-    width: 100%;
-    font-size: 18px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  button:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
-  }
-  #statusMsg {
-    margin-top: 15px;
-    text-align: center;
-    font-weight: bold;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>এডমিন প্যানেল</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+    input, textarea { display: block; margin: 10px 0; width: 100%; padding: 5px; }
+    button { padding: 10px; }
+    .matchList { margin-top: 20px; }
+    .matchItem { border: 1px solid #ccc; padding: 10px; margin: 5px 0; background: #fff; }
+  </style>
 </head>
 <body>
-<h1>অ্যাডমিন প্যানেল</h1>
+  <h2>⚙️ Admin Panel</h2>
 
-<form id="settingsForm">
-  <label for="notice">নোটিশ (উদাহরণ: "আজকের ম্যাচ গুলো দেখুন")</label>
-  <textarea id="notice" rows="3" placeholder="নোটিশ লিখুন..."></textarea>
+  <input id="title" placeholder="Match Title">
+  <input id="team1" placeholder="Team 1">
+  <input id="team2" placeholder="Team 2">
+  <input id="logo1" placeholder="Logo 1 URL">
+  <input id="logo2" placeholder="Logo 2 URL">
+  <input id="time" placeholder="Match Time (e.g. 2025-05-23T18:00:00)">
+  <textarea id="links" placeholder='Links JSON [{"name":"Link 1","url":"https://..."},...]'></textarea>
+  <button onclick="addMatch()">ম্যাচ যোগ করুন</button>
 
-  <label for="darkMode">ডার্ক মোড (ডিফল্ট অফ)</label>
-  <select id="darkMode">
-    <option value="off">বন্ধ</option>
-    <option value="on">চালু</option>
-  </select>
+  <h3>ম্যাচ লিস্ট:</h3>
+  <div id="matchList">লোড হচ্ছে...</div>
 
-  <button type="submit" id="saveBtn">সেভ করুন</button>
-  <div id="statusMsg"></div>
-</form>
+  <script>
+    const API = "https://script.google.com/macros/s/AKfycbxtBCwpzWkODkQiDYPySJt07TQkjDhQ3fz4SFquq635Nvp_LUkSixpGxMJyP5UFDgfYKg/exec";
 
-<script>
-  const apiBase = "https://script.google.com/macros/s/AKfycbwuwM3psGin6LzIcDeoyyrzHDbPl6Gb7HGx8DJvoBF_BC01VC3poCyjwBgvpiwLkEhXCw/exec";
-
-  const noticeInput = document.getElementById("notice");
-  const darkModeSelect = document.getElementById("darkMode");
-  const statusMsg = document.getElementById("statusMsg");
-  const saveBtn = document.getElementById("saveBtn");
-
-  // Load current settings from API
-  async function loadSettings() {
-    statusMsg.textContent = "লোড হচ্ছে...";
-    try {
-      const res = await fetch(apiBase + "?action=settings");
-      const data = await res.json();
-      noticeInput.value = data.notice || "";
-      darkModeSelect.value = data.darkMode || "off";
-      statusMsg.textContent = "লোড সম্পন্ন";
-    } catch (e) {
-      statusMsg.textContent = "লোড করতে সমস্যা হয়েছে";
-    }
-  }
-
-  // Save settings to API
-  async function saveSettings(event) {
-    event.preventDefault();
-    saveBtn.disabled = true;
-    statusMsg.textContent = "সেভ হচ্ছে...";
-
-    const payload = {
-      notice: noticeInput.value.trim(),
-      darkMode: darkModeSelect.value,
-      action: "saveSettings"
-    };
-
-    try {
-      // Google Apps Script POST request
-      const res = await fetch(apiBase, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
+    async function addMatch() {
+      const q = new URLSearchParams({
+        title: document.getElementById('title').value,
+        team1: document.getElementById('team1').value,
+        team2: document.getElementById('team2').value,
+        logo1: document.getElementById('logo1').value,
+        logo2: document.getElementById('logo2').value,
+        time: document.getElementById('time').value,
+        linksJson: document.getElementById('links').value,
       });
-      const data = await res.json();
-      if(data.status === "success") {
-        statusMsg.textContent = "সেভ সম্পন্ন হয়েছে";
-      } else {
-        statusMsg.textContent = "সেভ করতে সমস্যা হয়েছে";
-      }
-    } catch (e) {
-      statusMsg.textContent = "সেভ করতে সমস্যা হয়েছে";
+      await fetch(API + "?action=addMatch&" + q.toString());
+      alert("ম্যাচ যোগ হয়েছে!");
+      location.reload();
     }
 
-    saveBtn.disabled = false;
-  }
+    async function deleteMatch(title) {
+      await fetch(API + "?action=deleteMatch&title=" + encodeURIComponent(title));
+      alert("ম্যাচ ডিলিট হয়েছে!");
+      location.reload();
+    }
 
-  document.getElementById("settingsForm").addEventListener("submit", saveSettings);
+    async function loadMatches() {
+      const res = await fetch(API);
+      const data = await res.json();
+      document.getElementById("matchList").innerHTML = data.map(m =>
+        `<div class="matchItem"><b>${m["Match Title"]}</b>
+         <button onclick="deleteMatch('${m["Match Title"]}')">❌</button></div>`
+      ).join('');
+    }
 
-  loadSettings();
-</script>
+    loadMatches();
+  </script>
 </body>
 </html>
