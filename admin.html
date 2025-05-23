@@ -1,24 +1,41 @@
 <!DOCTYPE html>
-<html>
-<head><title>CricNex Admin</title></head>
+<html lang="bn">
+<head><meta charset="UTF-8"><title>Admin Panel - Add Match</title></head>
 <body>
-  <h2>Admin Panel</h2>
-  <input id="channel" placeholder="Channel Name"><br><br>
-  <input id="logo" placeholder="Logo URL"><br><br>
-  <input id="link" placeholder="Live Link"><br><br>
-  <input id="time" type="datetime-local"><br><br>
-  <input id="pass" type="password" placeholder="Password"><br><br>
-  <button onclick="submitData()">Update</button>
-  <p id="msg"></p>
+<h1>Add New Match</h1>
+<form id="matchForm">
+  <label>Match Title: <input type="text" name="matchTitle" required /></label><br/>
+  <label>Team 1 Name: <input type="text" name="team1Name" required /></label><br/>
+  <label>Team 2 Name: <input type="text" name="team2Name" required /></label><br/>
+  <label>Team 1 Logo URL: <input type="url" name="team1Logo" required /></label><br/>
+  <label>Team 2 Logo URL: <input type="url" name="team2Logo" required /></label><br/>
+  <label>Start Time (ISO): <input type="datetime-local" name="startTime" required /></label><br/>
+  <label>Stream Link: <input type="url" name="streamLink" required /></label><br/>
+  <button type="submit">Add Match</button>
+</form>
+<div id="result"></div>
 
-  <script>
-    const url = "https://script.google.com/macros/s/AKfycbyefHK-JnJnzkKKl3wpB-3b-j0GUTl3iwYCHKk2exp52BUiGNv6IApN5BzteYAzHuTXFg/exec";
-    function submitData() {
-      const params = `?action=setData&channel=${channel.value}&logo=${logo.value}&link=${link.value}&matchTime=${time.value}&password=${pass.value}`;
-      fetch(url + params)
-        .then(res => res.text())
-        .then(txt => msg.innerText = txt);
+<script>
+  const API_URL = 'https://script.google.com/macros/s/AKfycbwS_NSO7fM6cWbCHTd_VsSDY1E7ZCZurPScaJJ8nD_uWc4TnoQzw7L7fVZUPfB3VwcvPw/exec';
+  document.getElementById('matchForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = {};
+    formData.forEach((v,k) => data[k] = v);
+    if(data.startTime) {
+      data.startTime = new Date(data.startTime).toISOString();
     }
-  </script>
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const result = await res.json();
+    document.getElementById('result').textContent = result.status === "success"
+      ? "Match added successfully!"
+      : "Error: " + result.message;
+    e.target.reset();
+  });
+</script>
 </body>
 </html>
