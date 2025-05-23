@@ -2,46 +2,53 @@
 <html>
 <head>
   <title>Admin Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f4f4f4 }
+    textarea, input, button { width: 100%; margin: 10px 0; padding: 10px }
+  </style>
 </head>
 <body>
   <h2>Add Match</h2>
-  <input id="title" placeholder="Match Title"><br>
-  <input id="team1" placeholder="Team 1"><br>
-  <input id="team2" placeholder="Team 2"><br>
-  <input id="logo1" placeholder="Logo 1 URL"><br>
-  <input id="logo2" placeholder="Logo 2 URL"><br>
-  <input id="matchTime" type="datetime-local"><br>
-  <input id="links" placeholder="Links (comma separated)"><br>
+  <input id="title" placeholder="Match Title" />
+  <input id="team1" placeholder="Team 1" />
+  <input id="team2" placeholder="Team 2" />
+  <input id="logo1" placeholder="Logo 1 URL" />
+  <input id="logo2" placeholder="Logo 2 URL" />
+  <input id="matchtime" type="datetime-local" />
+  <textarea id="links" placeholder='Paste JSON for links'></textarea>
   <button onclick="addMatch()">Add Match</button>
 
   <h2>Delete Match</h2>
-  <input id="delTitle" placeholder="Title to Delete">
-  <button onclick="deleteMatch()">Delete</button>
+  <input id="deleteTitle" placeholder="Title to Delete" />
+  <button onclick="deleteMatch()">Delete Match</button>
+
+  <div id="result"></div>
 
   <script>
-    const base = 'https://script.google.com/macros/s/AKfycbyijJ7N3HWn11qLz3ZsIrbkZQNLy2gYWZgSZpKWoovjjxp1Tm-3lY-JnUyAWcADlAzZkw/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxel9ao32GffJa02_FZU9Q8IQY2FuRGuH2wv5lnwOaE957VU9jElvwut9rij-tRPDbF/exec';
 
     function addMatch() {
-      const params = new URLSearchParams({
-        action: "addMatch",
-        title: document.getElementById("title").value,
-        team1: document.getElementById("team1").value,
-        team2: document.getElementById("team2").value,
-        logo1: document.getElementById("logo1").value,
-        logo2: document.getElementById("logo2").value,
-        matchtime: document.getElementById("matchTime").value,
-        links: document.getElementById("links").value
-      });
-      fetch(`${base}?${params}`).then(r => r.text()).then(alert);
+      const values = [
+        document.getElementById('title').value,
+        document.getElementById('team1').value,
+        document.getElementById('team2').value,
+        document.getElementById('logo1').value,
+        document.getElementById('logo2').value,
+        document.getElementById('matchtime').value,
+        document.getElementById('links').value
+      ];
+      google.script.run.withSuccessHandler(() => {
+        document.getElementById('result').innerText = "Added Successfully!";
+      }).appendRow(values);
     }
 
     function deleteMatch() {
-      const params = new URLSearchParams({
-        action: "deleteMatch",
-        title: document.getElementById("delTitle").value
-      });
-      fetch(`${base}?${params}`).then(r => r.text()).then(alert);
+      const t = document.getElementById('deleteTitle').value;
+      fetch(`${scriptURL}?action=deleteMatch&title=${encodeURIComponent(t)}`)
+        .then(r => r.text()).then(txt => {
+          document.getElementById('result').innerText = txt;
+        });
     }
   </script>
 </body>
