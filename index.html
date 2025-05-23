@@ -1,48 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-  <title>CricNex - Live</title>
+  <meta charset="UTF-8" />
+  <title>CricNex User Panel</title>
   <style>
-    body { text-align: center; font-family: sans-serif; }
-    img { width: 150px; height: auto; }
-    #liveVideo { width: 100%; display: none; }
-    #countdown { font-size: 24px; margin-top: 20px; }
+    body { background: #000; color: #fff; font-family: Arial; padding: 20px;}
+    .match { display: flex; align-items: center; margin-bottom: 20px; gap: 20px; border: 1px solid #444; padding: 10px;}
+    .team-logo { width: 60px; height: 60px; object-fit: contain; }
+    .countdown { font-weight: bold; color: yellow; }
+    .live { color: red; font-weight: bold; animation: blink 1s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
   </style>
 </head>
 <body>
-  <h1 id="channel"></h1>
-  <img id="logo" />
-  <div id="countdown"></div>
-  <video id="liveVideo" controls autoplay></video>
+  <h1>CricNex Matches</h1>
+  <div id="matches">Loading...</div>
 
   <script>
-    const url = "https://script.google.com/macros/s/AKfycbyefHK-JnJnzkKKl3wpB-3b-j0GUTl3iwYCHKk2exp52BUiGNv6IApN5BzteYAzHuTXFg/exec?action=getData";
-    fetch(url)
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwS_NSO7fM6cWbCHTd_VsSDY1E7ZCZurPScaJJ8nD_uWc4TnoQzw7L7fVZUPfB3VwcvPw/exec';
+    function formatTime(ms) {
+      if(ms <= 0) return null;
+      const m = Math.floor(ms / 60000);
+      const s = Math.floor((ms % 60000) / 1000);
+      return `${m}m ${s}s`;
+    }
+    function createMatch(match) {
+      const div = document.createElement('div');
+      div.className = 'match';
+      const img1 = document.createElement('img');
+      img1.src = match.team1Logo;
+      img1.className = 'team-logo';
+      const img2 = document.createElement('img');
+      img2.src = match.team2Logo;
+      img2.className = 'team-logo';
+      const info = document.createElement('div');
+      info.innerHTML = `<h3>${match.matchTitle}</h3><p>${match.team1Name} vs ${match.team2Name}</p><p>Start Time: ${new Date(match.startTime).toLocaleString()}</p><a href="${match.streamLink}" target="_blank">Watch Live</a>`;
+      const countdown = document.createElement('div');
+      countdown.className = 'countdown';
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const start = new Date(match.startTime).getTime();
+        const diff = start - now;
+        if(diff <= 0) {
+          countdown.innerHTML = '<span class="live">LIVE</span>';
+        } else {
+          countdown.textContent = `Starts in: ${formatTime(diff)}`;
+        }
+      }
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+      div.appendChild(img1);
+      div.appendChild(info);
+      div.appendChild(countdown);
+      div.appendChild(img2);
+      return div;
+    }
+    fetch(API_URL)
       .then(res => res.json())
       .then(data => {
-        document.getElementById("channel").innerText = data.channel;
-        document.getElementById("logo").src = data.logo;
-
-        const matchTime = new Date(data.matchTime).getTime();
-        const countdownEl = document.getElementById("countdown");
-        const videoEl = document.getElementById("liveVideo");
-
-        const interval = setInterval(() => {
-          const now = new Date().getTime();
-          const distance = matchTime - now;
-
-          if (distance <= 0) {
-            clearInterval(interval);
-            countdownEl.innerText = "LIVE NOW";
-            videoEl.style.display = "block";
-            videoEl.src = data.link;
-          } else {
-            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((distance % (1000 * 60)) / 1000);
-            countdownEl.innerText = `Starts in: ${h}h ${m}m ${s}s`;
-          }
-        }, 1000);
+        const container = document.getElementById('matches');
+        container.innerHTML = '';
+        data.forEach(match => container.appendChild(createMatch(match)));
+      })
+      .catch(() => {
+        document.getElementById('matches').textContent = "Failed to load matches.";
       });
   </script>
 </body>
