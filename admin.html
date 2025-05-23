@@ -1,37 +1,131 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Panel</title>
-  <style>
-    body { font-family: sans-serif; background: #f0f0f0; padding: 20px; }
-    input, textarea { width: 100%; margin: 5px 0; padding: 8px; }
-    button { margin: 5px 0; padding: 10px; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>অ্যাডমিন প্যানেল - সেটিংস আপডেট</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fefefe;
+    color: #222;
+  }
+  h1 {
+    text-align: center;
+    color: #007bff;
+  }
+  label {
+    display: block;
+    margin: 15px 0 5px;
+    font-weight: bold;
+  }
+  textarea, input[type="text"], select {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  button {
+    margin-top: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+  #statusMsg {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+  }
+</style>
 </head>
 <body>
-  <h2>নোটিশ ও টেলিগ্রাম লিংক</h2>
-  <textarea id="notice" placeholder="নোটিশ লিখুন"></textarea>
-  <input id="telegram" placeholder="টেলিগ্রাম লিংক লিখুন" />
-  <button onclick="updateSettings()">সেভ</button>
+<h1>অ্যাডমিন প্যানেল</h1>
 
-  <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxt0peFOvLHEPNt54H0Cf3yXBVA6PHGOD680jk8hf_Qo3-pPzv-kJAnRWDv1VBUJAwo/exec'; // Replace with Apps Script Web App
+<form id="settingsForm">
+  <label for="notice">নোটিশ (উদাহরণ: "আজকের ম্যাচ গুলো দেখুন")</label>
+  <textarea id="notice" rows="3" placeholder="নোটিশ লিখুন..."></textarea>
 
-    function updateSettings() {
-      const notice = document.getElementById('notice').value;
-      const telegram = document.getElementById('telegram').value;
+  <label for="darkMode">ডার্ক মোড (ডিফল্ট অফ)</label>
+  <select id="darkMode">
+    <option value="off">বন্ধ</option>
+    <option value="on">চালু</option>
+  </select>
 
-      const payload = {
-        notice, telegram
-      };
+  <button type="submit" id="saveBtn">সেভ করুন</button>
+  <div id="statusMsg"></div>
+</form>
 
-      fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: { "Content-Type": "application/json" }
-      }).then(() => alert("আপডেট হয়েছে"));
+<script>
+  const apiBase = "https://script.google.com/macros/s/AKfycbwuwM3psGin6LzIcDeoyyrzHDbPl6Gb7HGx8DJvoBF_BC01VC3poCyjwBgvpiwLkEhXCw/exec";
+
+  const noticeInput = document.getElementById("notice");
+  const darkModeSelect = document.getElementById("darkMode");
+  const statusMsg = document.getElementById("statusMsg");
+  const saveBtn = document.getElementById("saveBtn");
+
+  // Load current settings from API
+  async function loadSettings() {
+    statusMsg.textContent = "লোড হচ্ছে...";
+    try {
+      const res = await fetch(apiBase + "?action=settings");
+      const data = await res.json();
+      noticeInput.value = data.notice || "";
+      darkModeSelect.value = data.darkMode || "off";
+      statusMsg.textContent = "লোড সম্পন্ন";
+    } catch (e) {
+      statusMsg.textContent = "লোড করতে সমস্যা হয়েছে";
     }
-  </script>
+  }
+
+  // Save settings to API
+  async function saveSettings(event) {
+    event.preventDefault();
+    saveBtn.disabled = true;
+    statusMsg.textContent = "সেভ হচ্ছে...";
+
+    const payload = {
+      notice: noticeInput.value.trim(),
+      darkMode: darkModeSelect.value,
+      action: "saveSettings"
+    };
+
+    try {
+      // Google Apps Script POST request
+      const res = await fetch(apiBase, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if(data.status === "success") {
+        statusMsg.textContent = "সেভ সম্পন্ন হয়েছে";
+      } else {
+        statusMsg.textContent = "সেভ করতে সমস্যা হয়েছে";
+      }
+    } catch (e) {
+      statusMsg.textContent = "সেভ করতে সমস্যা হয়েছে";
+    }
+
+    saveBtn.disabled = false;
+  }
+
+  document.getElementById("settingsForm").addEventListener("submit", saveSettings);
+
+  loadSettings();
+</script>
 </body>
 </html>
