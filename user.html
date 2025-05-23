@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head><title>Live Matches</title></head>
+<body>
+  <h2>Live Matches</h2>
+  <div id="live"></div>
+  <h2>Upcoming Matches</h2>
+  <div id="upcoming"></div>
+
+  <script>
+    const api = 'https://script.google.com/macros/s/AKfycbzFhG3Vudwoyw6OKLPyuod7VidhTLswsPprNCgy2ck-yxh5ipuxAbE3op7ztPQIkyt61Q/exec'; // replace
+
+    fetch(api + '?action=getAllMatches')
+      .then(res => res.json())
+      .then(data => {
+        const live = document.getElementById("live");
+        const upcoming = document.getElementById("upcoming");
+
+        data.matches.forEach(match => {
+          const div = document.createElement("div");
+          div.innerHTML = `
+            <h3>${match.title} (${match.team1} vs ${match.team2})</h3>
+            <img src="${match.logo1}" width="50"> vs <img src="${match.logo2}" width="50"><br>
+            Time: ${new Date(match.matchtime).toLocaleString()}<br>
+            ${match.links.map(l => `<a href="${l.url}" target="_blank">${l.name}</a>`).join(" | ")}
+          `;
+          match.status === "LIVE" ? live.appendChild(div) : upcoming.appendChild(div);
+        });
+      });
+  </script>
+</body>
+</html>
