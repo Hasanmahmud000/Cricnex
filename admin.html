@@ -1,55 +1,47 @@
 <!DOCTYPE html>
 <html>
-<head><title>Admin Panel</title></head>
+<head>
+  <title>Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
 <body>
-  <h2>Match Data Update</h2>
-  <input id="title" placeholder="Match Title"><br><br>
-  <input id="team1" placeholder="Team 1"><br><br>
-  <input id="logo1" placeholder="Team 1 Logo URL"><br><br>
-  <input id="team2" placeholder="Team 2"><br><br>
-  <input id="logo2" placeholder="Team 2 Logo URL"><br><br>
-  <input id="time" type="datetime-local"><br><br>
+  <h2>Add Match</h2>
+  <input id="title" placeholder="Match Title"><br>
+  <input id="team1" placeholder="Team 1"><br>
+  <input id="team2" placeholder="Team 2"><br>
+  <input id="logo1" placeholder="Logo 1 URL"><br>
+  <input id="logo2" placeholder="Logo 2 URL"><br>
+  <input id="matchTime" type="datetime-local"><br>
+  <input id="links" placeholder="Links (comma separated)"><br>
+  <button onclick="addMatch()">Add Match</button>
 
-  <div id="linkList">
-    <input class="link" placeholder="Live Link 1"><br><br>
-  </div>
-  <button onclick="addLink()">Add Another Link</button><br><br>
-
-  <input id="pass" type="password" placeholder="Password"><br><br>
-  <button onclick="submitData()">Save</button>
-  <p id="msg"></p>
+  <h2>Delete Match</h2>
+  <input id="delTitle" placeholder="Title to Delete">
+  <button onclick="deleteMatch()">Delete</button>
 
   <script>
-    const url = 'https://script.google.com/macros/s/AKfycbwFADGzs2_ArmVzY-z2-tu9IpTL1xu2Xje5-_ZCLRsXG19SllxFrDuc1aE0mRMsBMgiVA/exec';
+    const base = 'https://script.google.com/macros/s/AKfycbwFADGzs2_ArmVzY-z2-tu9IpTL1xu2Xje5-_ZCLRsXG19SllxFrDuc1aE0mRMsBMgiVA/exec';
 
-    function addLink() {
-      const div = document.createElement("div");
-      div.innerHTML = '<input class="link" placeholder="Live Link"><br><br>';
-      document.getElementById("linkList").appendChild(div);
+    function addMatch() {
+      const params = new URLSearchParams({
+        action: "addMatch",
+        title: document.getElementById("title").value,
+        team1: document.getElementById("team1").value,
+        team2: document.getElementById("team2").value,
+        logo1: document.getElementById("logo1").value,
+        logo2: document.getElementById("logo2").value,
+        matchTime: document.getElementById("matchTime").value,
+        links: document.getElementById("links").value
+      });
+      fetch(`${base}?${params}`).then(r => r.text()).then(alert);
     }
 
-    function submitData() {
-      const linkInputs = document.querySelectorAll(".link");
-      const links = [];
-      linkInputs.forEach(input => {
-        if (input.value.trim() !== "") links.push(input.value.trim());
-      });
-
+    function deleteMatch() {
       const params = new URLSearchParams({
-        action: "setData",
-        title: title.value,
-        team1: team1.value,
-        logo1: logo1.value,
-        team2: team2.value,
-        logo2: logo2.value,
-        matchTime: time.value,
-        links: JSON.stringify(links),
-        password: pass.value
+        action: "deleteMatch",
+        title: document.getElementById("delTitle").value
       });
-
-      fetch(`${url}?${params}`)
-        .then(res => res.text())
-        .then(txt => msg.innerText = txt);
+      fetch(`${base}?${params}`).then(r => r.text()).then(alert);
     }
   </script>
 </body>
