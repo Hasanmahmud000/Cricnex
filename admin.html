@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><title>Admin Panel</title></head>
+<head><title>CricNex Admin</title></head>
 <body>
   <h2>Admin Panel</h2>
   <input id="channel" placeholder="Channel Name"><br><br>
@@ -12,9 +12,9 @@
   <p id="msg"></p>
 
   <script>
+    const url = "https://script.google.com/macros/s/AKfycbyefHK-JnJnzkKKl3wpB-3b-j0GUTl3iwYCHKk2exp52BUiGNv6IApN5BzteYAzHuTXFg/exec";
     function submitData() {
-      const url = "https://script.google.com/macros/s/AKfycbz3SSqSKUJf7UnEEoBAhPpul08_816H5u3_mKP1fhSsP2pVQUmp5Bb_MFAnwiihysWNBg/exec";
-      const params = `?action=setData&channel=${encodeURIComponent(channel.value)}&logo=${encodeURIComponent(logo.value)}&link=${encodeURIComponent(link.value)}&matchTime=${time.value}&password=${pass.value}`;
+      const params = `?action=setData&channel=${channel.value}&logo=${logo.value}&link=${link.value}&matchTime=${time.value}&password=${pass.value}`;
       fetch(url + params)
         .then(res => res.text())
         .then(txt => msg.innerText = txt);
