@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head><title>Admin Panel</title></head>
+<body>
+  <h2>Admin Panel</h2>
+  <input id="channel" placeholder="Channel Name"><br><br>
+  <input id="logo" placeholder="Logo URL"><br><br>
+  <input id="link" placeholder="Live Link"><br><br>
+  <input id="time" type="datetime-local"><br><br>
+  <input id="pass" type="password" placeholder="Password"><br><br>
+  <button onclick="submitData()">Update</button>
+  <p id="msg"></p>
+
+  <script>
+    function submitData() {
+      const url = "https://script.google.com/macros/s/AKfycbz3SSqSKUJf7UnEEoBAhPpul08_816H5u3_mKP1fhSsP2pVQUmp5Bb_MFAnwiihysWNBg/exec";
+      const params = `?action=setData&channel=${encodeURIComponent(channel.value)}&logo=${encodeURIComponent(logo.value)}&link=${encodeURIComponent(link.value)}&matchTime=${time.value}&password=${pass.value}`;
+      fetch(url + params)
+        .then(res => res.text())
+        .then(txt => msg.innerText = txt);
+    }
+  </script>
+</body>
+</html>
