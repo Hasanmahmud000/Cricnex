@@ -20,7 +20,7 @@
   <button onclick="deleteMatch()">Delete</button>
 
   <script>
-    const base = 'https://script.google.com/macros/s/AKfycbweEpGibocOtY7V5_Y9CxU2UuiFOjjV6hQUq2daBxiBFnOjs9BmIFCqpOQX4GcIB5UwIA/exec';
+    const base = 'https://script.google.com/macros/s/AKfycbyijJ7N3HWn11qLz3ZsIrbkZQNLy2gYWZgSZpKWoovjjxp1Tm-3lY-JnUyAWcADlAzZkw/exec';
 
     function addMatch() {
       const params = new URLSearchParams({
@@ -30,7 +30,7 @@
         team2: document.getElementById("team2").value,
         logo1: document.getElementById("logo1").value,
         logo2: document.getElementById("logo2").value,
-        matchTime: document.getElementById("matchTime").value,
+        matchtime: document.getElementById("matchTime").value,
         links: document.getElementById("links").value
       });
       fetch(`${base}?${params}`).then(r => r.text()).then(alert);
