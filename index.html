@@ -1,84 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Live Match</title>
+  <title>Live Matches</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { text-align: center; font-family: sans-serif; padding: 10px; }
-    .team-logo { width: 80px; height: 80px; object-fit: contain; }
-    #liveTag { color: red; font-size: 30px; font-weight: bold; animation: bounce 1s infinite; display: none; }
-    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-    #countdown { font-size: 22px; margin: 20px; }
-    .video-container { margin: 20px 0; }
-    iframe, video { width: 100%; height: 400px; margin-top: 10px; display: none; }
+    body { font-family: sans-serif; padding: 10px; }
+    .match-card {
+      border: 1px solid #ccc; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    }
+    .team-logo { width: 60px; height: 60px; object-fit: contain; }
+    .live-tag { color: red; font-size: 20px; font-weight: bold; animation: bounce 1s infinite; display: none; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    .countdown { font-size: 18px; margin: 10px; }
+    iframe, video { width: 100%; height: 300px; margin-top: 10px; display: none; }
   </style>
 </head>
 <body>
-  <h1 id="title"></h1>
-
-  <div>
-    <img id="logo1" class="team-logo" />
-    <span id="team1"></span>
-    <span> VS </span>
-    <span id="team2"></span>
-    <img id="logo2" class="team-logo" />
-  </div>
-
-  <div id="countdown"></div>
-  <div id="liveTag">LIVE NOW</div>
-  <div id="videoArea" class="video-container"></div>
+  <h2 style="text-align:center">Live Matches</h2>
+  <div id="matchesContainer"></div>
 
   <script>
-    const url = "https://script.google.com/macros/s/AKfycbwFADGzs2_ArmVzY-z2-tu9IpTL1xu2Xje5-_ZCLRsXG19SllxFrDuc1aE0mRMsBMgiVA/exec?action=getData";
+    const url = "https://script.google.com/macros/s/AKfycbwFADGzs2_ArmVzY-z2-tu9IpTL1xu2Xje5-_ZCLRsXG19SllxFrDuc1aE0mRMsBMgiVA/exec?action=getAllMatches";
 
     fetch(url)
       .then(res => res.json())
       .then(data => {
-        document.getElementById("title").innerText = data.title;
-        document.getElementById("team1").innerText = data.team1;
-        document.getElementById("team2").innerText = data.team2;
-        document.getElementById("logo1").src = data.logo1;
-        document.getElementById("logo2").src = data.logo2;
+        const container = document.getElementById("matchesContainer");
 
-        const matchTime = new Date(data.matchTime).getTime();
-        const countdownEl = document.getElementById("countdown");
-        const liveTag = document.getElementById("liveTag");
-        const videoArea = document.getElementById("videoArea");
+        data.matches.forEach((match, idx) => {
+          const card = document.createElement("div");
+          card.className = "match-card";
 
-        const interval = setInterval(() => {
-          const now = new Date().getTime();
-          const distance = matchTime - now;
+          card.innerHTML = `
+            <h3>${match.title}</h3>
+            <div>
+              <img src="${match.logo1}" class="team-logo" />
+              <span>${match.team1}</span>
+              <strong> VS </strong>
+              <span>${match.team2}</span>
+              <img src="${match.logo2}" class="team-logo" />
+            </div>
+            <div id="countdown${idx}" class="countdown">Loading...</div>
+            <div id="live${idx}" class="live-tag">LIVE NOW</div>
+            <div id="video${idx}"></div>
+          `;
 
-          if (distance <= 0) {
-            clearInterval(interval);
-            countdownEl.innerText = "";
-            liveTag.style.display = "block";
-            data.links.forEach((link, index) => {
-              const label = document.createElement("div");
-              label.innerText = `Server ${index + 1}`;
-              videoArea.appendChild(label);
+          container.appendChild(card);
 
-              if (link.includes(".m3u8") || link.includes(".mpd")) {
-                const video = document.createElement("video");
-                video.controls = true;
-                video.autoplay = true;
-                video.src = link;
-                video.style.display = "block";
-                videoArea.appendChild(video);
-              } else {
-                const iframe = document.createElement("iframe");
-                iframe.src = link;
-                iframe.style.display = "block";
-                videoArea.appendChild(iframe);
-              }
-            });
-          } else {
-            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((distance % (1000 * 60)) / 1000);
-            countdownEl.innerText = `Starts in: ${h}h ${m}m ${s}s`;
-          }
-        }, 1000);
+          const matchTime = new Date(match.matchTime).getTime();
+          const countdownEl = document.getElementById(`countdown${idx}`);
+          const liveTag = document.getElementById(`live${idx}`);
+          const videoArea = document.getElementById(`video${idx}`);
+
+          const interval = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = matchTime - now;
+
+            if (distance <= 0) {
+              clearInterval(interval);
+              countdownEl.innerText = "";
+              liveTag.style.display = "block";
+              match.links.forEach((link, i) => {
+                const label = document.createElement("div");
+                label.innerText = `Server ${i + 1}`;
+                videoArea.appendChild(label);
+
+                if (link.includes(".m3u8") || link.includes(".mpd")) {
+                  const video = document.createElement("video");
+                  video.controls = true;
+                  video.autoplay = true;
+                  video.src = link;
+                  video.style.display = "block";
+                  videoArea.appendChild(video);
+                } else {
+                  const iframe = document.createElement("iframe");
+                  iframe.src = link;
+                  iframe.style.display = "block";
+                  videoArea.appendChild(iframe);
+                }
+              });
+            } else {
+              const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+              const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+              const s = Math.floor((distance % (1000 * 60)) / 1000);
+              countdownEl.innerText = `Starts in: ${h}h ${m}m ${s}s`;
+            }
+          }, 1000);
+        });
       });
   </script>
 </body>
