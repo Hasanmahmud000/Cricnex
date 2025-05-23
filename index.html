@@ -1,70 +1,97 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>CricNex User Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X Fire Flix - Sports TV</title>
+  <link rel="shortcut icon" href="https://i.postimg.cc/sxkGqfMT/x-fire-flix.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body { background: #000; color: #fff; font-family: Arial; padding: 20px;}
-    .match { display: flex; align-items: center; margin-bottom: 20px; gap: 20px; border: 1px solid #444; padding: 10px;}
-    .team-logo { width: 60px; height: 60px; object-fit: contain; }
-    .countdown { font-weight: bold; color: yellow; }
-    .live { color: red; font-weight: bold; animation: blink 1s infinite; }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: white; }
+    body.light-mode { background-color: #f0f0f0; color: black; }
+    .logo { text-align: center; padding: 20px; }
+    .channel-card { background: rgba(255,255,255,0.05); border: 1px solid red; border-radius: 10px; padding: 10px; transition: transform 0.2s ease-in-out; cursor: pointer; }
+    .channel-card:hover { transform: scale(1.03); }
+    .channel-card img { width: 100%; height: 130px; object-fit: contain; border-radius: 10px; background: white; }
+    .channel-name { text-align: center; margin-top: 10px; font-size: 14px; font-weight: bold; }
+    .toggle-btn { margin: 10px auto; display: block; }
   </style>
 </head>
 <body>
-  <h1>CricNex Matches</h1>
-  <div id="matches">Loading...</div>
+  <div class="logo text-center mb-4 border-bottom pb-3" style="border-color: #ff3c3c;">
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgn47Htl8rZkop10CXrSjkn7Y9zA07Zdh1athN4qyFMx7VQtvqTcaxYT6cEjUKytO-hOvJT3nbKuIJZsUAgbouV4CRSahlPAXnyFmolO3mhdZwXR0W0WlkXYXQIJn-X8pe0lUoVCUbA14neQbccB4yTO2zutHj1jSjt33Z7BylqbBQSU7e_vw2w1AK5pbvf/s600/logo.png" alt="X Fire Flix Logo" height="80" class="mb-2">
+    <h3 style="font-weight: bold; color: #ff3c3c;">CricHD <span style="color: white;">| by</span> X Fire Flix</h3>
+  </div>
+
+  <div class="container">
+    <input id="searchInput" type="text" class="form-control mb-3" placeholder="Search Channels...">
+    <button class="btn btn-danger toggle-btn" id="toggleMode">Switch to Light Mode</button>
+    <div id="channelList" class="row g-3"></div>
+  </div>
+
+  <footer class="text-center mt-4 py-3 bg-danger text-white">
+    &copy; 2025 X Fire Flix. All rights reserved.
+  </footer>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwS_NSO7fM6cWbCHTd_VsSDY1E7ZCZurPScaJJ8nD_uWc4TnoQzw7L7fVZUPfB3VwcvPw/exec';
-    function formatTime(ms) {
-      if(ms <= 0) return null;
-      const m = Math.floor(ms / 60000);
-      const s = Math.floor((ms % 60000) / 1000);
-      return `${m}m ${s}s`;
-    }
-    function createMatch(match) {
-      const div = document.createElement('div');
-      div.className = 'match';
-      const img1 = document.createElement('img');
-      img1.src = match.team1Logo;
-      img1.className = 'team-logo';
-      const img2 = document.createElement('img');
-      img2.src = match.team2Logo;
-      img2.className = 'team-logo';
-      const info = document.createElement('div');
-      info.innerHTML = `<h3>${match.matchTitle}</h3><p>${match.team1Name} vs ${match.team2Name}</p><p>Start Time: ${new Date(match.startTime).toLocaleString()}</p><a href="${match.streamLink}" target="_blank">Watch Live</a>`;
-      const countdown = document.createElement('div');
-      countdown.className = 'countdown';
-      function updateCountdown() {
-        const now = new Date().getTime();
-        const start = new Date(match.startTime).getTime();
-        const diff = start - now;
-        if(diff <= 0) {
-          countdown.innerHTML = '<span class="live">LIVE</span>';
-        } else {
-          countdown.textContent = `Starts in: ${formatTime(diff)}`;
-        }
-      }
-      updateCountdown();
-      setInterval(updateCountdown, 1000);
-      div.appendChild(img1);
-      div.appendChild(info);
-      div.appendChild(countdown);
-      div.appendChild(img2);
-      return div;
-    }
-    fetch(API_URL)
+    const jsonUrl = 'https://raw.githubusercontent.com/abusaeeidx/CricHd-playlists-Auto-Update-permanent/main/api.json';
+
+    fetch(jsonUrl)
       .then(res => res.json())
       .then(data => {
-        const container = document.getElementById('matches');
-        container.innerHTML = '';
-        data.forEach(match => container.appendChild(createMatch(match)));
+        const container = document.getElementById('channelList');
+        data.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'col-6 col-md-3';
+          card.innerHTML = `
+            <div class="channel-card" onclick="location.href='player.html?id=${encodeURIComponent(item.id)}'">
+              <img src="${item.logo}" onerror="this.src='https://via.placeholder.com/150x130?text=No+Logo';" alt="Channel Logo">
+              <div class="channel-name">${item.name}</div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
       })
-      .catch(() => {
-        document.getElementById('matches').textContent = "Failed to load matches.";
+      .catch(error => {
+        document.getElementById('channelList').innerHTML = '<div class="col-12 text-center text-danger">Failed to load channels.</div>';
+        console.error(error);
       });
+
+    // Light/Dark mode toggle
+    document.getElementById('toggleMode').addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+      const toggleBtn = document.getElementById('toggleMode');
+      toggleBtn.textContent = document.body.classList.contains('light-mode') ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+    });
+
+    // Channel search
+    document.getElementById('searchInput').addEventListener('input', function () {
+      const searchValue = this.value.toLowerCase();
+      document.querySelectorAll('.channel-card').forEach(card => {
+        const name = card.querySelector('.channel-name').textContent.toLowerCase();
+        card.parentElement.style.display = name.includes(searchValue) ? 'block' : 'none';
+      });
+    });
+
+    // Telegram Overlay
+    const telegramOverlay = document.createElement('div');
+    telegramOverlay.style.position = 'fixed';
+    telegramOverlay.style.bottom = '14px';
+    telegramOverlay.style.right = '13px';
+    telegramOverlay.style.zIndex = '9999';
+    telegramOverlay.style.background = '#0088cc';
+    telegramOverlay.style.padding = '8px 11px';
+    telegramOverlay.style.borderRadius = '26px';
+    telegramOverlay.style.display = 'flex';
+    telegramOverlay.style.alignItems = 'center';
+    telegramOverlay.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
+    telegramOverlay.innerHTML = `
+      <a href="https://t.me/xfireflix" target="_blank" style="display: flex; align-items: center; text-decoration: none; color: white;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" style="width: 20px; height: 20px; margin-right: 8px;">
+        <span style="font-weight: bold;">Join us on Telegram</span>
+      </a>
+    `;
+    document.body.appendChild(telegramOverlay);
   </script>
 </body>
 </html>
