@@ -1,66 +1,77 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>লাইভ খেলা</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <title>Video Player with Resolution Selector</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/shaka-player.compiled.js"></script>
   <style>
-    body { font-family: Arial; background: #111; color: #fff; padding: 10px; }
-    .match { border: 1px solid #333; padding: 10px; margin: 10px 0; border-radius: 10px; background: #222; }
-    .live { border-color: red; animation: pulse 1s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 0 5px red; } 100% { box-shadow: 0 0 15px red; } }
-    .teams img { height: 30px; }
-    .links button { margin: 5px; padding: 5px 10px; }
-    .countdown { color: yellow; font-weight: bold; }
+    body { background: #000; color: #fff; text-align: center; }
+    video { width: 90%; max-width: 720px; margin-top: 20px; }
+    #qualityLevels {
+      margin-top: 10px;
+      background: #222;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h2>⚽ লাইভ খেলা</h2>
-  <div id="matchList">লোড হচ্ছে...</div>
+  <h2>CricNex | BDStreamHub</h2>
+  <video id="video" controls autoplay></video>
+  <br />
+  <select id="qualityLevels"></select>
 
   <script>
-    const API = "https://script.google.com/macros/s/AKfycbxtBCwpzWkODkQiDYPySJt07TQkjDhQ3fz4SFquq635Nvp_LUkSixpGxMJyP5UFDgfYKg/exec";
+    const video = document.getElementById('video');
+    const qualitySelector = document.getElementById('qualityLevels');
 
-    async function fetchMatches() {
-      const res = await fetch(API);
-      const matches = await res.json();
-      const now = new Date();
-      const live = [], upcoming = [];
+    async function initPlayer() {
+      const player = new shaka.Player(video);
 
-      matches.forEach(m => {
-        const time = new Date(m["Match Time"]);
-        const diff = (time - now) / 1000;
-        if (diff <= 0 && diff > -7200) live.push({ ...m, time });
-        else if (diff > 0) upcoming.push({ ...m, time });
+      // DRM config
+      player.configure({
+        drm: {
+          clearKeys: {
+            'd84c325f36814f39bbe59080272b10c3': '550727de4c96ef1ecff874905493580f'
+          }
+        }
       });
 
-      const finalList = [...live, ...upcoming];
-      document.getElementById("matchList").innerHTML = finalList.map(m => {
-        const isLive = m.time <= new Date();
-        const mins = isLive ? Math.floor((new Date() - m.time) / 60000) : Math.ceil((m.time - new Date()) / 1000);
-        const countdown = isLive ? `লাইভ: ${mins} মিনিট` : `শুরু হবে ${mins} সেকেন্ডে`;
+      try {
+        await player.load('https://ssc-1-enc.edgenextcdn.net/out/v1/c696e4819b55414388a1a487e8a45ca1/index.mpd');
+        console.log('Video loaded');
 
-        return `
-        <div class="match ${isLive ? 'live' : ''}">
-          <div class="teams">
-            <img src="${m["Logo 1"]}" /> <strong>${m["Team 1"]}</strong> vs 
-            <strong>${m["Team 2"]}</strong> <img src="${m["Logo 2"]}" />
-          </div>
-          <div class="countdown">${countdown}</div>
-          <div class="links">
-            ${m.Links.map(l => `<button onclick="openPlayer('${l.url}')">${l.name}</button>`).join('')}
-          </div>
-        </div>`;
-      }).join('');
+        // Populate quality selector
+        const tracks = player.getVariantTracks();
+        // Clear old options
+        qualitySelector.innerHTML = '';
+        tracks.forEach((track, index) => {
+          const option = document.createElement('option');
+          option.value = index;
+          option.text = `${track.height}p (${Math.round(track.bandwidth / 1000)} kbps)`;
+          qualitySelector.appendChild(option);
+        });
+
+        // On selection change, switch quality
+        qualitySelector.addEventListener('change', () => {
+          const selectedTrack = tracks[qualitySelector.value];
+          player.selectVariantTrack(selectedTrack, /* clearBuffer= */ true);
+        });
+
+      } catch (e) {
+        console.error('Error loading video', e);
+      }
     }
 
-    function openPlayer(url) {
-      const win = window.open();
-      win.document.write(`<video controls autoplay style="width:100%;height:100%" src="${url}"></video>`);
+    shaka.polyfill.installAll();
+    if (shaka.Player.isBrowserSupported()) {
+      initPlayer();
+    } else {
+      alert('Browser not supported!');
     }
-
-    fetchMatches();
-    setInterval(fetchMatches, 60000); // প্রতি ১ মিনিটে আপডেট
   </script>
 </body>
 </html>
