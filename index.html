@@ -1,57 +1,106 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>CricNex DRM Video Player</title>
-    <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.6.0/dist/shaka-player.compiled.js"></script>
-    <style>
-      body { background: #000; color: white; text-align: center; }
-      video { width: 95%; max-width: 720px; margin-top: 20px; }
-      .watermark {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(0,0,0,0.6);
-        padding: 6px 10px;
-        font-size: 14px;
-        border-radius: 5px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="watermark">CricNex | Powered by BDStreamHub</div>
-    <video id="video" autoplay controls></video>
+<head>
+  <title>BANGLADESH vs PAKISTAN 1st T20i</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.compiled.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
 
-    <script>
-      shaka.polyfill.installAll();
+    .match-header {
+      text-align: center;
+      font-size: 20px;
+      padding: 10px;
+      background-color: #111;
+      color: #ffcc00;
+      font-weight: bold;
+    }
 
-      if (shaka.Player.isBrowserSupported()) {
-        initPlayer();
-      } else {
-        alert('Browser not supported!');
-      }
+    .video-container {
+      width: 100%;
+      max-width: 100%;
+      aspect-ratio: 16/9;
+      position: relative;
+      margin: 0 auto;
+      background-color: black;
+    }
 
-      async function initPlayer() {
-        const video = document.getElementById('video');
-        const player = new shaka.Player(video);
+    video {
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
 
-        // ClearKey license
-        player.configure({
-          drm: {
-            clearKeys: {
-              'd84c325f36814f39bbe59080272b10c3': '550727de4c96ef1ecff874905493580f'
-            }
-          }
-        });
+    .watermark, .viewer-count {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 4px;
+      z-index: 2;
+    }
 
-        try {
-          await player.load('https://ssc-1-enc.edgenextcdn.net/out/v1/c696e4819b55414388a1a487e8a45ca1/index.mpd');
-          console.log('Video loaded!');
-        } catch (e) {
-          console.error('Error code', e.code, 'object', e);
-          alert('Video load failed: ' + e.code + ' - ' + e.message);
+    .watermark {
+      bottom: 10px;
+      left: 10px;
+    }
+
+    .viewer-count {
+      top: 10px;
+      right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="match-header">BANGLADESH vs PAKISTAN 1st T20i</div>
+
+  <div class="video-container">
+    <video id="video" autoplay muted playsinline controls></video>
+    <div class="watermark">@BDStreamHub</div>
+    <div class="viewer-count">Viewers: <span id="viewers">0</span></div>
+  </div>
+
+  <script>
+    async function initPlayer() {
+      const video = document.getElementById('video');
+      const player = new shaka.Player(video);
+
+      // Optional configuration
+      player.configure({
+        streaming: {
+          bufferingGoal: 30,
+          rebufferingGoal: 15
         }
+      });
+
+      try {
+        await player.load('https://live.tsports.com/mobile_hls/tsports_live_1/playlist.m3u8');
+        console.log('Video Loaded');
+      } catch (error) {
+        console.error('Error loading video:', error);
+        alert("Could not load video.");
       }
-    </script>
-  </body>
+    }
+
+    shaka.polyfill.installAll();
+    if (shaka.Player.isBrowserSupported()) {
+      initPlayer();
+    } else {
+      alert('Your browser does not support this video.');
+    }
+
+    // Fake Real-time viewers
+    function updateViewers() {
+      document.getElementById("viewers").innerText = Math.floor(Math.random() * 900) + 500;
+    }
+    setInterval(updateViewers, 3000);
+  </script>
+
+</body>
 </html>
