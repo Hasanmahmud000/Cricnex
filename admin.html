@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin Panel - BDStreamHub</title>
+  <title>Admin Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body { font-family: sans-serif; background: #111; color: #fff; padding: 20px; }
@@ -15,24 +15,28 @@
 </head>
 <body>
 
-<h2>🎮 BDStreamHub Admin Panel</h2>
+<h2>Admin Panel - BDStreamHub</h2>
 
 <input id="match_name" placeholder="Match Name">
 <input id="stream_url" placeholder="Stream URL (.m3u8)">
 <input id="start_time" placeholder="Start Time (YYYY-MM-DD HH:MM:SS)">
 <input id="countdown_time" placeholder="Countdown Time (YYYY-MM-DDTHH:MM:SSZ)">
+<input id="team_a_name" placeholder="Team A Name">
+<input id="team_a_logo" placeholder="Team A Logo URL">
+<input id="team_b_name" placeholder="Team B Name">
+<input id="team_b_logo" placeholder="Team B Logo URL">
 <button onclick="addMatch()">➕ Add Match</button>
 
-<h3>📋 Existing Matches</h3>
+<h3>Existing Matches</h3>
 <table>
   <thead>
-    <tr><th>Match</th><th>URL</th><th>Start</th><th>Countdown</th><th>Action</th></tr>
+    <tr><th>Match</th><th>Action</th></tr>
   </thead>
   <tbody id="matchTable"></tbody>
 </table>
 
 <script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbxEhiRYIXhCaUegke__Gj9e64uZwaWNTDEEffAnkqc5Oh7A9RWdATMhgKSPOGxlM3FzdQ/exec'; // Replace this with your deployed Apps Script URL
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbz4gVKQ8SJAwA_GxRe2ksqyaBH7flddNQYbU8qGdEYefLaiqhOMFdw4ML0xaC854HzTBw/exec';
 
   async function fetchMatches() {
     const res = await fetch(scriptURL);
@@ -44,12 +48,9 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${row.match_name}</td>
-        <td>${row.stream_url}</td>
-        <td>${row.start_time}</td>
-        <td>${row.countdown_time}</td>
         <td>
-          <button class="edit" onclick="editMatch(${index})">✏️ Edit</button>
-          <button class="delete" onclick="deleteMatch(${index})">🗑️ Delete</button>
+          <button class="edit" onclick="editMatch(${index})">Edit</button>
+          <button class="delete" onclick="deleteMatch(${index})">Delete</button>
         </td>`;
       table.appendChild(tr);
     });
@@ -61,6 +62,10 @@
       stream_url: document.getElementById('stream_url').value,
       start_time: document.getElementById('start_time').value,
       countdown_time: document.getElementById('countdown_time').value,
+      team_a_name: document.getElementById('team_a_name').value,
+      team_a_logo: document.getElementById('team_a_logo').value,
+      team_b_name: document.getElementById('team_b_name').value,
+      team_b_logo: document.getElementById('team_b_logo').value,
       action: "add"
     };
     await fetch(scriptURL, {
@@ -79,10 +84,14 @@
   }
 
   async function editMatch(index) {
-    const match_name = prompt("New Match Name:");
-    const stream_url = prompt("New Stream URL:");
-    const start_time = prompt("New Start Time:");
-    const countdown_time = prompt("New Countdown Time:");
+    const match_name = prompt("Match Name:");
+    const stream_url = prompt("Stream URL:");
+    const start_time = prompt("Start Time:");
+    const countdown_time = prompt("Countdown Time:");
+    const team_a_name = prompt("Team A Name:");
+    const team_a_logo = prompt("Team A Logo:");
+    const team_b_name = prompt("Team B Name:");
+    const team_b_logo = prompt("Team B Logo:");
 
     await fetch(scriptURL, {
       method: "POST",
@@ -92,7 +101,11 @@
         match_name,
         stream_url,
         start_time,
-        countdown_time
+        countdown_time,
+        team_a_name,
+        team_a_logo,
+        team_b_name,
+        team_b_logo
       })
     });
     fetchMatches();
