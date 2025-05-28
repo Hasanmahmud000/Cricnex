@@ -1,65 +1,104 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>এডমিন প্যানেল</title>
+  <title>Admin Panel - BDStreamHub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-    input, textarea { display: block; margin: 10px 0; width: 100%; padding: 5px; }
-    button { padding: 10px; }
-    .matchList { margin-top: 20px; }
-    .matchItem { border: 1px solid #ccc; padding: 10px; margin: 5px 0; background: #fff; }
+    body { font-family: sans-serif; background: #111; color: #fff; padding: 20px; }
+    input, button { padding: 8px; margin: 5px 0; width: 100%; }
+    table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+    th, td { border: 1px solid #444; padding: 8px; text-align: left; }
+    button { background: #28a745; color: #fff; border: none; cursor: pointer; }
+    button.delete { background: #dc3545; }
+    button.edit { background: #ffc107; color: #000; }
   </style>
 </head>
 <body>
-  <h2>⚙️ Admin Panel</h2>
 
-  <input id="title" placeholder="Match Title">
-  <input id="team1" placeholder="Team 1">
-  <input id="team2" placeholder="Team 2">
-  <input id="logo1" placeholder="Logo 1 URL">
-  <input id="logo2" placeholder="Logo 2 URL">
-  <input id="time" placeholder="Match Time (e.g. 2025-05-23T18:00:00)">
-  <textarea id="links" placeholder='Links JSON [{"name":"Link 1","url":"https://..."},...]'></textarea>
-  <button onclick="addMatch()">ম্যাচ যোগ করুন</button>
+<h2>🎮 BDStreamHub Admin Panel</h2>
 
-  <h3>ম্যাচ লিস্ট:</h3>
-  <div id="matchList">লোড হচ্ছে...</div>
+<input id="match_name" placeholder="Match Name">
+<input id="stream_url" placeholder="Stream URL (.m3u8)">
+<input id="start_time" placeholder="Start Time (YYYY-MM-DD HH:MM:SS)">
+<input id="countdown_time" placeholder="Countdown Time (YYYY-MM-DDTHH:MM:SSZ)">
+<button onclick="addMatch()">➕ Add Match</button>
 
-  <script>
-    const API = "https://script.google.com/macros/s/AKfycbxtBCwpzWkODkQiDYPySJt07TQkjDhQ3fz4SFquq635Nvp_LUkSixpGxMJyP5UFDgfYKg/exec";
+<h3>📋 Existing Matches</h3>
+<table>
+  <thead>
+    <tr><th>Match</th><th>URL</th><th>Start</th><th>Countdown</th><th>Action</th></tr>
+  </thead>
+  <tbody id="matchTable"></tbody>
+</table>
 
-    async function addMatch() {
-      const q = new URLSearchParams({
-        title: document.getElementById('title').value,
-        team1: document.getElementById('team1').value,
-        team2: document.getElementById('team2').value,
-        logo1: document.getElementById('logo1').value,
-        logo2: document.getElementById('logo2').value,
-        time: document.getElementById('time').value,
-        linksJson: document.getElementById('links').value,
-      });
-      await fetch(API + "?action=addMatch&" + q.toString());
-      alert("ম্যাচ যোগ হয়েছে!");
-      location.reload();
-    }
+<script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbxEhiRYIXhCaUegke__Gj9e64uZwaWNTDEEffAnkqc5Oh7A9RWdATMhgKSPOGxlM3FzdQ/exec'; // Replace this with your deployed Apps Script URL
 
-    async function deleteMatch(title) {
-      await fetch(API + "?action=deleteMatch&title=" + encodeURIComponent(title));
-      alert("ম্যাচ ডিলিট হয়েছে!");
-      location.reload();
-    }
+  async function fetchMatches() {
+    const res = await fetch(scriptURL);
+    const data = await res.json();
+    const table = document.getElementById('matchTable');
+    table.innerHTML = '';
 
-    async function loadMatches() {
-      const res = await fetch(API);
-      const data = await res.json();
-      document.getElementById("matchList").innerHTML = data.map(m =>
-        `<div class="matchItem"><b>${m["Match Title"]}</b>
-         <button onclick="deleteMatch('${m["Match Title"]}')">❌</button></div>`
-      ).join('');
-    }
+    data.forEach((row, index) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row.match_name}</td>
+        <td>${row.stream_url}</td>
+        <td>${row.start_time}</td>
+        <td>${row.countdown_time}</td>
+        <td>
+          <button class="edit" onclick="editMatch(${index})">✏️ Edit</button>
+          <button class="delete" onclick="deleteMatch(${index})">🗑️ Delete</button>
+        </td>`;
+      table.appendChild(tr);
+    });
+  }
 
-    loadMatches();
-  </script>
+  async function addMatch() {
+    const body = {
+      match_name: document.getElementById('match_name').value,
+      stream_url: document.getElementById('stream_url').value,
+      start_time: document.getElementById('start_time').value,
+      countdown_time: document.getElementById('countdown_time').value,
+      action: "add"
+    };
+    await fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify(body)
+    });
+    fetchMatches();
+  }
+
+  async function deleteMatch(index) {
+    await fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify({ action: "delete", index })
+    });
+    fetchMatches();
+  }
+
+  async function editMatch(index) {
+    const match_name = prompt("New Match Name:");
+    const stream_url = prompt("New Stream URL:");
+    const start_time = prompt("New Start Time:");
+    const countdown_time = prompt("New Countdown Time:");
+
+    await fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "edit",
+        index,
+        match_name,
+        stream_url,
+        start_time,
+        countdown_time
+      })
+    });
+    fetchMatches();
+  }
+
+  fetchMatches();
+</script>
 </body>
 </html>
