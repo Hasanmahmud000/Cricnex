@@ -2,54 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Live Stream - BDStreamHub</title>
+  <title>Live Stream</title>
   <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.3.5/dist/shaka-player.compiled.min.js"></script>
   <style>
-    body {
-      margin: 0;
-      background: #000;
-      color: #fff;
-      font-family: sans-serif;
-      text-align: center;
-    }
-    .player-container {
-      aspect-ratio: 16/9;
-      background: #111;
-      margin: 10px;
-    }
-    video {
-      width: 100%;
-      height: 100%;
-    }
-    .match-list {
-      margin: 10px;
-    }
+    body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; }
+    .logos { display: flex; align-items: center; justify-content: center; margin: 10px 0; }
+    .logos img { height: 50px; width: 50px; object-fit: contain; margin: 0 20px; }
+    #countdown { font-size: 20px; color: #ff0; }
+    video { width: 100%; max-width: 800px; margin: 20px auto; display: block; }
     .match-list button {
-      margin: 5px;
-      padding: 10px;
-      background: #222;
-      color: #fff;
-      border: 1px solid #444;
-      cursor: pointer;
-    }
-    .countdown {
-      font-size: 18px;
-      margin: 10px;
+      margin: 5px; padding: 10px 20px; background: #222; color: #fff; border: 1px solid #444; cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h2>Live Match Streaming - BDStreamHub</h2>
-  <div class="countdown" id="countdown">⏳ Countdown Loading...</div>
+  <h2>🎥 Live Match</h2>
   <div class="match-list" id="matchButtons"></div>
-  <div class="player-container">
-    <video id="video" controls autoplay></video>
+
+  <div class="logos">
+    <div><img id="teamALogo"><div id="teamAName"></div></div>
+    <div><span id="countdown">⏳ Loading...</span></div>
+    <div><img id="teamBLogo"><div id="teamBName"></div></div>
   </div>
 
-  <script>
-    const sheetAPI = 'https://script.google.com/macros/s/AKfycbxEhiRYIXhCaUegke__Gj9e64uZwaWNTDEEffAnkqc5Oh7A9RWdATMhgKSPOGxlM3FzdQ/exec';
+  <video id="video" controls autoplay></video>
 
-    const player = new shaka.Player(document.getElementById('video'));
+  <script>
+    const sheetAPI = "YOUR_SCRIPT_URL_HERE";
+    const player = new shaka.Player(document.getElementById("video"));
 
     async function loadMatches() {
       const res = await fetch(sheetAPI);
@@ -58,12 +38,16 @@
       const matchButtons = document.getElementById("matchButtons");
       matchButtons.innerHTML = "";
 
-      data.forEach(match => {
+      data.forEach((match, index) => {
         const btn = document.createElement("button");
         btn.innerText = match.match_name;
         btn.onclick = () => {
           player.load(match.stream_url);
           startCountdown(match.countdown_time);
+          document.getElementById("teamAName").innerText = match.team_a_name;
+          document.getElementById("teamALogo").src = match.team_a_logo;
+          document.getElementById("teamBName").innerText = match.team_b_name;
+          document.getElementById("teamBLogo").src = match.team_b_logo;
         };
         matchButtons.appendChild(btn);
       });
@@ -85,7 +69,7 @@
           const h = Math.floor(diff / (1000 * 60 * 60));
           const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
           const s = Math.floor((diff % (1000 * 60)) / 1000);
-          countdown.innerText = `⏳ Starts In: ${h}h ${m}m ${s}s`;
+          countdown.innerText = `Starts In: ${h}h ${m}m ${s}s`;
         }
       }, 1000);
     }
