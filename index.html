@@ -2,11 +2,11 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8" />
-  <title>BDStreamHub Video Player</title>
+  <title>BDStreamHub Video Player - Scrolling Notice</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
-    /* Reset & base */
+    /* Reset and base */
     * {
       box-sizing: border-box;
     }
@@ -20,10 +20,11 @@
       font-family: 'Poppins', sans-serif;
       color: #eee;
       user-select: none;
+      position: relative;
+      overflow-x: hidden;
     }
-    /* Title above browser window, not inside player */
     .page-title {
-      margin: 20px 0 10px 0;
+      margin: 20px 0 30px 0;
       font-size: 30px;
       font-weight: 700;
       color: #00ffc8;
@@ -42,6 +43,8 @@
       background: #0b0f12;
       font-size: 16px;
       outline: none;
+      margin-top: 50px;
+      margin-bottom: 40px;
     }
     video {
       width: 100%;
@@ -51,8 +54,6 @@
       cursor: pointer;
       filter: drop-shadow(0 0 12px #00ffc8cc);
     }
-
-    /* Watermark on bottom right, black color */
     .watermark {
       position: absolute;
       bottom: 40px;
@@ -62,15 +63,13 @@
       font-weight: 600;
       font-size: 14px;
       border-radius: 14px;
-      color: #000; /* black text */
+      color: #000;
       pointer-events: none;
       letter-spacing: 1.1px;
       user-select: none;
       z-index: 20;
       white-space: nowrap;
     }
-
-    /* Controls container hidden by default */
     .controls {
       position: absolute;
       bottom: 0;
@@ -91,8 +90,6 @@
       opacity: 1;
       pointer-events: auto;
     }
-
-    /* Progress bar container */
     .progress-bar {
       flex-grow: 1;
       height: 6px;
@@ -111,8 +108,6 @@
       transition: width 0.15s ease;
       box-shadow: 0 0 8px #00ffc8aa;
     }
-
-    /* Buttons & sliders style */
     button, select {
       cursor: pointer;
       background: transparent;
@@ -138,8 +133,6 @@
       color: #00ffc8;
       min-width: 90px;
     }
-
-    /* Time display */
     .time {
       font-size: 15px;
       min-width: 70px;
@@ -149,10 +142,38 @@
       letter-spacing: 0.5px;
       font-variant-numeric: tabular-nums;
     }
-
+    /* Scrolling notice container placed above player */
+    .scrolling-notice-container {
+      position: relative;
+      width: 1000px;
+      max-width: 98vw;
+      height: 30px;
+      overflow: hidden;
+      background: #111a;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #00ffc8aa inset;
+      user-select: none;
+    }
+    .scrolling-notice {
+      white-space: nowrap;
+      display: inline-block;
+      padding-left: 100%;
+      color: #00ffc8;
+      font-size: 16px;
+      line-height: 30px;
+      animation: scroll-left 15s linear infinite;
+    }
+    @keyframes scroll-left {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
     /* Responsive */
     @media (max-width: 520px) {
-      .player-container {
+      .player-container, .scrolling-notice-container {
         width: 95vw !important;
       }
       button {
@@ -170,16 +191,28 @@
         font-size: 12px;
         bottom: 50px;
       }
+      .scrolling-notice {
+        font-size: 14px;
+        line-height: 28px;
+      }
     }
   </style>
 </head>
 <body>
+
   <div class="page-title">BDStreamHub Live On FRIENDLY MATCH BANGLADESH vs BHUTAN 2025</div>
+
+  <!-- Scrolling Notice Above Player -->
+  <div class="scrolling-notice-container" aria-live="polite" aria-atomic="true" role="region" id="scrollingNoticeContainer">
+    <div class="scrolling-notice" id="scrollingNotice">এখানে আপনার স্ক্রলিং নোটিশ লিখুন</div>
+  </div>
+
   <div class="player-container" tabindex="0" id="playerContainer">
     <video id="video" poster="https://image.tsports.com/images/mobile_thumbnail/1748953055-BAN-v-Bhutan-ott-1280.jpg" playsinline muted></video>
     <div class="watermark">BDStreamHub</div>
     <div class="controls" id="controls">
       <button id="playPause" title="Play/Pause">⏸️</button>
+      <button id="muteButton" title="Mute/Unmute">🔊</button> <!-- Mute button added -->
       <div class="progress-bar" id="progressBar" title="Click to seek video">
         <div class="progress" id="progress"></div>
       </div>
@@ -192,9 +225,11 @@
   </div>
 
   <script>
+    // Elements
     const videoSrc = "https://live.tsports.com/mobile_hls/tsports_live_1/playlist.m3u8";
     const video = document.getElementById('video');
     const playPause = document.getElementById('playPause');
+    const muteButton = document.getElementById('muteButton'); // Mute button
     const progressBar = document.getElementById('progressBar');
     const progress = document.getElementById('progress');
     const currentTime = document.getElementById('currentTime');
@@ -204,9 +239,12 @@
     const controls = document.getElementById('controls');
     const container = document.getElementById('playerContainer');
     const pipButton = document.getElementById('pipButton');
+    const scrollingNotice = document.getElementById('scrollingNotice');
+
     let hls;
     let qualities = [];
     let isLive = false;
+    let isMuted = true; // Mute state
 
     function formatTime(seconds) {
       const m = Math.floor(seconds / 60);
@@ -229,6 +267,7 @@
             label: level.height ? level.height + 'p' : (level.name || 'Auto'),
             index: i
           }));
+
           qualitySelect.innerHTML = '<option value="-1">Auto</option>';
           qualities.forEach(q => {
             qualitySelect.innerHTML += `<option value="${q.index}">${q.label}</option>`;
@@ -259,17 +298,29 @@
     }
     setupHLS();
 
-    // Autoplay muted for policy
-    video.muted = true;
+    // Set your scrolling notice text here, dynamically if needed:
+    function setScrollingNotice(text) {
+      scrollingNotice.textContent = text;
+      // Restart animation controlling by reflow trick
+      scrollingNotice.style.animation = 'none';
+      void scrollingNotice.offsetWidth; // trigger reflow
+      scrollingNotice.style.animation = null;
+    }
+    setScrollingNotice("লাইভ ম্যাচ দেখুন BANGLADESH vs BHUTAN ! ভিডিও প্লে হতে ১ বার ভিডিও স্কিনে টার্চ করুন তাহলে প্লে হয়ে যাবে! BDStreamHub আপনার সাথে।");
+
+    video.muted = isMuted; // Set initial mute state
     video.autoplay = true;
     video.playsInline = true;
 
     video.addEventListener('play', () => {
       playPause.textContent = '⏸️';
       if (video.muted) {
-        video.muted = false; // unmute after play starts
+        video.muted = false;
+        isMuted = false;
+        muteButton.textContent = '🔊';
       }
     });
+
     video.addEventListener('pause', () => {
       playPause.textContent = '▶️';
     });
@@ -281,8 +332,15 @@
         video.pause();
       }
     }
+
     playPause.addEventListener('click', () => {
       togglePlay();
+    });
+
+    muteButton.addEventListener('click', () => {
+      isMuted = !isMuted; // Toggle mute state
+      video.muted = isMuted; // Set video mute state
+      muteButton.textContent = isMuted ? '🔇' : '🔊'; // Update button icon
     });
 
     video.addEventListener('timeupdate', () => {
@@ -322,7 +380,6 @@
       }
     });
 
-    // Picture-in-Picture button functionality
     pipButton.addEventListener('click', async () => {
       if (document.pictureInPictureElement) {
         await document.exitPictureInPicture();
@@ -335,13 +392,12 @@
       }
     });
 
-    // Show controls on hover/focus, hide after 5s
     function showControls() {
       controls.classList.add('show');
       clearTimeout(window.hideControlsTimeout);
       window.hideControlsTimeout = setTimeout(() => {
         controls.classList.remove('show');
-      }, 5000); // hide after 5 seconds
+      }, 5000);
     }
     container.addEventListener('mousemove', showControls);
     container.addEventListener('focusin', showControls);
@@ -350,10 +406,10 @@
     });
     showControls();
 
-    video.addEventListener('click', togglePlay);
+    // Removed video click toggle play to prevent close on tap
+    // video.addEventListener('click', togglePlay);
 
     video.addEventListener('contextmenu', e => e.preventDefault());
   </script>
 </body>
 </html>
-
