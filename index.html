@@ -24,7 +24,7 @@
     /* Title above browser window, not inside player */
     .page-title {
       margin: 20px 0 10px 0;
-      font-size: 24px;
+      font-size: 30px;
       font-weight: 700;
       color: #00ffc8;
       text-align: center;
@@ -32,15 +32,15 @@
     }
     .player-container {
       position: relative;
-      width: 480px;
-      max-width: 95vw;
+      width: 1000px;
+      max-width: 98vw;
       border-radius: 14px;
       overflow: hidden;
       box-shadow:
-        0 5px 15px rgba(0, 255, 197, 0.3),
-        inset 0 0 50px #00ffc8;
+        0 6px 30px rgba(0, 255, 197, 0.6),
+        inset 0 0 80px #00ffc8;
       background: #0b0f12;
-      font-size: 14px;
+      font-size: 16px;
       outline: none;
     }
     video {
@@ -49,10 +49,10 @@
       display: block;
       background: #000;
       cursor: pointer;
-      filter: drop-shadow(0 0 8px #00ffc8aa);
+      filter: drop-shadow(0 0 12px #00ffc8cc);
     }
 
-    /* Watermark on bottom right, no shadow */
+    /* Watermark on bottom right, black color */
     .watermark {
       position: absolute;
       bottom: 40px;
@@ -60,9 +60,9 @@
       background: transparent;
       padding: 3px 8px;
       font-weight: 600;
-      font-size: 12px;
+      font-size: 14px;
       border-radius: 14px;
-      color: #00ffc8;
+      color: #000; /* black text */
       pointer-events: none;
       letter-spacing: 1.1px;
       user-select: none;
@@ -70,7 +70,7 @@
       white-space: nowrap;
     }
 
-    /* Controls container */
+    /* Controls container hidden by default */
     .controls {
       position: absolute;
       bottom: 0;
@@ -80,7 +80,8 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      opacity: 0.3;
+      opacity: 0;
+      pointer-events: none;
       transition: opacity 0.3s ease;
       backdrop-filter: blur(8px);
       z-index: 15;
@@ -88,6 +89,7 @@
     .player-container:hover .controls,
     .controls.show {
       opacity: 1;
+      pointer-events: auto;
     }
 
     /* Progress bar container */
@@ -111,74 +113,36 @@
     }
 
     /* Buttons & sliders style */
-    button, select, input[type=range] {
+    button, select {
       cursor: pointer;
       background: transparent;
       border: none;
       outline: none;
       color: #00ffc8;
       transition: color 0.25s ease;
-      font-size: 18px;
+      font-size: 20px;
       padding: 0;
       display: flex;
       align-items: center;
       user-select: none;
     }
-    button:hover, select:hover, input[type=range]:hover {
+    button:hover, select:hover {
       color: #20ffde;
     }
     select {
-      font-size: 14px;
-      padding: 2px 6px;
+      font-size: 16px;
+      padding: 3px 8px;
       background: #00231f;
       border-radius: 6px;
       box-shadow: 0 0 8px #00ffc888 inset;
       color: #00ffc8;
-      min-width: 75px;
-    }
-    input[type=range] {
-      width: 80px;
-      accent-color: #00ffc8;
-      -webkit-appearance: none;
-      height: 6px;
-      border-radius: 4px;
-      box-shadow: 0 0 8px #00ffc8aa;
-      margin: 0;
-    }
-    input[type=range]:focus {
-      outline: none;
-    }
-    input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #00ffc8;
-      box-shadow: 0 0 8px #00ffc8cc;
-      cursor: pointer;
-      margin-top: -6px;
-      transition: background 0.3s ease;
-    }
-    input[type=range]:focus::-webkit-slider-thumb {
-      background: #20ffde;
-    }
-    input[type=range]::-moz-range-thumb {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #00ffc8;
-      box-shadow: 0 0 8px #00ffc8cc;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    input[type=range]:focus::-moz-range-thumb {
-      background: #20ffde;
+      min-width: 90px;
     }
 
     /* Time display */
     .time {
-      font-size: 13px;
-      min-width: 60px;
+      font-size: 15px;
+      min-width: 70px;
       text-align: center;
       color: #00ffcc;
       user-select: none;
@@ -192,30 +156,27 @@
         width: 95vw !important;
       }
       button {
-        font-size: 16px;
+        font-size: 18px;
       }
       .time {
-        font-size: 12px;
-        min-width: 50px;
-      }
-      input[type=range] {
-        width: 70px;
-      }
-      select {
-        font-size: 12px;
+        font-size: 14px;
         min-width: 60px;
       }
+      select {
+        font-size: 14px;
+        min-width: 70px;
+      }
       .watermark {
-        font-size: 10px;
+        font-size: 12px;
         bottom: 50px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="page-title">BANGLADESH vs BHUTAN</div>
+  <div class="page-title">BDStreamHub LIVE BANGLADESH vs BHUTAN 2025</div>
   <div class="player-container" tabindex="0" id="playerContainer">
-    <video id="video" poster="https://image.tsports.com/images/mobile_thumbnail/1748953055-BAN-v-Bhutan-ott-1280.jpg" playsinline autoplay muted></video>
+    <video id="video" poster="https://image.tsports.com/images/mobile_thumbnail/1748953055-BAN-v-Bhutan-ott-1280.jpg" playsinline muted></video>
     <div class="watermark">BDStreamHub</div>
     <div class="controls" id="controls">
       <button id="playPause" title="Play/Pause">⏸️</button>
@@ -224,7 +185,6 @@
       </div>
       <span class="time" id="currentTime">00:00</span> /
       <span class="time" id="duration">00:00</span>
-      <input type="range" id="volume" min="0" max="1" step="0.01" value="0" title="Volume" />
       <select id="qualitySelect" title="Select Quality"></select>
       <button id="fullscreen" title="Fullscreen">⛶</button>
     </div>
@@ -238,7 +198,6 @@
     const progress = document.getElementById('progress');
     const currentTime = document.getElementById('currentTime');
     const duration = document.getElementById('duration');
-    const volume = document.getElementById('volume');
     const fullscreen = document.getElementById('fullscreen');
     const qualitySelect = document.getElementById('qualitySelect');
     const controls = document.getElementById('controls');
@@ -253,7 +212,6 @@
       return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
     }
 
-    // HLS setup
     function setupHLS() {
       if (Hls.isSupported()) {
         hls = new Hls({
@@ -277,6 +235,13 @@
           qualitySelect.value = -1;
         });
 
+        hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
+          if (hls) {
+            const level = hls.currentLevel;
+            qualitySelect.value = level;
+          }
+        });
+
         hls.on(Hls.Events.LEVEL_LOADED, (event, data) => {
           isLive = data.details.live;
           if (isLive) {
@@ -285,6 +250,7 @@
             duration.textContent = formatTime(video.duration);
           }
         });
+
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = videoSrc;
       } else {
@@ -293,45 +259,32 @@
     }
     setupHLS();
 
-    // Autoplay setup: muted initially to allow autoplay
-    video.autoplay = true;
+    // Autoplay muted for policy
     video.muted = true;
+    video.autoplay = true;
     video.playsInline = true;
-
-    // Set initial volume slider to zero because video is muted
-    volume.value = 0;
-
-    // When user changes volume, unmute video
-    volume.addEventListener('input', () => {
-      video.volume = volume.value;
-      if (volume.value > 0 && video.muted) {
-        video.muted = false;
-      } else if (volume.value == 0) {
-        video.muted = true;
-      }
-    });
-
-    // Play/pause toggle
-    function togglePlay() {
-      if (video.paused) {
-        video.play();
-      } else {
-        video.pause();
-      }
-    }
-
-    playPause.addEventListener('click', () => {
-      togglePlay();
-    });
 
     video.addEventListener('play', () => {
       playPause.textContent = '⏸️';
+      if (video.muted) {
+        video.muted = false; // unmute on play
+      }
     });
     video.addEventListener('pause', () => {
       playPause.textContent = '▶️';
     });
 
-    // Progress bar update
+    function togglePlay() {
+      if(video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    }
+    playPause.addEventListener('click', () => {
+      togglePlay();
+    });
+
     video.addEventListener('timeupdate', () => {
       if (!isLive) {
         const percent = (video.currentTime / video.duration) * 100 || 0;
@@ -345,7 +298,6 @@
       }
     });
 
-    // Seek video on progress bar click
     progressBar.addEventListener('click', e => {
       if (!isLive) {
         const rect = progressBar.getBoundingClientRect();
@@ -355,30 +307,28 @@
       }
     });
 
-    // Fullscreen toggle
     fullscreen.addEventListener('click', () => {
-      if (document.fullscreenElement) {
+      if(document.fullscreenElement){
         document.exitFullscreen();
       } else {
         container.requestFullscreen();
       }
     });
 
-    // Quality change
     qualitySelect.addEventListener('change', () => {
-      if (hls) {
+      if(hls){
         const level = parseInt(qualitySelect.value);
         hls.currentLevel = level;
       }
     });
 
-    // Show controls on hover/focus
+    // Controls show/hide
     function showControls() {
       controls.classList.add('show');
       clearTimeout(window.hideControlsTimeout);
       window.hideControlsTimeout = setTimeout(() => {
         controls.classList.remove('show');
-      }, 4000);
+      }, 3000);
     }
     container.addEventListener('mousemove', showControls);
     container.addEventListener('focusin', showControls);
@@ -387,12 +337,9 @@
     });
     showControls();
 
-    // Click video toggles play/pause
     video.addEventListener('click', togglePlay);
 
-    // Prevent right-click on video
     video.addEventListener('contextmenu', e => e.preventDefault());
   </script>
 </body>
 </html>
-
