@@ -1,80 +1,299 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>Live Stream</title>
-  <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.3.5/dist/shaka-player.compiled.min.js"></script>
+  <title>BDStreamHub Video Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- hls.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
-    body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; }
-    .logos { display: flex; align-items: center; justify-content: center; margin: 10px 0; }
-    .logos img { height: 50px; width: 50px; object-fit: contain; margin: 0 20px; }
-    #countdown { font-size: 20px; color: #ff0; }
-    video { width: 100%; max-width: 800px; margin: 20px auto; display: block; }
-    .match-list button {
-      margin: 5px; padding: 10px 20px; background: #222; color: #fff; border: 1px solid #444; cursor: pointer;
+    body {
+      background: #181818;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .player-container {
+      position: relative;
+      width: 90vw;
+      max-width: 700px;
+      background: #222;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px #0008;
+      overflow: hidden;
+    }
+    video {
+      width: 100%;
+      background: #000;
+      display: block;
+    }
+    .watermark {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-weight: bold;
+      font-size: 18px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      z-index: 10;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: 1px;
+    }
+    .logo-thumb {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 80px;
+      height: 45px;
+      border-radius: 6px;
+      object-fit: cover;
+      box-shadow: 0 2px 8px #0006;
+      z-index: 10;
+      pointer-events: none;
+      user-select: none;
+      border: 2px solid #fff3;
+      background: #222;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #181818e0;
+      padding: 8px 12px;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      z-index: 5;
+      transition: opacity 0.3s;
+    }
+    .controls button, .controls select, .controls input[type=range] {
+      margin: 0 4px;
+      background: #222;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 15px;
+      outline: none;
+      cursor: pointer;
+    }
+    .controls input[type=range] {
+      width: 80px;
+      accent-color: #00b894;
+    }
+    .controls select {
+      background: #222;
+      color: #fff;
+      border: 1px solid #333;
+      padding: 2px 6px;
+    }
+    .progress-bar {
+      flex: 1;
+      margin: 0 8px;
+      height: 6px;
+      background: #444;
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .progress {
+      height: 100%;
+      background: #00b894;
+      width: 0%;
+      border-radius: 3px;
+      transition: width 0.1s;
+    }
+    .time {
+      color: #fff;
+      font-size: 13px;
+      min-width: 70px;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      .player-container { max-width: 100vw; }
+      .logo-thumb { width: 60px; height: 34px; }
+      .watermark { font-size: 14px; padding: 2px 8px; }
+      .controls { font-size: 13px; padding: 6px 4px; }
+      .controls input[type=range] { width: 50px; }
     }
   </style>
 </head>
 <body>
-  <h2>🎥 Live Match</h2>
-  <div class="match-list" id="matchButtons"></div>
-
-  <div class="logos">
-    <div><img id="teamALogo"><div id="teamAName"></div></div>
-    <div><span id="countdown">⏳ Loading...</span></div>
-    <div><img id="teamBLogo"><div id="teamBName"></div></div>
+  <div class="player-container">
+    <div class="watermark">BDStreamHub</div>
+    <img class="logo-thumb" src="https://image.tsports.com/images/mobile_thumbnail/1748953055-BAN-v-Bhutan-ott-1280.jpg" alt="Logo">
+    <video id="video" poster="https://image.tsports.com/images/mobile_thumbnail/1748953055-BAN-v-Bhutan-ott-1280.jpg" autoplay playsinline></video>
+    <div class="controls" id="controls">
+      <button id="playPause">⏸️</button>
+      <div class="progress-bar" id="progressBar">
+        <div class="progress" id="progress"></div>
+      </div>
+      <span class="time" id="currentTime">00:00</span> / <span class="time" id="duration">00:00</span>
+      <input type="range" id="volume" min="0" max="1" step="0.01" value="1" title="Volume">
+      <select id="qualitySelect" title="Quality"></select>
+      <button id="fullscreen">⛶</button>
+    </div>
   </div>
-
-  <video id="video" controls autoplay></video>
-
   <script>
-    const sheetAPI = 'https://script.google.com/macros/s/AKfycbz4gVKQ8SJAwA_GxRe2ksqyaBH7flddNQYbU8qGdEYefLaiqhOMFdw4ML0xaC854HzTBw/exec';
-    const player = new shaka.Player(document.getElementById("video"));
+    // Video info
+    const videoSrc = "https://live.tsports.com/mobile_hls/tsports_live_1/playlist.m3u8";
+    const video = document.getElementById('video');
+    const playPause = document.getElementById('playPause');
+    const progressBar = document.getElementById('progressBar');
+    const progress = document.getElementById('progress');
+    const currentTime = document.getElementById('currentTime');
+    const duration = document.getElementById('duration');
+    const volume = document.getElementById('volume');
+    const fullscreen = document.getElementById('fullscreen');
+    const qualitySelect = document.getElementById('qualitySelect');
+    let hls;
+    let qualities = [];
+    let isLive = false;
 
-    async function loadMatches() {
-      const res = await fetch(sheetAPI);
-      const data = await res.json();
+    // HLS.js setup
+    function setupHLS() {
+      if (Hls.isSupported()) {
+        hls = new Hls({
+          autoStartLoad: true,
+          startLevel: -1,
+          capLevelToPlayerSize: true,
+          maxBufferLength: 30,
+        });
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
 
-      const matchButtons = document.getElementById("matchButtons");
-      matchButtons.innerHTML = "";
+        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+          // Quality options
+          qualities = data.levels.map((level, i) => ({
+            label: level.height ? level.height + 'p' : (level.name || 'Auto'),
+            index: i,
+            bitrate: level.bitrate
+          }));
+          // Add 'Auto'
+          qualitySelect.innerHTML = '<option value="-1">Auto</option>';
+          qualities.forEach(q => {
+            qualitySelect.innerHTML += `<option value="${q.index}">${q.label}</option>`;
+          });
+          qualitySelect.value = -1;
+        });
 
-      data.forEach((match, index) => {
-        const btn = document.createElement("button");
-        btn.innerText = match.match_name;
-        btn.onclick = () => {
-          player.load(match.stream_url);
-          startCountdown(match.countdown_time);
-          document.getElementById("teamAName").innerText = match.team_a_name;
-          document.getElementById("teamALogo").src = match.team_a_logo;
-          document.getElementById("teamBName").innerText = match.team_b_name;
-          document.getElementById("teamBLogo").src = match.team_b_logo;
-        };
-        matchButtons.appendChild(btn);
-      });
+        hls.on(Hls.Events.LEVEL_SWITCHED, function(event, data) {
+          // Optionally, you can highlight the current quality
+        });
+
+        hls.on(Hls.Events.LEVEL_LOADED, function(event, data) {
+          isLive = data.details.live;
+          if (isLive) {
+            duration.textContent = "LIVE";
+          }
+        });
+
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = videoSrc;
+      } else {
+        alert("Your browser does not support HLS playback.");
+      }
     }
 
-    function startCountdown(endTime) {
-      const countdown = document.getElementById("countdown");
-      const end = new Date(endTime).getTime();
+    setupHLS();
 
-      clearInterval(window.cdTimer);
-      window.cdTimer = setInterval(() => {
-        const now = new Date().getTime();
-        const diff = end - now;
+    // Autoplay
+    video.muted = false;
+    video.autoplay = true;
+    video.playsInline = true;
+    video.addEventListener('canplay', () => {
+      video.play();
+    });
 
-        if (diff <= 0) {
-          countdown.innerText = "✅ Match Started!";
-          clearInterval(window.cdTimer);
-        } else {
-          const h = Math.floor(diff / (1000 * 60 * 60));
-          const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const s = Math.floor((diff % (1000 * 60)) / 1000);
-          countdown.innerText = `Starts In: ${h}h ${m}m ${s}s`;
-        }
-      }, 1000);
+    // Play/Pause
+    playPause.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+        playPause.textContent = '⏸️';
+      } else {
+        video.pause();
+        playPause.textContent = '▶️';
+      }
+    });
+    video.addEventListener('play', () => playPause.textContent = '⏸️');
+    video.addEventListener('pause', () => playPause.textContent = '▶️');
+
+    // Progress bar
+    video.addEventListener('timeupdate', () => {
+      if (!isLive) {
+        const percent = (video.currentTime / video.duration) * 100;
+        progress.style.width = percent + '%';
+        currentTime.textContent = formatTime(video.currentTime);
+        duration.textContent = formatTime(video.duration);
+      } else {
+        progress.style.width = '100%';
+        currentTime.textContent = "LIVE";
+      }
+    });
+
+    progressBar.addEventListener('click', (e) => {
+      if (!isLive) {
+        const rect = progressBar.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        video.currentTime = percent * video.duration;
+      }
+    });
+
+    // Volume
+    volume.addEventListener('input', () => {
+      video.volume = volume.value;
+    });
+    video.volume = volume.value;
+
+    // Fullscreen
+    fullscreen.addEventListener('click', () => {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        video.parentElement.requestFullscreen();
+      }
+    });
+
+    // Quality select
+    qualitySelect.addEventListener('change', () => {
+      if (hls) {
+        hls.currentLevel = parseInt(qualitySelect.value);
+      }
+    });
+
+    // Format time
+    function formatTime(sec) {
+      if (isNaN(sec)) return "00:00";
+      let m = Math.floor(sec / 60);
+      let s = Math.floor(sec % 60);
+      return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
     }
 
-    document.addEventListener("DOMContentLoaded", loadMatches);
+    // Hide controls when not hovering
+    let controls = document.getElementById('controls');
+    let container = document.querySelector('.player-container');
+    let hideTimeout;
+    function showControls() {
+      controls.style.opacity = 1;
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        controls.style.opacity = 0.2;
+      }, 3000);
+    }
+    container.addEventListener('mousemove', showControls);
+    container.addEventListener('mouseleave', () => controls.style.opacity = 0.2);
+    showControls();
+
+    // Prevent context menu on video
+    video.addEventListener('contextmenu', e => e.preventDefault());
   </script>
 </body>
 </html>
