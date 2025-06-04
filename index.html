@@ -174,7 +174,7 @@
   </style>
 </head>
 <body>
-  <div class="page-title">BDStreamHub LIVE BANGLADESH vs BHUTAN 2025</div>
+  <div class="page-title">BDStreamHub Live On FRIENDLY MATCH BANGLADESH vs BHUTAN 2025</div>
   <div class="player-container" tabindex="0" id="playerContainer">
     <video id="video" poster="https://image.tsports.com/images/mobile_thumbnail/1748953055-BAN-v-Bhutan-ott-1280.jpg" playsinline muted></video>
     <div class="watermark">BDStreamHub</div>
@@ -187,6 +187,7 @@
       <span class="time" id="duration">00:00</span>
       <select id="qualitySelect" title="Select Quality"></select>
       <button id="fullscreen" title="Fullscreen">⛶</button>
+      <button id="pipButton" title="Picture in Picture">📺</button>
     </div>
   </div>
 
@@ -202,6 +203,7 @@
     const qualitySelect = document.getElementById('qualitySelect');
     const controls = document.getElementById('controls');
     const container = document.getElementById('playerContainer');
+    const pipButton = document.getElementById('pipButton');
     let hls;
     let qualities = [];
     let isLive = false;
@@ -227,10 +229,9 @@
             label: level.height ? level.height + 'p' : (level.name || 'Auto'),
             index: i
           }));
-
           qualitySelect.innerHTML = '<option value="-1">Auto</option>';
           qualities.forEach(q => {
-            qualitySelect.innerHTML += `<option value="\${q.index}">\${q.label}</option>`;
+            qualitySelect.innerHTML += `<option value="${q.index}">${q.label}</option>`;
           });
           qualitySelect.value = -1;
         });
@@ -250,7 +251,6 @@
             duration.textContent = formatTime(video.duration);
           }
         });
-
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = videoSrc;
       } else {
@@ -267,7 +267,7 @@
     video.addEventListener('play', () => {
       playPause.textContent = '⏸️';
       if (video.muted) {
-        video.muted = false; // unmute on play
+        video.muted = false; // unmute after play starts
       }
     });
     video.addEventListener('pause', () => {
@@ -275,7 +275,7 @@
     });
 
     function togglePlay() {
-      if(video.paused) {
+      if (video.paused) {
         video.play();
       } else {
         video.pause();
@@ -308,7 +308,7 @@
     });
 
     fullscreen.addEventListener('click', () => {
-      if(document.fullscreenElement){
+      if (document.fullscreenElement) {
         document.exitFullscreen();
       } else {
         container.requestFullscreen();
@@ -316,19 +316,32 @@
     });
 
     qualitySelect.addEventListener('change', () => {
-      if(hls){
+      if (hls) {
         const level = parseInt(qualitySelect.value);
         hls.currentLevel = level;
       }
     });
 
-    // Controls show/hide
+    // Picture-in-Picture button functionality
+    pipButton.addEventListener('click', async () => {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      } else {
+        try {
+          await video.requestPictureInPicture();
+        } catch (error) {
+          alert('Picture-in-Picture মোড সক্রিয় করা যায়নি।');
+        }
+      }
+    });
+
+    // Show controls on hover/focus, hide after 5s
     function showControls() {
       controls.classList.add('show');
       clearTimeout(window.hideControlsTimeout);
       window.hideControlsTimeout = setTimeout(() => {
         controls.classList.remove('show');
-      }, 3000);
+      }, 5000); // hide after 5 seconds
     }
     container.addEventListener('mousemove', showControls);
     container.addEventListener('focusin', showControls);
@@ -343,3 +356,4 @@
   </script>
 </body>
 </html>
+
