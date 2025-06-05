@@ -2,70 +2,84 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>DRM + m3u8 Player</title>
+  <title>Multi Format Video Player</title>
   <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.5.0/dist/shaka-player.compiled.js"></script>
   <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
   <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
   <style>
-    body { background: #222; text-align: center; padding: 20px; color: #fff; }
-    video { width: 90%; max-width: 800px; height: auto; border-radius: 12px; }
-    button { padding: 10px 20px; margin: 10px; border: none; border-radius: 6px; background: #4caf50; color: white; font-size: 16px; }
+    body { background-color: #111; color: #eee; text-align: center; font-family: sans-serif; }
+    video { width: 90%; max-width: 800px; margin-top: 20px; border-radius: 10px; }
+    input { width: 80%; padding: 10px; margin-top: 20px; border-radius: 6px; }
+    button { padding: 10px 20px; margin: 10px; font-size: 16px; background: #28a745; color: white; border: none; border-radius: 5px; }
   </style>
 </head>
 <body>
 
-<h2>🎥 BDStreamHub Multi-Player</h2>
+<h2>🎥 Universal Stream Player</h2>
+<input type="text" id="streamUrl" placeholder="🔗 Paste your .mpd / .m3u8 / .mp4 link here">
+<br>
+<button onclick="loadStream()">▶️ Play Now</button>
 
 <video id="video" controls autoplay></video>
 
-<div>
-  <button onclick="loadMPD()">Load DRM MPD</button>
-  <button onclick="loadM3U8()">Load m3u8</button>
-  <button onclick="loadBackup()">Load Backup</button>
-</div>
-
 <script>
-  const video = document.getElementById('video');
+  async function loadStream() {
+    const url = document.getElementById('streamUrl').value.trim();
+    const video = document.getElementById('video');
+    const ext = url.split('?')[0].split('.').pop();
 
-  async function loadMPD() {
-    if (shaka.Player.isBrowserSupported()) {
-      const player = new shaka.Player(video);
-      player.configure({
-        drm: {
-          clearKeys: {
-            'd84c325f36814f39bbe59080272b10c3': '550727de4c96ef1ecff874905493580f'
-          }
-        }
-      });
-
-      try {
-        await player.load('https://ssc-1-enc.edgenextcdn.net/out/v1/c696e4819b55414388a1a487e8a45ca1/index.mpd');
-        console.log("✅ DRM .mpd Loaded");
-      } catch (error) {
-        console.error("DRM .mpd Error:", error);
-        alert("❌ DRM ভিডিও চালানো যায়নি!");
-      }
-    } else {
-      alert('⛔ আপনার ব্রাউজার DRM সমর্থন করে না!');
+    if (!url) {
+      alert("⚠️ Please enter a stream URL");
+      return;
     }
-  }
 
-  function loadM3U8() {
-    const player = videojs(video);
-    player.src({
-      src: 'https://hipaf6u2j3pwygg.nice-flower.store/v4/variant/VE1gTdz0mLzRnLv52bt9SMhFjdtM3ajFmc09iMwMmZhJGZxYjZiJWLwEmZi1CO4YDNtcjMxQTL4U2MwMmN2I2L.m3u8',
-      type: 'application/x-mpegURL'
-    });
-    player.play();
-  }
+    // Clear existing player
+    if (videojs.getPlayer('video')) {
+      videojs('video').dispose();
+    }
 
-  function loadBackup() {
-    const player = videojs(video);
-    player.src({
-      src: 'https://liveua.score806.cc/pt_sporttv1/tracks-v1a1/mono.m3u8',
-      type: 'application/x-mpegURL'
-    });
-    player.play();
+    // If MPD (use shaka)
+    if (ext === "mpd") {
+      if (shaka.Player.isBrowserSupported()) {
+        const player = new shaka.Player(video);
+
+        // Optional ClearKey DRM key parsing
+        const keyMatch = url.match(/drmLicense=([a-z0-9]+):([a-z0-9]+)/i);
+        if (keyMatch) {
+          const keyId = keyMatch[1];
+          const keyVal = keyMatch[2];
+          player.configure({
+            drm: {
+              clearKeys: {
+                [keyId]: keyVal
+              }
+            }
+          });
+        }
+
+        try {
+          await player.load(url.split('|')[0]);
+          console.log("✅ MPD Loaded");
+        } catch (e) {
+          console.error("MPD load error", e);
+          alert("❌ MPD stream failed to load");
+        }
+      } else {
+        alert("⛔ Shaka not supported in your browser.");
+      }
+
+    } else if (ext === "m3u8") {
+      const player = videojs(video, { autoplay: true });
+      player.src({ src: url.split('|')[0], type: 'application/x-mpegURL' });
+      player.play();
+
+    } else if (ext === "mp4") {
+      video.src = url;
+      video.play();
+
+    } else {
+      alert("❌ Unknown file type: " + ext);
+    }
   }
 </script>
 
