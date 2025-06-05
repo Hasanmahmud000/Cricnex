@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <title>BDStreamHub Player - All Browser Compatible</title>
+  <meta charset="UTF-8">
+  <title>BDStreamHub Player</title>
   <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
   <style>
     body {
@@ -19,8 +19,6 @@
       font-size: 18px;
       border-radius: 6px;
       margin-bottom: 15px;
-      overflow: hidden;
-      white-space: nowrap;
     }
     .notice-bar marquee {
       font-family: 'Noto Sans Bengali', sans-serif;
@@ -37,13 +35,12 @@
       font-size: 16px;
       font-weight: bold;
       z-index: 10;
-      text-shadow: 0 0 5px black;
     }
     .button-group {
       margin-top: 20px;
     }
     .source-btn {
-      background: linear-gradient(45deg, #4caf50, #2e7d32);
+      background: linear-gradient(45deg, #4CAF50, #2E7D32);
       color: white;
       border: none;
       padding: 12px 20px;
@@ -52,129 +49,77 @@
       border-radius: 8px;
       cursor: pointer;
       transition: 0.3s;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     .source-btn:hover {
-      background: linear-gradient(45deg, #66bb6a, #388e3c);
-    }
-    video {
-      max-width: 100%;
-      height: auto;
+      background: linear-gradient(45deg, #66BB6A, #388E3C);
     }
   </style>
 </head>
 <body>
 
   <div class="notice-bar">
-    <marquee behavior="scroll" direction="left">
-      লাইভ ম্যাচ দেখুন Ecuador vs Brazil! ভিডিও প্লে হতে ১ বার ভিডিও প্লে বাটনে টাচ করুন। BDStreamHub আপনার সাথে।
-    </marquee>
+    <marquee>📺 লাইভ ম্যাচ চলছে - চালু করুন আপনার পছন্দের সার্ভার! 🎯</marquee>
   </div>
 
   <div class="video-container">
-    <!-- Video.js Player (for HLS) -->
-    <video
-      id="videojsPlayer"
-      class="video-js vjs-default-skin"
-      width="720"
-      height="406"
-      controls
-      preload="auto"
-      data-setup='{}'
-      playsinline
-    ></video>
-
-    <!-- Shaka Player (for DRM) -->
-    <video
-      id="shakaPlayer"
-      width="720"
-      height="406"
-      controls
-      style="display:none"
-      playsinline
-    ></video>
-
+    <video id="mainPlayer" class="video-js vjs-default-skin" width="720" height="406" controls preload="auto"></video>
     <div class="watermark">BDStreamHub</div>
   </div>
 
   <div class="button-group">
-    <button
-      class="source-btn"
-      onclick="loadVideo('https://hipaf6u2j3pwygg.nice-flower.store/v4/variant/VE1gTdz0mLzRnLv52bt9SMhFjdtM3ajFmc09iMwMmZhJGZxYjZiJWLwEmZi1CO4YDNtcjMxQTL4U2MwMmN2I2L.m3u8')"
-    >
-      Server 3 (HLS)
-    </button>
-    <button
-      class="source-btn"
-      onclick="loadVideo('https://x4-cdnnew.newkso.ru/x4-cdn/mono21/mono.m3u8')"
-    >
-      Server 2 (HLS)
-    </button>
-    <button class="source-btn" onclick="loadDRMVideo()">
-      Server 3 Better (DRM)
-    </button>
+    <button class="source-btn" onclick="playAnyLink('https://ssc-1-enc.edgenextcdn.net/out/v1/c696e4819b55414388a1a487e8a45ca1/index.mpd', 'drm')">DRM Server</button>
+    <button class="source-btn" onclick="playAnyLink('https://hipaf6u2j3pwygg.nice-flower.store/v4/variant/VE1gTdz0mLzRnLv52bt9SMhFjdtM3ajFmc09iMwMmZhJGZxYjZiJWLwEmZi1CO4YDNtcjMxQTL4U2MwMmN2I2L.m3u8')">Main Server</button>
+    <button class="source-btn" onclick="playAnyLink('https://liveua.score806.cc/pt_sporttv1/tracks-v1a1/mono.m3u8')">Backup Server</button>
   </div>
 
-  <!-- স্ক্রিপ্ট -->
   <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.5.0/dist/shaka-player.compiled.js"></script>
 
   <script>
-    // Video.js প্লেয়ার ইনিশিয়ালাইজ
-    const videojsPlayer = videojs('videojsPlayer');
+    const videoTag = document.getElementById('mainPlayer');
+    const player = videojs(videoTag);
 
-    // Shaka Player ভিডিও ট্যাগ
-    const shakaVideo = document.getElementById('shakaPlayer');
-    let shakaPlayerInstance = null;
+    async function playAnyLink(url, type = 'auto') {
+      const isMPD = url.endsWith('.mpd');
+      const isM3U8 = url.includes('.m3u8');
 
-    function loadVideo(url) {
-      // DRM প্লেয়ার বন্ধ করে Video.js প্লেয়ার চালু করো
-      if (shakaPlayerInstance) {
-        shakaPlayerInstance.destroy();
-        shakaPlayerInstance = null;
-      }
-      shakaVideo.style.display = 'none';
-      videojsPlayer.show();
+      if (isMPD || type === 'drm') {
+        if (shaka.Player.isBrowserSupported()) {
+          const shakaPlayer = new shaka.Player(videoTag);
+          try {
+            shakaPlayer.configure({
+              drm: {
+                clearKeys: {
+                  'd84c325f36814f39bbe59080272b10c3': '550727de4c96ef1ecff874905493580f'
+                }
+              }
+            });
 
-      videojsPlayer.src({ type: 'application/x-mpegURL', src: url });
-      videojsPlayer.play();
-    }
-
-    async function loadDRMVideo() {
-      // Video.js প্লেয়ার বন্ধ করে Shaka প্লেয়ার চালু করো
-      videojsPlayer.pause();
-      videojsPlayer.hide();
-      shakaVideo.style.display = 'block';
-
-      if (!shakaPlayerInstance) {
-        shakaPlayerInstance = new shaka.Player(shakaVideo);
-      }
-
-      shakaPlayerInstance.configure({
-        drm: {
-          clearKeys: {
-            'd84c325f36814f39bbe59080272b10c3': '550727de4c96ef1ecff874905493580f',
-          },
-        },
-      });
-
-      try {
-        await shakaPlayerInstance.load(
-          'https://ssc-1-enc.edgenextcdn.net/out/v1/c696e4819b55414388a1a487e8a45ca1/index.mpd'
-        );
-        shakaVideo.play();
-      } catch (e) {
-        alert('⚠️ DRM ভিডিও চালাতে সমস্যা হচ্ছে!');
-        console.error(e);
+            await shakaPlayer.load(url);
+            videoTag.play();
+            console.log("✅ DRM প্লে হচ্ছে");
+          } catch (e) {
+            console.warn("❌ DRM ব্যর্থ, fallback...");
+            fallbackToM3U8();
+          }
+        } else {
+          console.warn("❌ DRM সাপোর্ট নেই, fallback...");
+          fallbackToM3U8();
+        }
+      } else if (isM3U8 || type === 'hls' || type === 'auto') {
+        player.src({ type: 'application/x-mpegURL', src: url });
+        player.play();
+      } else {
+        alert("⛔ ফরম্যাট সঠিক নয়!");
       }
     }
 
-    // পেজ লোড হলে ডিফল্ট ভিডিও লোড করো
-    window.onload = function () {
-      loadVideo(
-        'https://hipaf6u2j3pwygg.nice-flower.store/v4/variant/VE1gTdz0mLzRnLv52bt9SMhFjdtM3ajFmc09iMwMmZhJGZxYjZiJWLwEmZi1CO4YDNtcjMxQTL4U2MwMmN2I2L.m3u8'
-      );
-    };
+    function fallbackToM3U8() {
+      const fallbackURL = 'https://hipaf6u2j3pwygg.nice-flower.store/v4/variant/VE1gTdz0mLzRnLv52bt9SMhFjdtM3ajFmc09iMwMmZhJGZxYjZiJWLwEmZi1CO4YDNtcjMxQTL4U2MwMmN2I2L.m3u8';
+      player.src({ type: 'application/x-mpegURL', src: fallbackURL });
+      player.play();
+    }
   </script>
+
 </body>
 </html>
