@@ -1,125 +1,73 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>BDStreamHub Player</title>
+  <title>DRM + m3u8 Player</title>
+  <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.5.0/dist/shaka-player.compiled.js"></script>
   <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
+  <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
   <style>
-    body {
-      background: #f0f2f5;
-      font-family: 'Segoe UI', sans-serif;
-      text-align: center;
-      padding: 30px;
-    }
-    .notice-bar {
-      background: #ffeb3b;
-      color: #000;
-      padding: 10px;
-      font-weight: bold;
-      font-size: 18px;
-      border-radius: 6px;
-      margin-bottom: 15px;
-    }
-    .notice-bar marquee {
-      font-family: 'Noto Sans Bengali', sans-serif;
-    }
-    .video-container {
-      position: relative;
-      display: inline-block;
-    }
-    .watermark {
-      position: absolute;
-      bottom: 50px;
-      right: 10px;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      z-index: 10;
-    }
-    .button-group {
-      margin-top: 20px;
-    }
-    .source-btn {
-      background: linear-gradient(45deg, #4CAF50, #2E7D32);
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      margin: 6px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .source-btn:hover {
-      background: linear-gradient(45deg, #66BB6A, #388E3C);
-    }
+    body { background: #222; text-align: center; padding: 20px; color: #fff; }
+    video { width: 90%; max-width: 800px; height: auto; border-radius: 12px; }
+    button { padding: 10px 20px; margin: 10px; border: none; border-radius: 6px; background: #4caf50; color: white; font-size: 16px; }
   </style>
 </head>
 <body>
 
-  <div class="notice-bar">
-    <marquee>📺 লাইভ ম্যাচ চলছে - চালু করুন আপনার পছন্দের সার্ভার! 🎯</marquee>
-  </div>
+<h2>🎥 BDStreamHub Multi-Player</h2>
 
-  <div class="video-container">
-    <video id="mainPlayer" class="video-js vjs-default-skin" width="720" height="406" controls preload="auto"></video>
-    <div class="watermark">BDStreamHub</div>
-  </div>
+<video id="video" controls autoplay></video>
 
-  <div class="button-group">
-    <button class="source-btn" onclick="playAnyLink('https://ssc-1-enc.edgenextcdn.net/out/v1/c696e4819b55414388a1a487e8a45ca1/index.mpd', 'drm')">DRM Server</button>
-    <button class="source-btn" onclick="playAnyLink('https://hipaf6u2j3pwygg.nice-flower.store/v4/variant/VE1gTdz0mLzRnLv52bt9SMhFjdtM3ajFmc09iMwMmZhJGZxYjZiJWLwEmZi1CO4YDNtcjMxQTL4U2MwMmN2I2L.m3u8')">Main Server</button>
-    <button class="source-btn" onclick="playAnyLink('https://liveua.score806.cc/pt_sporttv1/tracks-v1a1/mono.m3u8')">Backup Server</button>
-  </div>
+<div>
+  <button onclick="loadMPD()">Load DRM MPD</button>
+  <button onclick="loadM3U8()">Load m3u8</button>
+  <button onclick="loadBackup()">Load Backup</button>
+</div>
 
-  <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.5.0/dist/shaka-player.compiled.js"></script>
+<script>
+  const video = document.getElementById('video');
 
-  <script>
-    const videoTag = document.getElementById('mainPlayer');
-    const player = videojs(videoTag);
-
-    async function playAnyLink(url, type = 'auto') {
-      const isMPD = url.endsWith('.mpd');
-      const isM3U8 = url.includes('.m3u8');
-
-      if (isMPD || type === 'drm') {
-        if (shaka.Player.isBrowserSupported()) {
-          const shakaPlayer = new shaka.Player(videoTag);
-          try {
-            shakaPlayer.configure({
-              drm: {
-                clearKeys: {
-                  'd84c325f36814f39bbe59080272b10c3': '550727de4c96ef1ecff874905493580f'
-                }
-              }
-            });
-
-            await shakaPlayer.load(url);
-            videoTag.play();
-            console.log("✅ DRM প্লে হচ্ছে");
-          } catch (e) {
-            console.warn("❌ DRM ব্যর্থ, fallback...");
-            fallbackToM3U8();
+  async function loadMPD() {
+    if (shaka.Player.isBrowserSupported()) {
+      const player = new shaka.Player(video);
+      player.configure({
+        drm: {
+          clearKeys: {
+            'd84c325f36814f39bbe59080272b10c3': '550727de4c96ef1ecff874905493580f'
           }
-        } else {
-          console.warn("❌ DRM সাপোর্ট নেই, fallback...");
-          fallbackToM3U8();
         }
-      } else if (isM3U8 || type === 'hls' || type === 'auto') {
-        player.src({ type: 'application/x-mpegURL', src: url });
-        player.play();
-      } else {
-        alert("⛔ ফরম্যাট সঠিক নয়!");
-      }
-    }
+      });
 
-    function fallbackToM3U8() {
-      const fallbackURL = 'https://hipaf6u2j3pwygg.nice-flower.store/v4/variant/VE1gTdz0mLzRnLv52bt9SMhFjdtM3ajFmc09iMwMmZhJGZxYjZiJWLwEmZi1CO4YDNtcjMxQTL4U2MwMmN2I2L.m3u8';
-      player.src({ type: 'application/x-mpegURL', src: fallbackURL });
-      player.play();
+      try {
+        await player.load('https://ssc-1-enc.edgenextcdn.net/out/v1/c696e4819b55414388a1a487e8a45ca1/index.mpd');
+        console.log("✅ DRM .mpd Loaded");
+      } catch (error) {
+        console.error("DRM .mpd Error:", error);
+        alert("❌ DRM ভিডিও চালানো যায়নি!");
+      }
+    } else {
+      alert('⛔ আপনার ব্রাউজার DRM সমর্থন করে না!');
     }
-  </script>
+  }
+
+  function loadM3U8() {
+    const player = videojs(video);
+    player.src({
+      src: 'https://hipaf6u2j3pwygg.nice-flower.store/v4/variant/VE1gTdz0mLzRnLv52bt9SMhFjdtM3ajFmc09iMwMmZhJGZxYjZiJWLwEmZi1CO4YDNtcjMxQTL4U2MwMmN2I2L.m3u8',
+      type: 'application/x-mpegURL'
+    });
+    player.play();
+  }
+
+  function loadBackup() {
+    const player = videojs(video);
+    player.src({
+      src: 'https://liveua.score806.cc/pt_sporttv1/tracks-v1a1/mono.m3u8',
+      type: 'application/x-mpegURL'
+    });
+    player.play();
+  }
+</script>
 
 </body>
 </html>
