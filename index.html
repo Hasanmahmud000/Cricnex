@@ -10,7 +10,18 @@
     video { width: 100%; max-width: 800px; background: black; }
     #team-logos img { max-height: 60px; margin: 0 10px; vertical-align: middle; }
     #countdown, #notice { margin: 10px 0; font-size: 18px; }
-    #watermark { position: fixed; right: 10px; bottom: 10px; width: 120px; opacity: 0.6; pointer-events: none; z-index: 1000; }
+    #watermark-text {
+      position: fixed;
+      right: 10px;
+      bottom: 10px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      background: rgba(0,0,0,0.5);
+      padding: 4px 8px;
+      border-radius: 4px;
+      z-index: 1000;
+      pointer-events: none;
+    }
     #controls { margin-top: 5px; display: flex; justify-content: center; gap: 15px; align-items: center; }
     #qualitySelector, #muteBtn, #pipBtn {
       background: #222; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 14px; cursor: pointer;
@@ -29,18 +40,18 @@
   <marquee id="notice">Loading notice...</marquee>
 
   <div style="position:relative; max-width:800px; margin: auto;">
-    <video id="video" controls autoplay muted playsinline crossorigin="anonymous"></video>
+    <video id="video" controls autoplay playsinline crossorigin="anonymous"></video>
     <div class="overlay" id="status">Initializing...</div>
   </div>
 
   <div id="controls">
-    <button id="muteBtn">Unmute 🔈</button>
+    <button id="muteBtn">Mute 🔇</button>
     <button id="pipBtn">PiP ▶️</button>
     <select id="qualitySelector" style="display:none;"></select>
   </div>
 
   <img id="sponsor" style="width: 100%; margin-top: 15px; max-height: 90px; object-fit: contain" />
-  <img id="watermark" src="https://i.postimg.cc/xd2CVr09/20250605-075953.png" alt="Watermark" />
+  <div id="watermark-text">BDStreamHub</div>
 
   <script>
     const c = JSON.parse(localStorage.getItem("liveConfig") || "{}");
@@ -155,6 +166,8 @@
     }
 
     (async () => {
+      vid.muted = false; // Start with sound on
+      muteBtn.textContent = "Mute 🔇";
       if (c.stream) {
         if (c.stream.includes(".mpd")) {
           await loadShaka(c.stream, c.license);
