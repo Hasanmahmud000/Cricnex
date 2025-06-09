@@ -1,63 +1,188 @@
-<!DOCTYPE html>
-<html lang="bn">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Panel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BDStreamHub Admin Panel</title>
   <style>
-    body { font-family: sans-serif; padding:20px; background:#f4f4f4;}
-    label { display:block; margin-top:10px; }
-    input, textarea { width:99%; padding:5px; }
-    button{ margin-top:15px; padding:10px 15px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f1f1;
+      padding: 20px;
+    }
+    h2 {
+      margin-top: 30px;
+      background: #007BFF;
+      color: white;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 15px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 20px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .match-card, .notice-box {
+      background: white;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .team-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .notice-box {
+      border: 2px solid #ffc107;
+      background: #fff3cd;
+      font-weight: bold;
+      color: #856404;
+    }
+    .countdown {
+      font-size: 18px;
+      font-weight: bold;
+      color: #dc3545;
+    }
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      margin-top: 30px;
+    }
+    .history-table th, .history-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .watermark {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 9999;
+    }
   </style>
 </head>
 <body>
   <h2>🎛️ Admin Configuration</h2>
+  <div class="match-card">
+    <label>Stream URL (.mp4/.m3u8/.mpd+DRM):</label>
+    <input type="text" id="streamUrl"><label>License URL (optional):</label>
+<input type="text" id="licenseUrl">
 
-  <label>Stream URL (.mp4/.m3u8/.mpd+DRM):</label>
-  <input id="stream" placeholder="https://..." />
+<label>Match Start Time (UTC):</label>
+<input type="datetime-local" id="matchTime">
 
-  <label>License URL (DRM, optional):</label>
-  <input id="license" placeholder="https://..." />
+<label>Match Title:</label>
+<input type="text" id="matchTitle">
 
-  <label>Match Start Time (UTC):</label>
-  <input id="startTime" type="datetime-local" />
+<label>Scrolling Notice Message:</label>
+<textarea id="noticeMessage"></textarea>
 
-  <label>Match Title:</label>
-  <input id="matchTitle" placeholder="Team A vs Team B" />
+<label>Watermark URL (PNG/JPG):</label>
+<input type="text" id="watermarkUrl">
 
-  <label>Scrolling Notice Message:</label>
-  <textarea id="notice" rows="3" placeholder="Enter message"></textarea>
+<label>Team Logo 1 URL:</label>
+<input type="text" id="logo1">
 
-  <label>Logo URL:</label>
-  <input id="logo" placeholder="https://..." />
+<label>Team Logo 2 URL:</label>
+<input type="text" id="logo2">
 
-  <label>Team Logo 1 URL:</label>
-  <input id="team1" placeholder="https://..." />
+<label>Sponsor Banner URL:</label>
+<input type="text" id="sponsorBanner">
 
-  <label>Team Logo 2 URL:</label>
-  <input id="team2" placeholder="https://..." />
+<button onclick="saveMatch()">💾 Save Configuration</button>
 
-  <label>Sponsor Banner URL:</label>
-  <input id="sponsor" placeholder="https://..." />
-  
-  <button onclick="saveConfig()">💾 Save Configuration</button>
-
-  <script>
-  function saveConfig() {
-    const cfg = {
-      stream: document.getElementById('stream').value,
-      license: document.getElementById('license').value,
-      startTime: document.getElementById('startTime').value,
-      matchTitle: document.getElementById('matchTitle').value,
-      notice: document.getElementById('notice').value,
-      logo: document.getElementById('logo').value,
-      team1: document.getElementById('team1').value,
-      team2: document.getElementById('team2').value,
-      sponsor: document.getElementById('sponsor').value,
+  </div>  <h2>📺 Live Matches</h2>
+  <div id="liveMatches"></div>  <h2>🗂️ Match History</h2>
+  <table class="history-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Start Time</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="history"></tbody>
+  </table>  <script>
+    const saveMatch = () => {
+      const match = {
+        streamUrl: document.getElementById('streamUrl').value,
+        licenseUrl: document.getElementById('licenseUrl').value,
+        matchTime: document.getElementById('matchTime').value,
+        matchTitle: document.getElementById('matchTitle').value,
+        noticeMessage: document.getElementById('noticeMessage').value,
+        watermarkUrl: document.getElementById('watermarkUrl').value,
+        logo1: document.getElementById('logo1').value,
+        logo2: document.getElementById('logo2').value,
+        sponsorBanner: document.getElementById('sponsorBanner').value
+      };
+      const matches = JSON.parse(localStorage.getItem('matches') || '[]');
+      matches.push(match);
+      localStorage.setItem('matches', JSON.stringify(matches));
+      loadMatches();
     };
-    localStorage.setItem('liveConfig', JSON.stringify(cfg));
-    alert('Configuration saved!');
-  }
-  </script>
-</body>
+
+    const deleteMatch = (index) => {
+      const matches = JSON.parse(localStorage.getItem('matches') || '[]');
+      matches.splice(index, 1);
+      localStorage.setItem('matches', JSON.stringify(matches));
+      loadMatches();
+    };
+
+    const loadMatches = () => {
+      const matchList = document.getElementById('liveMatches');
+      const historyList = document.getElementById('history');
+      const matches = JSON.parse(localStorage.getItem('matches') || '[]');
+      matchList.innerHTML = '';
+      historyList.innerHTML = '';
+      matches.forEach((match, index) => {
+        const countdown = getCountdown(match.matchTime);
+        matchList.innerHTML += `
+          <div class="match-card">
+            <div class="notice-box">${match.noticeMessage}</div>
+            <p><strong>${match.matchTitle}</strong></p>
+            <img src="${match.logo1}" class="team-logo"> vs <img src="${match.logo2}" class="team-logo">
+            <p class="countdown">${countdown}</p>
+            <p><img src="${match.sponsorBanner}" style="width: 100%; max-width: 400px;"/></p>
+            <div class="watermark"><img src="${match.watermarkUrl}" width="100"></div>
+          </div>`;
+
+        historyList.innerHTML += `
+          <tr>
+            <td>${match.matchTitle}</td>
+            <td>${new Date(match.matchTime).toLocaleString()}</td>
+            <td><button onclick="deleteMatch(${index})">❌ Delete</button></td>
+          </tr>`;
+      });
+    };
+
+    const getCountdown = (dateStr) => {
+      const now = new Date();
+      const matchDate = new Date(dateStr);
+      const diff = matchDate - now;
+      if (diff <= 0) return '🔴 Live or Finished';
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((diff / (1000 * 60)) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+      return `${d}d ${h}h ${m}m ${s}s left`;
+    };
+
+    loadMatches();
+    setInterval(loadMatches, 1000);
+  </script></body>
 </html>
