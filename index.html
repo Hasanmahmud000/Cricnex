@@ -1,415 +1,78 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <title>BDStreamHub Video Player - Scrolling Notice</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta charset="UTF-8">
+  <title>Live Stream Player</title>
+  <script src="https://cdn.jsdelivr.net/npm/shaka-player@latest/dist/shaka-player.compiled.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
-    /* Reset and base */
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      background: #121212;
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-family: 'Poppins', sans-serif;
-      color: #eee;
-      user-select: none;
-      position: relative;
-      overflow-x: hidden;
-    }
-    .page-title {
-      margin: 20px 0 30px 0;
-      font-size: 30px;
-      font-weight: 700;
-      color: #00ffc8;
-      text-align: center;
-      user-select: text;
-    }
-    .player-container {
-      position: relative;
-      width: 1000px;
-      max-width: 98vw;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow:
-        0 6px 30px rgba(0, 255, 197, 0.6),
-        inset 0 0 80px #00ffc8;
-      background: #0b0f12;
-      font-size: 16px;
-      outline: none;
-      margin-top: 50px;
-      margin-bottom: 40px;
-    }
-    video {
-      width: 100%;
-      height: auto;
-      display: block;
-      background: #000;
-      cursor: pointer;
-      filter: drop-shadow(0 0 12px #00ffc8cc);
-    }
-    .watermark {
-      position: absolute;
-      bottom: 40px;
-      right: 12px;
-      background: transparent;
-      padding: 3px 8px;
-      font-weight: 600;
-      font-size: 14px;
-      border-radius: 14px;
-      color: #FFFFFF;
-      pointer-events: none;
-      letter-spacing: 1.1px;
-      user-select: none;
-      z-index: 20;
-      white-space: nowrap;
-    }
-    .controls {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      padding: 10px 14px;
-      background: rgba(1, 18, 21, 0.75);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      backdrop-filter: blur(8px);
-      z-index: 15;
-    }
-    .player-container:hover .controls,
-    .controls.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .progress-bar {
-      flex-grow: 1;
-      height: 6px;
-      background: #00231f;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      box-shadow: inset 0 0 6px #00ffd0bb;
-    }
-    .progress {
-      height: 100%;
-      background: linear-gradient(90deg, #00ffc8, #00fff7);
-      width: 0%;
-      border-radius: 6px 0 0 6px;
-      transition: width 0.15s ease;
-      box-shadow: 0 0 8px #00ffc8aa;
-    }
-    button, select {
-      cursor: pointer;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #00ffc8;
-      transition: color 0.25s ease;
-      font-size: 20px;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      user-select: none;
-    }
-    button:hover, select:hover {
-      color: #20ffde;
-    }
-    select {
-      font-size: 16px;
-      padding: 3px 8px;
-      background: #00231f;
-      border-radius: 6px;
-      box-shadow: 0 0 8px #00ffc888 inset;
-      color: #00ffc8;
-      min-width: 90px;
-    }
-    .time {
-      font-size: 15px;
-      min-width: 70px;
-      text-align: center;
-      color: #00ffcc;
-      user-select: none;
-      letter-spacing: 0.5px;
-      font-variant-numeric: tabular-nums;
-    }
-    /* Scrolling notice container placed above player */
-    .scrolling-notice-container {
-      position: relative;
-      width: 1000px;
-      max-width: 98vw;
-      height: 30px;
-      overflow: hidden;
-      background: #111a;
-      border-radius: 12px;
-      box-shadow: 0 0 10px #00ffc8aa inset;
-      user-select: none;
-    }
-    .scrolling-notice {
-      white-space: nowrap;
-      display: inline-block;
-      padding-left: 100%;
-      color: #00ffc8;
-      font-size: 16px;
-      line-height: 30px;
-      animation: scroll-left 15s linear infinite;
-    }
-    @keyframes scroll-left {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(-100%);
-      }
-    }
-    /* Responsive */
-    @media (max-width: 520px) {
-      .player-container, .scrolling-notice-container {
-        width: 95vw !important;
-      }
-      button {
-        font-size: 18px;
-      }
-      .time {
-        font-size: 14px;
-        min-width: 60px;
-      }
-      select {
-        font-size: 14px;
-        min-width: 70px;
-      }
-      .watermark {
-        font-size: 12px;
-        bottom: 50px;
-      }
-      .scrolling-notice {
-        font-size: 14px;
-        line-height: 28px;
-      }
-    }
+    body { background:#000; color:#fff; font-family:sans-serif; margin:0; text-align:center; }
+    img { max-height:80px; margin:10px auto; display:block; }
+    #countdown, #notice { margin:10px 0; font-size:18px;}
+    video { width:100%; max-width:800px; }
+    .overlay { background:rgba(0,0,0,0.7); padding:5px; position:absolute; top:5px; left:5px; color:#fff;}
   </style>
 </head>
 <body>
 
-  <div class="page-title">BDStreamHub Live</div>
-
-  <!-- Scrolling Notice Above Player -->
-  <div class="scrolling-notice-container" aria-live="polite" aria-atomic="true" role="region" id="scrollingNoticeContainer">
-    <div class="scrolling-notice" id="scrollingNotice">এখানে আপনার স্ক্রলিং নোটিশ লিখুন</div>
+  <img id="logo">
+  <div id="team-logos">
+    <img id="team1"><img id="team2">
   </div>
+  <h2 id="match-title">Live Match</h2>
+  <div id="countdown">Loading...</div>
+  <marquee id="notice">Loading notice...</marquee>
 
-  <div class="player-container" tabindex="0" id="playerContainer">
-    <video id="video" poster="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDxZ-X-3ezxmSu8FbmhxEQL7WDpwxLc1o08gNoVISLTZkboVHuOfoVIrM&s=10" playsinline muted></video>
-    <div class="watermark">BDStreamHub</div>
-    <div class="controls" id="controls">
-      <button id="playPause" title="Play/Pause">⏸️</button>
-      <button id="muteButton" title="Mute/Unmute">🔊</button> <!-- Mute button added -->
-      <div class="progress-bar" id="progressBar" title="Click to seek video">
-        <div class="progress" id="progress"></div>
-      </div>
-      <span class="time" id="currentTime">00:00</span> /
-      <span class="time" id="duration">00:00</span>
-      <select id="qualitySelect" title="Select Quality"></select>
-      <button id="fullscreen" title="Fullscreen">⛶</button>
-      <button id="pipButton" title="Picture in Picture">📺</button>
-    </div>
-  </div>
+  <video id="video" controls autoplay muted playsinline></video>
+  <div class="overlay" id="status">Initializing...</div>
+
+  <img id="sponsor" style="width:100%;">
 
   <script>
-    // Elements
-    const videoSrc = "https://hipaf6u2j3pwygg.nice-flower.store/v4/variant/VE1gTdz0mLzRnLv52bt9SMhFjdtM3ajFmc09iMwMmZhJGZxYjZiJWLwEmZi1CO4YDNtcjMxQTL4U2MwMmN2I2L.m3u8";
-    const video = document.getElementById('video');
-    const playPause = document.getElementById('playPause');
-    const muteButton = document.getElementById('muteButton'); // Mute button
-    const progressBar = document.getElementById('progressBar');
-    const progress = document.getElementById('progress');
-    const currentTime = document.getElementById('currentTime');
-    const duration = document.getElementById('duration');
-    const fullscreen = document.getElementById('fullscreen');
-    const qualitySelect = document.getElementById('qualitySelect');
-    const controls = document.getElementById('controls');
-    const container = document.getElementById('playerContainer');
-    const pipButton = document.getElementById('pipButton');
-    const scrollingNotice = document.getElementById('scrollingNotice');
+  const c = JSON.parse(localStorage.getItem('liveConfig')||'{}');
+  const now = Date.now();
+  const start = c.startTime ? new Date(c.startTime).getTime() : now;
+  document.getElementById('logo').src = c.logo;
+  document.getElementById('team1').src = c.team1;
+  document.getElementById('team2').src = c.team2;
+  document.getElementById('sponsor').src = c.sponsor;
+  document.getElementById('notice').innerText = c.notice;
 
-    let hls;
-    let qualities = [];
-    let isLive = false;
-    let isMuted = true; // Mute state
-
-    function formatTime(seconds) {
-      const m = Math.floor(seconds / 60);
-      const s = Math.floor(seconds % 60);
-      return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  function tick() {
+    const diff = start - Date.now();
+    if(diff>0) {
+      const m=Math.floor(diff/60000), s=Math.floor((diff%60000)/1000);
+      document.getElementById('countdown').innerText=`ম্যাচ শুরু হবে ${m}মি ${s}সেকেন্ডে`;
+    } else {
+      document.getElementById('countdown').innerText='🔴 LIVE চলছে';
     }
+  }
+  setInterval(tick,1000); tick();
 
-    function setupHLS() {
-      if (Hls.isSupported()) {
-        hls = new Hls({
-          maxBufferLength: 30,
-          startPosition: -1,
-          autoStartLoad: true
-        });
-        hls.loadSource(videoSrc);
-        hls.attachMedia(video);
-
-        hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-          qualities = data.levels.map((level, i) => ({
-            label: level.height ? level.height + 'p' : (level.name || 'Auto'),
-            index: i
-          }));
-
-          qualitySelect.innerHTML = '<option value="-1">Auto</option>';
-          qualities.forEach(q => {
-            qualitySelect.innerHTML += `<option value="${q.index}">${q.label}</option>`;
-          });
-          qualitySelect.value = -1;
-        });
-
-        hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
-          if (hls) {
-            const level = hls.currentLevel;
-            qualitySelect.value = level;
+  const vid = document.getElementById('video'), st = document.getElementById('status');
+  (async ()=>{
+    try {
+      const ext = c.stream.split('.').pop().split('?')[0];
+      if(ext==='m3u8') {
+        if(Hls.isSupported()){
+          const h=new Hls(); h.loadSource(c.stream); h.attachMedia(vid); h.on(Hls.Events.MANIFEST_PARSED,()=>st.innerText='▶️ LIVE');
+        } else vid.src=c.stream;
+      } else if(ext==='mpd') {
+        shaka.polyfill.installAll(); const p=new shaka.Player(vid);
+        if(c.license) p.configure({drm:{servers:{'com.widevine.alpha':c.license}}});
+        p.getNetworkingEngine().registerRequestFilter((type,req)=> {
+          if(type===shaka.net.NetworkingEngine.RequestType.LICENSE){
+            req.headers['Referer']=location.origin;
           }
         });
-
-        hls.on(Hls.Events.LEVEL_LOADED, (event, data) => {
-          isLive = data.details.live;
-          if (isLive) {
-            duration.textContent = "LIVE";
-          } else {
-            duration.textContent = formatTime(video.duration);
-          }
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = videoSrc;
+        await p.load(c.stream); st.innerText='▶️ LIVE';
       } else {
-        alert("এই ব্রাউজারে HLS ভিডিও প্লে সমর্থিত নয়");
+        vid.src=c.stream; st.innerText='▶️ Playing MP4';
       }
+    } catch(err) {
+      console.error(err); st.innerText='❌ Load Error';
     }
-    setupHLS();
-
-    // Set your scrolling notice text here, dynamically if needed:
-    function setScrollingNotice(text) {
-      scrollingNotice.textContent = text;
-      // Restart animation controlling by reflow trick
-      scrollingNotice.style.animation = 'none';
-      void scrollingNotice.offsetWidth; // trigger reflow
-      scrollingNotice.style.animation = null;
-    }
-    setScrollingNotice("লাইভ ম্যাচ দেখুন Ecuador vs Brazil! ভিডিও প্লে হতে ১ বার ভিডিও প্লে বাটনে টার্চ করুন তাহলে প্লে হয়ে যাবে! BDStreamHub আপনার সাথে।");
-
-    video.muted = isMuted; // Set initial mute state
-    video.autoplay = true;
-    video.playsInline = true;
-
-    video.addEventListener('play', () => {
-      playPause.textContent = '⏸️';
-      if (video.muted) {
-        video.muted = false;
-        isMuted = false;
-        muteButton.textContent = '🔊';
-      }
-    });
-
-    video.addEventListener('pause', () => {
-      playPause.textContent = '▶️';
-    });
-
-    function togglePlay() {
-      if (video.paused) {
-        video.play();
-      } else {
-        video.pause();
-      }
-    }
-
-    playPause.addEventListener('click', () => {
-      togglePlay();
-    });
-
-    muteButton.addEventListener('click', () => {
-      isMuted = !isMuted; // Toggle mute state
-      video.muted = isMuted; // Set video mute state
-      muteButton.textContent = isMuted ? '🔇' : '🔊'; // Update button icon
-    });
-
-    video.addEventListener('timeupdate', () => {
-      if (!isLive) {
-        const percent = (video.currentTime / video.duration) * 100 || 0;
-        progress.style.width = percent + '%';
-        currentTime.textContent = formatTime(video.currentTime);
-        duration.textContent = formatTime(video.duration);
-      } else {
-        progress.style.width = "100%";
-        currentTime.textContent = "LIVE";
-        duration.textContent = "LIVE";
-      }
-    });
-
-    progressBar.addEventListener('click', e => {
-      if (!isLive) {
-        const rect = progressBar.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const seekTime = (clickX / rect.width) * video.duration;
-        video.currentTime = seekTime;
-      }
-    });
-
-    fullscreen.addEventListener('click', () => {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        container.requestFullscreen();
-      }
-    });
-
-    qualitySelect.addEventListener('change', () => {
-      if (hls) {
-        const level = parseInt(qualitySelect.value);
-        hls.currentLevel = level;
-      }
-    });
-
-    pipButton.addEventListener('click', async () => {
-      if (document.pictureInPictureElement) {
-        await document.exitPictureInPicture();
-      } else {
-        try {
-          await video.requestPictureInPicture();
-        } catch (error) {
-          alert('Picture-in-Picture মোড সক্রিয় করা যায়নি।');
-        }
-      }
-    });
-
-    function showControls() {
-      controls.classList.add('show');
-      clearTimeout(window.hideControlsTimeout);
-      window.hideControlsTimeout = setTimeout(() => {
-        controls.classList.remove('show');
-      }, 5000);
-    }
-    container.addEventListener('mousemove', showControls);
-    container.addEventListener('focusin', showControls);
-    container.addEventListener('focusout', () => {
-      controls.classList.remove('show');
-    });
-    showControls();
-
-    // Removed video click toggle play to prevent close on tap
-    // video.addEventListener('click', togglePlay);
-
-    video.addEventListener('contextmenu', e => e.preventDefault());
+  })();
   </script>
 </body>
 </html>
