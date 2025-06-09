@@ -1,87 +1,415 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <title>Multi Format Video Player</title>
-  <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.5.0/dist/shaka-player.compiled.js"></script>
-  <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
-  <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+  <meta charset="UTF-8" />
+  <title>BDStreamHub Video Player - Scrolling Notice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
-    body { background-color: #111; color: #eee; text-align: center; font-family: sans-serif; }
-    video { width: 90%; max-width: 800px; margin-top: 20px; border-radius: 10px; }
-    input { width: 80%; padding: 10px; margin-top: 20px; border-radius: 6px; }
-    button { padding: 10px 20px; margin: 10px; font-size: 16px; background: #28a745; color: white; border: none; border-radius: 5px; }
+    /* Reset and base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      background: #121212;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      color: #eee;
+      user-select: none;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .page-title {
+      margin: 20px 0 30px 0;
+      font-size: 30px;
+      font-weight: 700;
+      color: #00ffc8;
+      text-align: center;
+      user-select: text;
+    }
+    .player-container {
+      position: relative;
+      width: 1000px;
+      max-width: 98vw;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow:
+        0 6px 30px rgba(0, 255, 197, 0.6),
+        inset 0 0 80px #00ffc8;
+      background: #0b0f12;
+      font-size: 16px;
+      outline: none;
+      margin-top: 50px;
+      margin-bottom: 40px;
+    }
+    video {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #000;
+      cursor: pointer;
+      filter: drop-shadow(0 0 12px #00ffc8cc);
+    }
+    .watermark {
+      position: absolute;
+      bottom: 40px;
+      right: 12px;
+      background: transparent;
+      padding: 3px 8px;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 14px;
+      color: #FFFFFF;
+      pointer-events: none;
+      letter-spacing: 1.1px;
+      user-select: none;
+      z-index: 20;
+      white-space: nowrap;
+    }
+    .controls {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(1, 18, 21, 0.75);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(8px);
+      z-index: 15;
+    }
+    .player-container:hover .controls,
+    .controls.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .progress-bar {
+      flex-grow: 1;
+      height: 6px;
+      background: #00231f;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 6px #00ffd0bb;
+    }
+    .progress {
+      height: 100%;
+      background: linear-gradient(90deg, #00ffc8, #00fff7);
+      width: 0%;
+      border-radius: 6px 0 0 6px;
+      transition: width 0.15s ease;
+      box-shadow: 0 0 8px #00ffc8aa;
+    }
+    button, select {
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #00ffc8;
+      transition: color 0.25s ease;
+      font-size: 20px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      user-select: none;
+    }
+    button:hover, select:hover {
+      color: #20ffde;
+    }
+    select {
+      font-size: 16px;
+      padding: 3px 8px;
+      background: #00231f;
+      border-radius: 6px;
+      box-shadow: 0 0 8px #00ffc888 inset;
+      color: #00ffc8;
+      min-width: 90px;
+    }
+    .time {
+      font-size: 15px;
+      min-width: 70px;
+      text-align: center;
+      color: #00ffcc;
+      user-select: none;
+      letter-spacing: 0.5px;
+      font-variant-numeric: tabular-nums;
+    }
+    /* Scrolling notice container placed above player */
+    .scrolling-notice-container {
+      position: relative;
+      width: 1000px;
+      max-width: 98vw;
+      height: 30px;
+      overflow: hidden;
+      background: #111a;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #00ffc8aa inset;
+      user-select: none;
+    }
+    .scrolling-notice {
+      white-space: nowrap;
+      display: inline-block;
+      padding-left: 100%;
+      color: #00ffc8;
+      font-size: 16px;
+      line-height: 30px;
+      animation: scroll-left 15s linear infinite;
+    }
+    @keyframes scroll-left {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+    /* Responsive */
+    @media (max-width: 520px) {
+      .player-container, .scrolling-notice-container {
+        width: 95vw !important;
+      }
+      button {
+        font-size: 18px;
+      }
+      .time {
+        font-size: 14px;
+        min-width: 60px;
+      }
+      select {
+        font-size: 14px;
+        min-width: 70px;
+      }
+      .watermark {
+        font-size: 12px;
+        bottom: 50px;
+      }
+      .scrolling-notice {
+        font-size: 14px;
+        line-height: 28px;
+      }
+    }
   </style>
 </head>
 <body>
 
-<h2>🎥 Universal Stream Player</h2>
-<input type="text" id="streamUrl" placeholder="🔗 Paste your .mpd / .m3u8 / .mp4 link here">
-<br>
-<button onclick="loadStream()">▶️ Play Now</button>
+  <div class="page-title">BDStreamHub Live</div>
 
-<video id="video" controls autoplay></video>
+  <!-- Scrolling Notice Above Player -->
+  <div class="scrolling-notice-container" aria-live="polite" aria-atomic="true" role="region" id="scrollingNoticeContainer">
+    <div class="scrolling-notice" id="scrollingNotice">এখানে আপনার স্ক্রলিং নোটিশ লিখুন</div>
+  </div>
 
-<script>
-  async function loadStream() {
-    const url = document.getElementById('streamUrl').value.trim();
+  <div class="player-container" tabindex="0" id="playerContainer">
+    <video id="video" poster="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDxZ-X-3ezxmSu8FbmhxEQL7WDpwxLc1o08gNoVISLTZkboVHuOfoVIrM&s=10" playsinline muted></video>
+    <div class="watermark">BDStreamHub</div>
+    <div class="controls" id="controls">
+      <button id="playPause" title="Play/Pause">⏸️</button>
+      <button id="muteButton" title="Mute/Unmute">🔊</button> <!-- Mute button added -->
+      <div class="progress-bar" id="progressBar" title="Click to seek video">
+        <div class="progress" id="progress"></div>
+      </div>
+      <span class="time" id="currentTime">00:00</span> /
+      <span class="time" id="duration">00:00</span>
+      <select id="qualitySelect" title="Select Quality"></select>
+      <button id="fullscreen" title="Fullscreen">⛶</button>
+      <button id="pipButton" title="Picture in Picture">📺</button>
+    </div>
+  </div>
+
+  <script>
+    // Elements
+    const videoSrc = "https://hipaf6u2j3pwygg.nice-flower.store/v4/variant/VE1gTdz0mLzRnLv52bt9SMhFjdtM3ajFmc09iMwMmZhJGZxYjZiJWLwEmZi1CO4YDNtcjMxQTL4U2MwMmN2I2L.m3u8";
     const video = document.getElementById('video');
-    const ext = url.split('?')[0].split('.').pop();
+    const playPause = document.getElementById('playPause');
+    const muteButton = document.getElementById('muteButton'); // Mute button
+    const progressBar = document.getElementById('progressBar');
+    const progress = document.getElementById('progress');
+    const currentTime = document.getElementById('currentTime');
+    const duration = document.getElementById('duration');
+    const fullscreen = document.getElementById('fullscreen');
+    const qualitySelect = document.getElementById('qualitySelect');
+    const controls = document.getElementById('controls');
+    const container = document.getElementById('playerContainer');
+    const pipButton = document.getElementById('pipButton');
+    const scrollingNotice = document.getElementById('scrollingNotice');
 
-    if (!url) {
-      alert("⚠️ Please enter a stream URL");
-      return;
+    let hls;
+    let qualities = [];
+    let isLive = false;
+    let isMuted = true; // Mute state
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
     }
 
-    // Clear existing player
-    if (videojs.getPlayer('video')) {
-      videojs('video').dispose();
-    }
+    function setupHLS() {
+      if (Hls.isSupported()) {
+        hls = new Hls({
+          maxBufferLength: 30,
+          startPosition: -1,
+          autoStartLoad: true
+        });
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
 
-    // If MPD (use shaka)
-    if (ext === "mpd") {
-      if (shaka.Player.isBrowserSupported()) {
-        const player = new shaka.Player(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+          qualities = data.levels.map((level, i) => ({
+            label: level.height ? level.height + 'p' : (level.name || 'Auto'),
+            index: i
+          }));
 
-        // Optional ClearKey DRM key parsing
-        const keyMatch = url.match(/drmLicense=([a-z0-9]+):([a-z0-9]+)/i);
-        if (keyMatch) {
-          const keyId = keyMatch[1];
-          const keyVal = keyMatch[2];
-          player.configure({
-            drm: {
-              clearKeys: {
-                [keyId]: keyVal
-              }
-            }
+          qualitySelect.innerHTML = '<option value="-1">Auto</option>';
+          qualities.forEach(q => {
+            qualitySelect.innerHTML += `<option value="${q.index}">${q.label}</option>`;
           });
-        }
+          qualitySelect.value = -1;
+        });
 
-        try {
-          await player.load(url.split('|')[0]);
-          console.log("✅ MPD Loaded");
-        } catch (e) {
-          console.error("MPD load error", e);
-          alert("❌ MPD stream failed to load");
-        }
+        hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
+          if (hls) {
+            const level = hls.currentLevel;
+            qualitySelect.value = level;
+          }
+        });
+
+        hls.on(Hls.Events.LEVEL_LOADED, (event, data) => {
+          isLive = data.details.live;
+          if (isLive) {
+            duration.textContent = "LIVE";
+          } else {
+            duration.textContent = formatTime(video.duration);
+          }
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = videoSrc;
       } else {
-        alert("⛔ Shaka not supported in your browser.");
+        alert("এই ব্রাউজারে HLS ভিডিও প্লে সমর্থিত নয়");
       }
-
-    } else if (ext === "m3u8") {
-      const player = videojs(video, { autoplay: true });
-      player.src({ src: url.split('|')[0], type: 'application/x-mpegURL' });
-      player.play();
-
-    } else if (ext === "mp4") {
-      video.src = url;
-      video.play();
-
-    } else {
-      alert("❌ Unknown file type: " + ext);
     }
-  }
-</script>
+    setupHLS();
 
+    // Set your scrolling notice text here, dynamically if needed:
+    function setScrollingNotice(text) {
+      scrollingNotice.textContent = text;
+      // Restart animation controlling by reflow trick
+      scrollingNotice.style.animation = 'none';
+      void scrollingNotice.offsetWidth; // trigger reflow
+      scrollingNotice.style.animation = null;
+    }
+    setScrollingNotice("লাইভ ম্যাচ দেখুন Ecuador vs Brazil! ভিডিও প্লে হতে ১ বার ভিডিও প্লে বাটনে টার্চ করুন তাহলে প্লে হয়ে যাবে! BDStreamHub আপনার সাথে।");
+
+    video.muted = isMuted; // Set initial mute state
+    video.autoplay = true;
+    video.playsInline = true;
+
+    video.addEventListener('play', () => {
+      playPause.textContent = '⏸️';
+      if (video.muted) {
+        video.muted = false;
+        isMuted = false;
+        muteButton.textContent = '🔊';
+      }
+    });
+
+    video.addEventListener('pause', () => {
+      playPause.textContent = '▶️';
+    });
+
+    function togglePlay() {
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    }
+
+    playPause.addEventListener('click', () => {
+      togglePlay();
+    });
+
+    muteButton.addEventListener('click', () => {
+      isMuted = !isMuted; // Toggle mute state
+      video.muted = isMuted; // Set video mute state
+      muteButton.textContent = isMuted ? '🔇' : '🔊'; // Update button icon
+    });
+
+    video.addEventListener('timeupdate', () => {
+      if (!isLive) {
+        const percent = (video.currentTime / video.duration) * 100 || 0;
+        progress.style.width = percent + '%';
+        currentTime.textContent = formatTime(video.currentTime);
+        duration.textContent = formatTime(video.duration);
+      } else {
+        progress.style.width = "100%";
+        currentTime.textContent = "LIVE";
+        duration.textContent = "LIVE";
+      }
+    });
+
+    progressBar.addEventListener('click', e => {
+      if (!isLive) {
+        const rect = progressBar.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const seekTime = (clickX / rect.width) * video.duration;
+        video.currentTime = seekTime;
+      }
+    });
+
+    fullscreen.addEventListener('click', () => {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        container.requestFullscreen();
+      }
+    });
+
+    qualitySelect.addEventListener('change', () => {
+      if (hls) {
+        const level = parseInt(qualitySelect.value);
+        hls.currentLevel = level;
+      }
+    });
+
+    pipButton.addEventListener('click', async () => {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      } else {
+        try {
+          await video.requestPictureInPicture();
+        } catch (error) {
+          alert('Picture-in-Picture মোড সক্রিয় করা যায়নি।');
+        }
+      }
+    });
+
+    function showControls() {
+      controls.classList.add('show');
+      clearTimeout(window.hideControlsTimeout);
+      window.hideControlsTimeout = setTimeout(() => {
+        controls.classList.remove('show');
+      }, 5000);
+    }
+    container.addEventListener('mousemove', showControls);
+    container.addEventListener('focusin', showControls);
+    container.addEventListener('focusout', () => {
+      controls.classList.remove('show');
+    });
+    showControls();
+
+    // Removed video click toggle play to prevent close on tap
+    // video.addEventListener('click', togglePlay);
+
+    video.addEventListener('contextmenu', e => e.preventDefault());
+  </script>
 </body>
 </html>
