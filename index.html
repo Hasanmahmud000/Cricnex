@@ -6,81 +6,16 @@
   <script src="https://cdn.jsdelivr.net/npm/shaka-player@latest/dist/shaka-player.compiled.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
-    body {
-      background: #000;
-      color: #fff;
-      font-family: sans-serif;
-      margin: 0;
-      text-align: center;
-      position: relative;
+    body { background: #000; color: #fff; font-family: sans-serif; margin: 0; text-align: center; }
+    video { width: 100%; max-width: 800px; background: black; }
+    #team-logos img { max-height: 60px; margin: 0 10px; vertical-align: middle; }
+    #countdown, #notice { margin: 10px 0; font-size: 18px; }
+    #watermark { position: fixed; right: 10px; bottom: 10px; width: 120px; opacity: 0.6; pointer-events: none; z-index: 1000; }
+    #controls { margin-top: 5px; display: flex; justify-content: center; gap: 15px; align-items: center; }
+    #qualitySelector, #muteBtn, #pipBtn {
+      background: #222; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 14px; cursor: pointer;
     }
-    img {
-      max-height: 80px;
-      margin: 10px auto;
-      display: block;
-    }
-    #countdown,
-    #notice {
-      margin: 10px 0;
-      font-size: 18px;
-    }
-    video {
-      width: 100%;
-      max-width: 800px;
-      position: relative;
-      background: black;
-    }
-    .overlay {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 5px;
-      position: absolute;
-      top: 5px;
-      left: 5px;
-      color: #fff;
-      font-weight: bold;
-      z-index: 10;
-    }
-    #team-logos img {
-      max-height: 60px;
-      margin: 0 10px;
-      vertical-align: middle;
-    }
-    #watermark {
-      position: fixed;
-      right: 10px;
-      bottom: 10px;
-      width: 120px;
-      opacity: 0.6;
-      pointer-events: none;
-      z-index: 1000;
-    }
-    #controls {
-      margin-top: 5px;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      align-items: center;
-      color: white;
-      font-weight: bold;
-    }
-    #qualitySelector {
-      background: #222;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    #muteBtn, #pipBtn {
-      background: #222;
-      border: none;
-      color: white;
-      font-size: 14px;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+    .overlay { background: rgba(0,0,0,0.7); padding: 5px; position: absolute; top: 5px; left: 5px; z-index: 10; }
   </style>
 </head>
 <body>
@@ -93,17 +28,8 @@
   <div id="countdown">Loading...</div>
   <marquee id="notice">Loading notice...</marquee>
 
-  <div style="position:relative; max-width:800px; margin: 0 auto;">
-    <video
-      id="video"
-      controls
-      autoplay
-      muted
-      playsinline
-      crossorigin="anonymous"
-      style="background:black"
-    ></video>
-
+  <div style="position:relative; max-width:800px; margin: auto;">
+    <video id="video" controls autoplay muted playsinline crossorigin="anonymous"></video>
     <div class="overlay" id="status">Initializing...</div>
   </div>
 
@@ -113,63 +39,43 @@
     <select id="qualitySelector" style="display:none;"></select>
   </div>
 
-  <img
-    id="sponsor"
-    alt="Sponsor"
-    style="width: 100%; margin-top: 15px; max-height: 90px; object-fit: contain"
-  />
-
-  <!-- Watermark -->
-  <img
-    id="watermark"
-    src="https://i.postimg.cc/xd2CVr09/20250605-075953.png"
-    alt="Watermark"
-  />
+  <img id="sponsor" style="width: 100%; margin-top: 15px; max-height: 90px; object-fit: contain" />
+  <img id="watermark" src="https://i.postimg.cc/xd2CVr09/20250605-075953.png" alt="Watermark" />
 
   <script>
     const c = JSON.parse(localStorage.getItem("liveConfig") || "{}");
-    const now = Date.now();
-    const start = c.startTime ? new Date(c.startTime).getTime() : now;
+    const start = c.startTime ? new Date(c.startTime).getTime() : Date.now();
+
     document.getElementById("logo").src = c.logo || "";
     document.getElementById("team1").src = c.team1 || "";
     document.getElementById("team2").src = c.team2 || "";
     document.getElementById("sponsor").src = c.sponsor || "";
     document.getElementById("notice").innerText = c.notice || "";
+    document.getElementById("match-title").innerText = c.matchTitle || "Live Match";
 
-    // Countdown timer
     function tick() {
       const diff = start - Date.now();
+      const ctn = document.getElementById("countdown");
       if (diff > 0) {
-        const m = Math.floor(diff / 60000),
-          s = Math.floor((diff % 60000) / 1000);
-        document.getElementById(
-          "countdown"
-        ).innerText = `ম্যাচ শুরু হবে ${m}মি ${s}সেকেন্ডে`;
+        const m = Math.floor(diff / 60000), s = Math.floor((diff % 60000) / 1000);
+        ctn.innerText = `ম্যাচ শুরু হবে ${m}মি ${s}সেকেন্ডে`;
       } else {
-        document.getElementById("countdown").innerText = "🔴 LIVE চলছে";
+        ctn.innerText = "🔴 LIVE চলছে";
       }
     }
-    setInterval(tick, 1000);
-    tick();
+    setInterval(tick, 1000); tick();
 
     const vid = document.getElementById("video"),
-      st = document.getElementById("status"),
-      muteBtn = document.getElementById("muteBtn"),
-      pipBtn = document.getElementById("pipBtn"),
-      qualitySelector = document.getElementById("qualitySelector");
+          st = document.getElementById("status"),
+          muteBtn = document.getElementById("muteBtn"),
+          pipBtn = document.getElementById("pipBtn"),
+          qualitySelector = document.getElementById("qualitySelector");
 
-    // Toggle mute/unmute
     muteBtn.onclick = () => {
-      if (vid.muted) {
-        vid.muted = false;
-        muteBtn.textContent = "Mute 🔇";
-      } else {
-        vid.muted = true;
-        muteBtn.textContent = "Unmute 🔈";
-      }
+      vid.muted = !vid.muted;
+      muteBtn.textContent = vid.muted ? "Unmute 🔈" : "Mute 🔇";
     };
 
-    // Picture-in-Picture support
     pipBtn.onclick = async () => {
       try {
         if (document.pictureInPictureElement) {
@@ -187,50 +93,37 @@
       const player = new shaka.Player(vid);
 
       if (licenseUrl) {
-        player.configure({
-          drm: { servers: { "com.widevine.alpha": licenseUrl } },
-        });
+        player.configure({ drm: { servers: { "com.widevine.alpha": licenseUrl } } });
       }
+
       player.getNetworkingEngine().registerRequestFilter((type, req) => {
-        if (
-          type ===
-          shaka.net.NetworkingEngine.RequestType.LICENSE
-        ) {
+        if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
           req.headers["Referer"] = location.origin;
         }
       });
-      await player.load(stream);
-      st.innerText = "▶️ LIVE (DASH with Shaka Player)";
 
-      // Quality selector setup
+      await player.load(stream);
+      st.innerText = "▶️ LIVE (DASH DRM)";
+
       const tracks = player.getVariantTracks();
       qualitySelector.innerHTML = "";
-      // Filter unique quality levels by height
-      const uniqueQualities = [];
-      tracks.forEach((t) => {
-        if (!uniqueQualities.some((q) => q.height === t.height)) {
-          uniqueQualities.push(t);
-        }
-      });
-      uniqueQualities.sort((a, b) => a.height - b.height);
-
-      uniqueQualities.forEach((track, i) => {
-        const option = document.createElement("option");
-        option.value = track.id;
-        option.text = `${track.height}p (${Math.round(
-          track.bandwidth / 1000
-        )} kbps)`;
-        qualitySelector.appendChild(option);
+      const uniq = [];
+      tracks.forEach(t => {
+        if (!uniq.some(q => q.height === t.height)) uniq.push(t);
       });
 
-      if (uniqueQualities.length > 1) qualitySelector.style.display = "inline-block";
-      else qualitySelector.style.display = "none";
+      uniq.sort((a, b) => a.height - b.height);
+      uniq.forEach(track => {
+        const opt = document.createElement("option");
+        opt.value = track.id;
+        opt.text = `${track.height}p (${Math.round(track.bandwidth / 1000)} kbps)`;
+        qualitySelector.appendChild(opt);
+      });
 
+      if (uniq.length > 1) qualitySelector.style.display = "inline-block";
       qualitySelector.onchange = () => {
         const id = parseInt(qualitySelector.value);
-        player
-          .selectVariantTrack(player.getVariantTracks().find((t) => t.id === id), true)
-          .catch(console.error);
+        player.selectVariantTrack(player.getVariantTracks().find(t => t.id === id), true);
       };
     }
 
@@ -240,18 +133,38 @@
         hls.loadSource(stream);
         hls.attachMedia(vid);
         st.innerText = "▶️ LIVE (HLS)";
-        // Quality selector for HLS.js (if available)
         hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
           if (data.levels.length > 1) {
             qualitySelector.innerHTML = "";
-            data.levels.forEach((level, i) => {
-              const option = document.createElement("option");
-              option.value = i;
-              option.text = level.height
-                ? `${level.height}p (${Math.round(level.bitrate / 1000)} kbps)`
-                : `Level ${i + 1}`;
-              qualitySelector.appendChild(option);
+            data.levels.forEach((lvl, i) => {
+              const opt = document.createElement("option");
+              opt.value = i;
+              opt.text = `${lvl.height}p`;
+              qualitySelector.appendChild(opt);
             });
             qualitySelector.style.display = "inline-block";
             qualitySelector.onchange = () => {
-              hls.currentLevel
+              hls.currentLevel = parseInt(qualitySelector.value);
+            };
+          }
+        });
+      } else {
+        vid.src = stream;
+        st.innerText = "▶️ LIVE (MP4)";
+      }
+    }
+
+    (async () => {
+      if (c.stream) {
+        if (c.stream.includes(".mpd")) {
+          await loadShaka(c.stream, c.license);
+        } else {
+          await loadHLS(c.stream);
+        }
+      } else {
+        st.innerText = "❌ Stream URL Not Found!";
+      }
+    })();
+  </script>
+</body>
+</html>
