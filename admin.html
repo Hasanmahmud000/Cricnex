@@ -1,117 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
+  <meta charset="UTF-8">
   <title>Admin Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: sans-serif; background: #111; color: #fff; padding: 20px; }
-    input, button { padding: 8px; margin: 5px 0; width: 100%; }
-    table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-    th, td { border: 1px solid #444; padding: 8px; text-align: left; }
-    button { background: #28a745; color: #fff; border: none; cursor: pointer; }
-    button.delete { background: #dc3545; }
-    button.edit { background: #ffc107; color: #000; }
+    body { font-family: sans-serif; padding:20px; background:#f4f4f4;}
+    label { display:block; margin-top:10px; }
+    input, textarea { width:99%; padding:5px; }
+    button{ margin-top:15px; padding:10px 15px; }
   </style>
 </head>
 <body>
+  <h2>🎛️ Admin Configuration</h2>
 
-<h2>Admin Panel - BDStreamHub</h2>
+  <label>Stream URL (.mp4/.m3u8/.mpd+DRM):</label>
+  <input id="stream" placeholder="https://..." />
 
-<input id="match_name" placeholder="Match Name">
-<input id="stream_url" placeholder="Stream URL (.m3u8)">
-<input id="start_time" placeholder="Start Time (YYYY-MM-DD HH:MM:SS)">
-<input id="countdown_time" placeholder="Countdown Time (YYYY-MM-DDTHH:MM:SSZ)">
-<input id="team_a_name" placeholder="Team A Name">
-<input id="team_a_logo" placeholder="Team A Logo URL">
-<input id="team_b_name" placeholder="Team B Name">
-<input id="team_b_logo" placeholder="Team B Logo URL">
-<button onclick="addMatch()">➕ Add Match</button>
+  <label>License URL (DRM, optional):</label>
+  <input id="license" placeholder="https://..." />
 
-<h3>Existing Matches</h3>
-<table>
-  <thead>
-    <tr><th>Match</th><th>Action</th></tr>
-  </thead>
-  <tbody id="matchTable"></tbody>
-</table>
+  <label>Match Start Time (UTC):</label>
+  <input id="startTime" type="datetime-local" />
 
-<script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbz4gVKQ8SJAwA_GxRe2ksqyaBH7flddNQYbU8qGdEYefLaiqhOMFdw4ML0xaC854HzTBw/exec';
+  <label>Scrolling Notice Message:</label>
+  <textarea id="notice" rows="3" placeholder="Enter message"></textarea>
 
-  async function fetchMatches() {
-    const res = await fetch(scriptURL);
-    const data = await res.json();
-    const table = document.getElementById('matchTable');
-    table.innerHTML = '';
+  <label>Logo URL:</label>
+  <input id="logo" placeholder="https://..." />
 
-    data.forEach((row, index) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${row.match_name}</td>
-        <td>
-          <button class="edit" onclick="editMatch(${index})">Edit</button>
-          <button class="delete" onclick="deleteMatch(${index})">Delete</button>
-        </td>`;
-      table.appendChild(tr);
-    });
-  }
+  <label>Team Logo 1 URL:</label>
+  <input id="team1" placeholder="https://..." />
 
-  async function addMatch() {
-    const body = {
-      match_name: document.getElementById('match_name').value,
-      stream_url: document.getElementById('stream_url').value,
-      start_time: document.getElementById('start_time').value,
-      countdown_time: document.getElementById('countdown_time').value,
-      team_a_name: document.getElementById('team_a_name').value,
-      team_a_logo: document.getElementById('team_a_logo').value,
-      team_b_name: document.getElementById('team_b_name').value,
-      team_b_logo: document.getElementById('team_b_logo').value,
-      action: "add"
+  <label>Team Logo 2 URL:</label>
+  <input id="team2" placeholder="https://..." />
+
+  <label>Sponsor Banner URL:</label>
+  <input id="sponsor" placeholder="https://..." />
+  
+  <button onclick="saveConfig()">💾 Save Configuration</button>
+
+  <script>
+  function saveConfig() {
+    const cfg = {
+      stream: document.getElementById('stream').value,
+      license: document.getElementById('license').value,
+      startTime: document.getElementById('startTime').value,
+      notice: document.getElementById('notice').value,
+      logo: document.getElementById('logo').value,
+      team1: document.getElementById('team1').value,
+      team2: document.getElementById('team2').value,
+      sponsor: document.getElementById('sponsor').value,
     };
-    await fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify(body)
-    });
-    fetchMatches();
+    localStorage.setItem('liveConfig', JSON.stringify(cfg));
+    alert('Configuration saved!');
   }
-
-  async function deleteMatch(index) {
-    await fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify({ action: "delete", index })
-    });
-    fetchMatches();
-  }
-
-  async function editMatch(index) {
-    const match_name = prompt("Match Name:");
-    const stream_url = prompt("Stream URL:");
-    const start_time = prompt("Start Time:");
-    const countdown_time = prompt("Countdown Time:");
-    const team_a_name = prompt("Team A Name:");
-    const team_a_logo = prompt("Team A Logo:");
-    const team_b_name = prompt("Team B Name:");
-    const team_b_logo = prompt("Team B Logo:");
-
-    await fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "edit",
-        index,
-        match_name,
-        stream_url,
-        start_time,
-        countdown_time,
-        team_a_name,
-        team_a_logo,
-        team_b_name,
-        team_b_logo
-      })
-    });
-    fetchMatches();
-  }
-
-  fetchMatches();
-</script>
+  </script>
 </body>
 </html>
