@@ -22,6 +22,9 @@
   <label>Match Start Time (UTC):</label>
   <input id="startTime" type="datetime-local" />
 
+  <label>Match Title:</label>
+  <input id="matchTitle" placeholder="Team A vs Team B" />
+
   <label>Scrolling Notice Message:</label>
   <textarea id="notice" rows="3" placeholder="Enter message"></textarea>
 
@@ -45,6 +48,7 @@
       stream: document.getElementById('stream').value,
       license: document.getElementById('license').value,
       startTime: document.getElementById('startTime').value,
+      matchTitle: document.getElementById('matchTitle').value,
       notice: document.getElementById('notice').value,
       logo: document.getElementById('logo').value,
       team1: document.getElementById('team1').value,
