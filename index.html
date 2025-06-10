@@ -25,7 +25,7 @@
 </head>
 <body>
   <nav>
-    <a href="index.html">🏠 Home</a>
+    <a href="index.html">BDStreamHub</a>
     <input id="search" type="text" placeholder="Search matches or teams"/>
   </nav>
   <div id="notice" class="notice"></div>
@@ -68,7 +68,7 @@
         div.innerHTML=`
           <div class="teams"><img src="${m.Team1Logo}">${m.Team1} vs ${m.Team2}<img src="${m.Team2Logo}"></div>
           ${isLive
-            ? `<div class="liveBlink">LIVE</div><div class="started">${Math.floor(diff/60000)} মিনিট আগে শুরু</div>`
+            ? `<div class="liveBlink">LIVE</div><div class="started">${Math.floor(diff/60000)} Match Start</div>`
             : `<div class="countdown" id="cd${i}"></div>`}
           <div class="btns">
             ${m.Intent1?`<a href="${m.Intent1}">Server 1</a>`:""}
@@ -83,7 +83,7 @@
     function formatCountdown(ms){
       let s = Math.floor(ms/1000), m=Math.floor(s/60), h=Math.floor(m/60), d=Math.floor(h/24);
       h%=24; m%=60; s%=60;
-      return `${d} দিন ${h} ঘন্টা ${m} মিনিট ${s} সেকেন্ড বাকি`;
+      return `${d} Day ${h} Hours ${m} Minute ${s} Second`;
     }
 
     document.getElementById('search').addEventListener('input',renderMatches);
