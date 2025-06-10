@@ -1,51 +1,96 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <title>BDStreamHub</title>
-  <style>/* কোড আগের মতোই */</style>
+  <style>
+    body{background:#111;color:#fff;font-family:sans-serif;margin:0;padding:0;}
+    nav{background:#222;padding:10px;display:flex;justify-content:space-between;align-items:center;}
+    nav a, nav input{color:#fff;}
+    nav a{margin-right:15px;text-decoration:none;}
+    .notice{background:#ff0;color:#000;padding:8px 15px;text-align:center;}
+    .tab-btns{padding:10px;text-align:center;}
+    .tab-btns button{margin:0 5px;padding:8px 12px;border:none;border-radius:5px;background:#333;color:#fff;cursor:pointer;}
+    .tab-btns button.active{background:#08f;}
+    #match-list{padding:10px;}
+    .match{background:#222;border-radius:10px;padding:15px;margin-bottom:15px;}
+    .teams{display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+    .teams img{height:40px;width:40px;border-radius:20px;margin:0 10px;}
+    .countdown, .started{font-size:14px;color:#ccc;margin-bottom:10px;text-align:center;}
+    .btns{text-align:center;margin-top:10px;}
+    .btns a{margin:0 5px;padding:6px 12px;background:#08f;color:#fff;text-decoration:none;border-radius:5px;}
+    .liveBlink{display:inline-block;background:red;padding:2px 6px;border-radius:3px;animation:blink 1s infinite;color:#fff;}
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  </style>
 </head>
 <body>
-  <h1>BDStreamHub</h1>
+  <nav>
+    <a href="index.html">🏠 Home</a>
+    <input id="search" type="text" placeholder="Search matches or teams"/>
+  </nav>
   <div id="notice" class="notice"></div>
+  <div class="tab-btns">
+    <button id="liveTab" class="active">Live</button>
+    <button id="upcomingTab">Upcoming</button>
+  </div>
   <div id="match-list"></div>
 
   <script>
-    const api = 'https://script.google.com/macros/s/AKfycbyoJEJLbsz-yvs4L_S5qzhxM0hE4vls5K_7cLoH_PfS1AVDRbbmuV3WhwGtf9RiCwm6/exec';
+    const api = "https://script.google.com/macros/s/AKfycbys6AFNs2s1MKZ1zyJxaeUW-_Vmq5BuIEC8Qjyr-zXkx_x28F7rWTi2D0EmQlnsPvTnCQ/exec";
+    let matches = [];
 
-    function countdownText(timeStr) {
-      const now = new Date(), time = new Date(timeStr), diff = time - now;
-      if (diff > 0) {
-        const d = Math.floor(diff / 86_400_000);
-        const h = Math.floor((diff / 3_600_000) % 24);
-        const m = Math.floor((diff / 60_000) % 60);
-        return `${d} দিন ${h} ঘন্টা ${m} মিনিট বাকি`;
-      } else {
-        const p = Math.floor(-diff / 60_000);
-        return `ম্যাচ শুরু হয়েছে ${p} মিনিট আগে`;
-      }
+    function fetchData(){
+      fetch(api).then(r=>r.json()).then(data=>{
+        matches=data.matches;
+        document.getElementById('notice').innerText = data.Notice;
+        renderMatches();
+      });
     }
 
-    fetch(api).then(r => r.json()).then(data => {
-      document.getElementById('notice').innerText = data.Notice || '';
+    function getNow() { return new Date(); }
+    function getCountdown(t){ return Math.max(0, new Date(t)-getNow()); }
+
+    function renderMatches(){
+      const live = getNow();
       const list = document.getElementById('match-list');
-      list.innerHTML = '';
-      data.matches.forEach((m,i) => {
-        const div = document.createElement('div'); div.className = 'match';
-        const countdown = countdownText(m.MatchTime);
-        div.innerHTML = `
-          <div class="teams">
-            <img src="${m.Team1Logo}" alt="${m.Team1}" /> ${m.Team1} vs ${m.Team2} <img src="${m.Team2Logo}" alt="${m.Team2}" />
-          </div>
-          <div class="countdown" id="cd-${i}">${countdown}</div>
-          ${m.Intent1 ? `<a class="link-btn" href="${m.Intent1}">Server 1 (Leone)</a>` : ''}
-        `;
+      list.innerHTML="";
+      const filter = document.getElementById('search').value.toLowerCase();
+
+      const activeTab = document.querySelector('.tab-btns .active').id=='liveTab'? "live":"upcoming";
+      matches.forEach((m,i)=>{
+        const ct = new Date(m.MatchTime);
+        const diff = live - ct;
+        const isLive = diff >= 0 && diff < 2*60*60*1000; // e.g. 2h duration
+        if((activeTab=="live"&&!isLive) || (activeTab=="upcoming"&&isLive))return;
+        if(filter && !(m.Match.toLowerCase().includes(filter)||m.Team1.toLowerCase().includes(filter)||m.Team2.toLowerCase().includes(filter))) return;
+
+        const div=document.createElement('div'); div.className="match";
+        div.innerHTML=`
+          <div class="teams"><img src="${m.Team1Logo}">${m.Team1} vs ${m.Team2}<img src="${m.Team2Logo}"></div>
+          ${isLive
+            ? `<div class="liveBlink">LIVE</div><div class="started">${Math.floor(diff/60000)} মিনিট আগে শুরু</div>`
+            : `<div class="countdown" id="cd${i}"></div>`}
+          <div class="btns">
+            ${m.Intent1?`<a href="${m.Intent1}">Server 1</a>`:""}
+            ${m.Intent2?`<a href="${m.Intent2}">Server 2</a>`:""}
+            ${m.Intent3?`<a href="${m.Intent3}">Server 3</a>`:""}
+          </div>`;
         list.appendChild(div);
-        setInterval(() => {
-          document.getElementById(`cd-${i}`).innerText = countdownText(m.MatchTime);
-        }, 1000);
+        if(!isLive) setInterval(()=>{div.querySelector(`#cd${i}`).innerText=formatCountdown(getCountdown(m.MatchTime));},1000);
       });
-    });
+    }
+
+    function formatCountdown(ms){
+      let s = Math.floor(ms/1000), m=Math.floor(s/60), h=Math.floor(m/60), d=Math.floor(h/24);
+      h%=24; m%=60; s%=60;
+      return `${d} দিন ${h} ঘন্টা ${m} মিনিট ${s} সেকেন্ড বাকি`;
+    }
+
+    document.getElementById('search').addEventListener('input',renderMatches);
+    document.getElementById('liveTab').onclick=e=>{e.target.classList.add('active');document.getElementById('upcomingTab').classList.remove('active');renderMatches();}
+    document.getElementById('upcomingTab').onclick=e=>{e.target.classList.add('active');document.getElementById('liveTab').classList.remove('active');renderMatches();}
+
+    fetchData();
   </script>
 </body>
 </html>
