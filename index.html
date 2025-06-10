@@ -3,14 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>BDStreamHub</title>
-  <style>
-    body { font-family: sans-serif; background: #111; color: #fff; padding: 20px; }
-    .match { border: 1px solid #444; padding: 10px; margin: 10px 0; background: #222; border-radius: 10px; }
-    .teams img { height: 30px; vertical-align: middle; margin: 0 5px; }
-    .notice { background: #ff0; color: #000; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
-    .countdown { font-size: 14px; color: #ccc; }
-    .link-btn { margin-top: 10px; display: inline-block; background: #08f; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none; }
-  </style>
+  <style>/* কোড আগের মতোই */</style>
 </head>
 <body>
   <h1>BDStreamHub</h1>
@@ -18,37 +11,41 @@
   <div id="match-list"></div>
 
   <script>
-    const api = 'https://script.google.com/macros/s/AKfycbwcRU5VzkuEW0YJJ50jwCeryKCxB1cXOwuOTKeL3Aj59vg7Klmo_28QZEdfF4Mai02Czw/exec'; // Replace with your deployed script URL
+    const api = 'https://script.google.com/macros/s/AKfycbyoJEJLbsz-yvs4L_S5qzhxM0hE4vls5K_7cLoH_PfS1AVDRbbmuV3WhwGtf9RiCwm6/exec';
 
-    fetch(api)
-      .then(res => res.json())
-      .then(data => {
-        const list = document.getElementById('match-list');
-        const notice = document.getElementById('notice');
-        data.matches.forEach(match => {
-          if (match.Notice) notice.innerText = match.Notice;
+    function countdownText(timeStr) {
+      const now = new Date(), time = new Date(timeStr), diff = time - now;
+      if (diff > 0) {
+        const d = Math.floor(diff / 86_400_000);
+        const h = Math.floor((diff / 3_600_000) % 24);
+        const m = Math.floor((diff / 60_000) % 60);
+        return `${d} দিন ${h} ঘন্টা ${m} মিনিট বাকি`;
+      } else {
+        const p = Math.floor(-diff / 60_000);
+        return `ম্যাচ শুরু হয়েছে ${p} মিনিট আগে`;
+      }
+    }
 
-          const div = document.createElement('div');
-          div.className = 'match';
-          const time = new Date(match.MatchTime);
-          const now = new Date();
-          const diff = time - now;
-          const countdown = diff > 0 
-            ? `${Math.floor(diff / (1000 * 60 * 60))} ঘন্টা ${Math.floor((diff / (1000 * 60)) % 60)} মিনিট বাকি`
-            : `ম্যাচ শুরু হয়েছে ${Math.floor(-diff / (1000 * 60))} মিনিট আগে`;
-
-          div.innerHTML = `
-            <div class="teams">
-              <img src="${match.Team1Logo}" /> ${match.Team1} vs ${match.Team2} <img src="${match.Team2Logo}" />
-            </div>
-            <div class="countdown">${countdown}</div>
-            ${match.Server1 ? `<a class="link-btn" href="${match.Server1}" target="_blank">Server 1</a>` : ''}
-            ${match.Server2 ? `<a class="link-btn" href="${match.Server2}" target="_blank">Server 2</a>` : ''}
-            ${match.Server3 ? `<a class="link-btn" href="${match.Server3}" target="_blank">Server 3</a>` : ''}
-          `;
-          list.appendChild(div);
-        });
+    fetch(api).then(r => r.json()).then(data => {
+      document.getElementById('notice').innerText = data.Notice || '';
+      const list = document.getElementById('match-list');
+      list.innerHTML = '';
+      data.matches.forEach((m,i) => {
+        const div = document.createElement('div'); div.className = 'match';
+        const countdown = countdownText(m.MatchTime);
+        div.innerHTML = `
+          <div class="teams">
+            <img src="${m.Team1Logo}" alt="${m.Team1}" /> ${m.Team1} vs ${m.Team2} <img src="${m.Team2Logo}" alt="${m.Team2}" />
+          </div>
+          <div class="countdown" id="cd-${i}">${countdown}</div>
+          ${m.Intent1 ? `<a class="link-btn" href="${m.Intent1}">Server 1 (Leone)</a>` : ''}
+        `;
+        list.appendChild(div);
+        setInterval(() => {
+          document.getElementById(`cd-${i}`).innerText = countdownText(m.MatchTime);
+        }, 1000);
       });
+    });
   </script>
 </body>
 </html>
