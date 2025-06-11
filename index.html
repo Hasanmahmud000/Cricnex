@@ -205,7 +205,7 @@
         const res = await fetch(apiUrl);
         const data = await res.json();
         matches = data.matches || [];
-        document.getElementById('notice-text').textContent = data.Notice || "Welcome to BDStreamHub!";
+        document.getElementById('notice-text').textContent = data.Notice || "মোবাইল ইউজার → “Please install Network Stream Player to watch) Pc Player Coming....";
         renderMatches();
       } catch (e) {
         console.error(e);
@@ -298,7 +298,7 @@
                               <div class="countdown">${Math.floor(diff/60000)}m ago</div>`;
         } else if (diff >= 2*60*60*1000) {
           // Match ended—remove or mark ended
-          el.textContent = 'Ended';
+          el.textContent = 'Match Start';
         } else {
           // Upcoming
           const remaining = target - now;
