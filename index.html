@@ -1,96 +1,341 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-  <meta charset="UTF-8"/>
-  <title>BDStreamHub</title>
-  <style>
-    body{background:#111;color:#fff;font-family:sans-serif;margin:0;padding:0;}
-    nav{background:#222;padding:10px;display:flex;justify-content:space-between;align-items:center;}
-    nav a, nav input{color:#fff;}
-    nav a{margin-right:15px;text-decoration:none;}
-    .notice{background:#ff0;color:#000;padding:8px 15px;text-align:center;}
-    .tab-btns{padding:10px;text-align:center;}
-    .tab-btns button{margin:0 5px;padding:8px 12px;border:none;border-radius:5px;background:#333;color:#fff;cursor:pointer;}
-    .tab-btns button.active{background:#08f;}
-    #match-list{padding:10px;}
-    .match{background:#222;border-radius:10px;padding:15px;margin-bottom:15px;}
-    .teams{display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
-    .teams img{height:40px;width:40px;border-radius:20px;margin:0 10px;}
-    .countdown, .started{font-size:14px;color:#ccc;margin-bottom:10px;text-align:center;}
-    .btns{text-align:center;margin-top:10px;}
-    .btns a{margin:0 5px;padding:6px 12px;background:#08f;color:#fff;text-decoration:none;border-radius:5px;}
-    .liveBlink{display:inline-block;background:red;padding:2px 6px;border-radius:3px;animation:blink 1s infinite;color:#fff;}
-    @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
-  </style>
-</head>
-<body>
-  <nav>
-    <a href="index.html">BDStreamHub</a>
-    <input id="search" type="text" placeholder="Search matches or teams"/>
-  </nav>
-  <div id="notice" class="notice"></div>
-  <div class="tab-btns">
-    <button id="liveTab" class="active">Live</button>
-    <button id="upcomingTab">Upcoming</button>
-  </div>
-  <div id="match-list"></div>
-
-  <script>
-    const api = "https://script.google.com/macros/s/AKfycbys6AFNs2s1MKZ1zyJxaeUW-_Vmq5BuIEC8Qjyr-zXkx_x28F7rWTi2D0EmQlnsPvTnCQ/exec";
-    let matches = [];
-
-    function fetchData(){
-      fetch(api).then(r=>r.json()).then(data=>{
-        matches=data.matches;
-        document.getElementById('notice').innerText = data.Notice;
-        renderMatches();
-      });
+<!DOCTYPE html>          
+<html lang="en">          
+<head>          
+  <meta charset="UTF-8" />          
+  <title>BDStreamHub</title>          
+  <style>          
+    body {
+      background: #111; 
+      color: #fff; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      margin: 0; padding: 0; 
+      position: relative;
+      min-height: 100vh;
+      padding-bottom: 40px; /* footer space */
+    }          
+    nav {
+      background: #222; 
+      padding: 10px 15px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+      gap: 10px;
+    }          
+    nav a, nav input {
+      color: #fff;
+      font-size: 16px;
+    }          
+    nav a {
+      margin-right: 15px; 
+      text-decoration: none;
+      font-weight: 600;
+    }          
+    nav input {
+      flex-grow: 1;
+      padding: 7px 15px;
+      border-radius: 25px;
+      border: 1.5px solid #555;
+      background: #222;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    nav input:focus {
+      border-color: #08f;
+      background: #111;
+      color: #fff;
+    }
+    .notice {
+      background: #ff0; 
+      color: #000; 
+      padding: 8px 15px; 
+      text-align: center;
+      font-weight: 700;
+      font-size: 16px;
+    }          
+    .tab-btns {
+      padding: 10px;
+      text-align: center;
+      user-select: none;
+    }          
+    .tab-btns button {
+      margin: 0 5px; 
+      padding: 8px 16px; 
+      border: none; 
+      border-radius: 25px; 
+      background: #333; 
+      color: #fff; 
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      transition: background-color 0.3s ease;
+    }          
+    .tab-btns button.active, .tab-btns button:hover {
+      background: #08f;
+      color: #fff;
+    }          
+    #match-list {
+      padding: 10px 15px;
+      max-width: 720px;
+      margin: auto;
+    }          
+    .match {
+      background: #222;
+      border-radius: 10px;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      position: relative;
+      min-height: 70px;
+    }
+    .teams {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 2 1 350px;
+      font-weight: 700;
+      font-size: 18px;
+      white-space: nowrap;
+    }          
+    .teams img {
+      height: 40px; 
+      width: 40px; 
+      border-radius: 50%; 
+      object-fit: cover;
+      box-shadow: 0 0 5px #000 inset;
+      flex-shrink: 0;
+    }          
+    .liveIndicator {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-direction: column;
+      flex: 0 0 110px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      user-select: none;
+    }
+    .liveBlink {
+      display: inline-block;
+      background: red;
+      padding: 4px 12px;
+      border-radius: 20px;
+      animation: blink 1.2s infinite;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      box-shadow: 0 0 8px red;
+    }
+    @keyframes blink {
+      0%, 100% {opacity: 1;}
+      50% {opacity: 0.3;}
+    }
+    .liveTimer {
+      font-size: 13px;
+      color: #ddd;
+      letter-spacing: 0.5px;
+      font-family: monospace;
+    }
+    .countdown {
+      flex: 0 0 180px;
+      font-size: 14px;
+      color: #aaa;
+      font-family: monospace;
+      text-align: right;
+      font-weight: 600;
+      user-select: none;
+    }
+    .btns {
+      flex: 0 0 auto;
+      text-align: right;
+      min-width: 120px;
+    }
+    .btns a {
+      margin: 0 5px;
+      padding: 6px 14px;
+      background: #08f;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    .btns a:hover {
+      background: #06c;
     }
 
-    function getNow() { return new Date(); }
-    function getCountdown(t){ return Math.max(0, new Date(t)-getNow()); }
+    /* Watermark */
+    .watermark {
+      position: fixed;
+      bottom: 5px;
+      right: 10px;
+      opacity: 0.1;
+      font-size: 48px;
+      font-weight: 900;
+      color: #08f;
+      pointer-events: none;
+      user-select: none;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      letter-spacing: 12px;
+      z-index: 1000;
+      transform: rotate(-20deg);
+      text-shadow: 0 0 15px #08f;
+    }
+  </style>          
+</head>          
+<body>          
+  <nav>          
+    <a href="index.html">🏠 Home</a>          
+    <input id="search" type="text" placeholder="Search matches or teams" autocomplete="off" />          
+  </nav>          
+  <div id="notice" class="notice"></div>          
+  <div class="tab-btns">          
+    <button id="liveTab" class="active">Live</button>          
+    <button id="upcomingTab">Upcoming</button>          
+  </div>          
+  <div id="match-list"></div>          
 
-    function renderMatches(){
-      const live = getNow();
-      const list = document.getElementById('match-list');
-      list.innerHTML="";
-      const filter = document.getElementById('search').value.toLowerCase();
+  <div class="watermark">BDStreamHub</div>
 
-      const activeTab = document.querySelector('.tab-btns .active').id=='liveTab'? "live":"upcoming";
-      matches.forEach((m,i)=>{
-        const ct = new Date(m.MatchTime);
-        const diff = live - ct;
-        const isLive = diff >= 0 && diff < 2*60*60*1000; // e.g. 2h duration
-        if((activeTab=="live"&&!isLive) || (activeTab=="upcoming"&&isLive))return;
-        if(filter && !(m.Match.toLowerCase().includes(filter)||m.Team1.toLowerCase().includes(filter)||m.Team2.toLowerCase().includes(filter))) return;
+  <script>          
+    const api = "https://script.google.com/macros/s/AKfycbys6AFNs2s1MKZ1zyJxaeUW-_Vmq5BuIEC8Qjyr-zXkx_x28F7rWTi2D0EmQlnsPvTnCQ/exec";          
+    let matches = [];          
 
-        const div=document.createElement('div'); div.className="match";
-        div.innerHTML=`
-          <div class="teams"><img src="${m.Team1Logo}">${m.Team1} vs ${m.Team2}<img src="${m.Team2Logo}"></div>
-          ${isLive
-            ? `<div class="liveBlink">LIVE</div><div class="started">${Math.floor(diff/60000)} Match Start</div>`
-            : `<div class="countdown" id="cd${i}"></div>`}
-          <div class="btns">
-            ${m.Intent1?`<a href="${m.Intent1}">Server 1</a>`:""}
-            ${m.Intent2?`<a href="${m.Intent2}">Server 2</a>`:""}
-            ${m.Intent3?`<a href="${m.Intent3}">Server 3</a>`:""}
+    function fetchData() {          
+      fetch(api).then(r => r.json()).then(data => {          
+        matches = data.matches;          
+        document.getElementById('notice').innerText = data.Notice;          
+        renderMatches();          
+      }).catch(e => {
+        document.getElementById('notice').innerText = "Failed to load matches.";
+      });
+    }          
+
+    function getNow() { 
+      return new Date(); 
+    }          
+
+    function getCountdown(t) { 
+      return Math.max(0, new Date(t) - getNow()); 
+    }          
+
+    function formatCountdown(ms) {          
+      let s = Math.floor(ms / 1000), 
+          m = Math.floor(s / 60), 
+          h = Math.floor(m / 60), 
+          d = Math.floor(h / 24);          
+      h %= 24; m %= 60; s %= 60;          
+      return `${d}d ${h}h ${m}m ${s}s`;          
+    }          
+
+    // Format minutes:seconds for live elapsed timer
+    function formatElapsed(ms) {
+      let totalSeconds = Math.floor(ms / 1000);
+      let m = Math.floor(totalSeconds / 60);
+      let s = totalSeconds % 60;
+      return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+
+    let timers = [];
+
+    function clearTimers() {
+      timers.forEach(id => clearInterval(id));
+      timers = [];
+    }
+
+    function renderMatches() {          
+      clearTimers();
+      const now = getNow();          
+      const list = document.getElementById('match-list');          
+      list.innerHTML = "";          
+      const filter = document.getElementById('search').value.toLowerCase();          
+
+      const activeTab = document.querySelector('.tab-btns .active').id == 'liveTab' ? "live" : "upcoming";          
+      matches.forEach((m, i) => {          
+        const matchTime = new Date(m.MatchTime);          
+        const diff = now - matchTime;          
+        const isLive = diff >= 0 && diff < 2 * 60 * 60 * 1000; // 2 hours duration          
+        if ((activeTab == "live" && !isLive) || (activeTab == "upcoming" && isLive)) return;          
+        if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return;          
+
+        const div = document.createElement('div'); 
+        div.className = "match";          
+
+        // Left: Live blinking + elapsed timer if live
+        // Right: Countdown if upcoming
+        let leftHTML = "";
+        let rightHTML = "";
+
+        if (isLive) {
+          leftHTML = `<div class="liveIndicator">
+                        <div class="liveBlink">LIVE</div>
+                        <div class="liveTimer" id="liveTimer${i}">00:00</div>
+                      </div>`;
+          rightHTML = `<div style="flex:1;"></div>`;
+        } else {
+          leftHTML = `<div style="width:110px;"></div>`;
+          rightHTML = `<div class="countdown" id="cd${i}">${formatCountdown(getCountdown(m.MatchTime))}</div>`;
+        }
+
+        div.innerHTML = `
+          ${leftHTML}
+          <div class="teams">
+            <img src="${m.Team1Logo}" alt="${m.Team1} logo" /> 
+            ${m.Team1} vs ${m.Team2} 
+            <img src="${m.Team2Logo}" alt="${m.Team2} logo" />
+          </div>
+          ${rightHTML}
+          <div class="btns">          
+            ${m.Intent1 ? `<a href="${m.Intent1}" target="_blank" rel="noopener noreferrer">Server 1</a>` : ""}          
+            ${m.Intent2 ? `<a href="${m.Intent2}" target="_blank" rel="noopener noreferrer">Server 2</a>` : ""}          
+            ${m.Intent3 ? `<a href="${m.Intent3}" target="_blank" rel="noopener noreferrer">Server 3</a>` : ""}          
           </div>`;
-        list.appendChild(div);
-        if(!isLive) setInterval(()=>{div.querySelector(`#cd${i}`).innerText=formatCountdown(getCountdown(m.MatchTime));},1000);
-      });
-    }
 
-    function formatCountdown(ms){
-      let s = Math.floor(ms/1000), m=Math.floor(s/60), h=Math.floor(m/60), d=Math.floor(h/24);
-      h%=24; m%=60; s%=60;
-      return `${d} Day ${h} Hours ${m} Minute ${s} Second`;
-    }
+        list.appendChild(div);          
 
-    document.getElementById('search').addEventListener('input',renderMatches);
-    document.getElementById('liveTab').onclick=e=>{e.target.classList.add('active');document.getElementById('upcomingTab').classList.remove('active');renderMatches();}
-    document.getElementById('upcomingTab').onclick=e=>{e.target.classList.add('active');document.getElementById('liveTab').classList.remove('active');renderMatches();}
+        if (!isLive) {
+          // Countdown timer update every second
+          timers.push(setInterval(() => {
+            const el = document.getElementById(`cd${i}`);
+            if (el) {
+              const cd = getCountdown(m.MatchTime);
+              el.textContent = formatCountdown(cd);
+            }
+          }, 1000));
+        } else {
+          // Live elapsed timer update every second
+          timers.push(setInterval(() => {
+            const el = document.getElementById(`liveTimer${i}`);
+            if (el) {
+              const elapsed = now - matchTime + (Date.now() - now.getTime());
+              el.textContent = formatElapsed(elapsed);
+            }
+          }, 1000));
+        }
+      });          
+    }          
 
-    fetchData();
-  </script>
-</body>
+    document.getElementById('search').addEventListener('input', renderMatches);          
+    document.getElementById('liveTab').onclick = e => {
+      e.target.classList.add('active');
+      document.getElementById('upcomingTab').classList.remove('active');
+      renderMatches();
+    }          
+    document.getElementById('upcomingTab').onclick = e => {
+      e.target.classList.add('active');
+      document.getElementById('liveTab').classList.remove('active');
+      renderMatches();
+    }          
+
+    fetchData();          
+  </script>          
+</body>          
 </html>
