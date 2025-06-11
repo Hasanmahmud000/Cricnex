@@ -77,12 +77,12 @@
       background: #222; border-radius: 12px;
       margin-bottom: 18px; padding: 15px 20px;
       display: flex; flex-wrap: wrap;
-      align-items: center; justify-content: space-between;
+      align-items: center; justify-content: space-around;
       box-shadow: 0 2px 8px rgba(0, 136, 255, 0.3);
     }
     .teams {
       display: flex; align-items: center;
-      flex: 1 1 250px; user-select: none;
+      justify-content: center; flex: 1 1 250px; user-select: none;
     }
     .teams img {
       width: 48px; height: 48px; border-radius: 50%;
@@ -195,11 +195,11 @@
     }
     showJoinPopup();
 
-    // API & Data
+    // API URL
     const apiUrl = "https://script.google.com/macros/s/AKfycbys6AFNs2s1MKZ1zyJxaeUW-_Vmq5BuIEC8Qjyr-zXkx_x28F7rWTi2D0EmQlnsPvTnCQ/exec";
     let matches = [];
 
-    // Fetch and initialize
+    // Fetch data once
     async function fetchData() {
       try {
         const res = await fetch(apiUrl);
@@ -213,28 +213,28 @@
       }
     }
 
-    // Detect mobile
+    // Mobile detection
     function isMobile() {
       return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(navigator.userAgent);
     }
 
-    // Open stream
+    // Stream opener
     function openStream(url) {
       if (isMobile()) {
-        window.location.href = url;  // Network Stream Player
+        window.location.href = url;
       } else {
-        window.open(url, '_blank'); // VLC or external
+        window.open(url, '_blank');
       }
     }
 
-    // Countdown formatter
+    // Format ms to D H M S
     function formatTime(ms) {
       let s = Math.floor(ms/1000), m = Math.floor(s/60), h = Math.floor(m/60), d = Math.floor(h/24);
       h %= 24; m %= 60; s %= 60;
       return `${d}d ${h}h ${m}m ${s}s`;
     }
 
-    // Render
+    // Render matches list
     function renderMatches() {
       const list = document.getElementById('match-list');
       list.innerHTML = '';
@@ -242,7 +242,7 @@
       const filter = document.getElementById('search').value.toLowerCase();
       const showLive = document.getElementById('liveTab').classList.contains('active');
 
-      matches.forEach((m, i) => {
+      matches.forEach(m => {
         const mt = new Date(m.MatchTime);
         const diff = now - mt;
         const isLive = diff >= 0 && diff < 2*60*60*1000; // 2h window
@@ -254,6 +254,7 @@
           m.Team2.toLowerCase().includes(filter)
         )) return;
 
+        // Build element
         const div = document.createElement('div');
         div.className = 'match';
         div.innerHTML = `
@@ -267,8 +268,8 @@
           <div class="status">
             ${isLive
               ? `<div class="live-badge">LIVE</div>
-                 <div class="countdown">${Math.floor(diff/60000)}m ago</div>`
-              : `<div class="countdown">${formatTime(mt - now)}</div>`
+                 <div class="countdown" data-target="${mt.toISOString()}">${Math.floor(diff/60000)}m ago</div>`
+              : `<div class="countdown" data-target="${mt.toISOString()}">${formatTime(mt - now)}</div>`
             }
           </div>
           <div class="datetime">
@@ -281,23 +282,32 @@
           </div>
         `;
         list.appendChild(div);
-
-        // live countdown updater
-        if (!isLive) {
-          setInterval(() => {
-            const now2 = new Date();
-            const remaining = mt - now2;
-            if (remaining <= 0) {
-              renderMatches();
-            } else {
-              div.querySelector('.countdown').textContent = formatTime(remaining);
-            }
-          }, 1000);
-        }
       });
     }
 
-    // Search & Tabs events
+    // Single global interval for countdown updates
+    setInterval(() => {
+      document.querySelectorAll('.countdown').forEach(el => {
+        const target = new Date(el.getAttribute('data-target'));
+        const now = new Date();
+        const diff = now - target;
+        if (diff >= 0 && diff < 2*60*60*1000) {
+          // Match is now live
+          const parent = el.parentElement;
+          parent.innerHTML = `<div class="live-badge">LIVE</div>
+                              <div class="countdown">${Math.floor(diff/60000)}m ago</div>`;
+        } else if (diff >= 2*60*60*1000) {
+          // Match ended—remove or mark ended
+          el.textContent = 'Ended';
+        } else {
+          // Upcoming
+          const remaining = target - now;
+          el.textContent = formatTime(remaining);
+        }
+      });
+    }, 1000);
+
+    // Search & tab events
     document.getElementById('search').addEventListener('input', renderMatches);
     document.getElementById('liveTab').onclick = () => {
       document.getElementById('liveTab').classList.add('active');
@@ -310,6 +320,7 @@
       renderMatches();
     };
 
+    // Initial data fetch
     fetchData();
   </script>
 
