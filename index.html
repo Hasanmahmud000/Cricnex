@@ -86,14 +86,17 @@
 
     /* ================ MATCH CARDS ================ */
     #match-list {
-      padding: 0 15px 30px;
-      display: grid;
-      grid-template-columns: 1fr;
-      row-gap: 15px;
-    }
-    @media(min-width: 800px) {
-      #match-list { grid-template-columns: 1fr 1fr; column-gap: 15px; }
-    }
+  display: grid;
+  grid-template-columns: 1fr; /* সবসময় এক কলাম */
+  gap: 15px;
+}
+
+/* নিচের মিডিয়া কোয়েরি মুছে ফেলো বা কমেন্ট করে দাও */
+// @media(min-width: 800px) {
+//   #match-list {
+//     grid-template-columns: 1fr 1fr; /* দুই কলাম - এটা ডিলিট বা কমেন্ট */
+//   }
+// }
     .match-card {
       background: #222;
       padding: 15px;
