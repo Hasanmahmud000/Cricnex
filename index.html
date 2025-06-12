@@ -1,85 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8">
   <title>BDStreamHub</title>
   <style>
-    body {
-      background: #111;
-      color: #fff;
-      font-family: sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    nav {
+    /* ================ RESET + GLOBALS ================ */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+    body { background: #111; color: #fff; }
+    a { color: #08f; text-decoration: none; }
+    button { cursor: pointer; }
+
+    /* ================ HEADER ================ */
+    header {
       background: #222;
-      padding: 10px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      padding: 10px 15px;
+      position: relative;
     }
-    nav a, nav input {
+    .logo { font-size: 1.2rem; font-weight: bold; }
+    .search-circle {
+      width: 40px; height: 40px;
+      border: 2px solid #08f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .search-circle input {
+      width: 30px; height: 30px;
+      background: transparent;
+      border: none;
       color: #fff;
+      text-align: center;
     }
-    nav a {
-      margin-right: 15px;
-      text-decoration: none;
+    .menu-dot {
+      font-size: 1.5rem;
+      position: relative;
     }
-    .notice {
+    .menu-content {
+      display: none;
+      position: absolute;
+      right: 15px;
+      top: 45px;
+      background: #333;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .menu-content a { display: block; }
+
+    /* ================ NOTICE BAR ================ */
+    .notice-bar {
       background: #ff0;
       color: #000;
-      padding: 8px 15px;
-      text-align: center;
-      overflow: hidden;
+      padding: 10px;
       white-space: nowrap;
-      animation: scroll 10s linear infinite;
+      overflow: hidden;
     }
-    @keyframes scroll {
-      0% { transform: translateX(100%); }
+    .notice-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll-left 15s linear infinite;
+    }
+    @keyframes scroll-left {
+      0% { transform: translateX(0); }
       100% { transform: translateX(-100%); }
     }
-    .tab-btns {
-      padding: 10px;
-      text-align: center;
+
+    /* ================ TABS ================ */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin: 15px 0;
     }
-    .tab-btns button {
-      margin: 0 5px;
-      padding: 8px 12px;
-      border: none;
-      border-radius: 5px;
+    .tabs button {
       background: #333;
       color: #fff;
-      cursor: pointer;
+      border: none;
+      padding: 8px 12px;
+      margin: 0 5px;
+      border-radius: 5px;
     }
-    .tab-btns button.active {
-      background: #08f;
-    }
+    .tabs button.active { background: #08f; }
+
+    /* ================ MATCH CARDS ================ */
     #match-list {
-      padding: 10px;
+      padding: 0 15px 30px;
+      display: grid;
+      grid-template-columns: 1fr;
+      row-gap: 15px;
     }
-    .match {
+    @media(min-width: 800px) {
+      #match-list { grid-template-columns: 1fr 1fr; column-gap: 15px; }
+    }
+    .match-card {
       background: #222;
-      border-radius: 10px;
       padding: 15px;
-      margin-bottom: 15px;
+      border-radius: 10px;
+      position: relative;
     }
     .teams {
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
     }
     .teams img {
-      height: 40px;
-      width: 40px;
-      border-radius: 20px;
+      width: 40px; height: 40px;
+      border-radius: 50%;
       margin: 0 10px;
     }
-    .countdown, .started {
-      font-size: 14px;
+    .live-badge, .coming-badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      animation: blink 1s infinite alternate;
+    }
+    .live-badge { background: red; color: #fff; }
+    .coming-badge { background: orange; color: #000; }
+    @keyframes blink {
+      from { opacity: 1; } to { opacity: 0.3; }
+    }
+    .time-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+      font-size: 0.9rem;
       color: #ccc;
-      margin-bottom: 10px;
+    }
+    .timer {
+      font-size: 0.95rem;
       text-align: center;
+      padding: 6px 0;
+      color: #0f8;
     }
     .btns {
       text-align: center;
@@ -87,103 +145,234 @@
     }
     .btns a {
       margin: 0 5px;
-      padding: 6px 12px;
+      padding: 6px 10px;
+      background: #08f;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+
+    /* ================ POPUP ================ */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .popup {
+      background: #222;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 90%;
+      text-align: center;
+    }
+    .popup button {
       background: #08f;
       color: #fff;
-      text-decoration: none;
+      border: none;
+      padding: 8px 14px;
+      margin-top: 15px;
       border-radius: 5px;
-    }
-    .liveBlink {
-      display: inline-block;
-      background: red;
-      padding: 2px 6px;
-      border-radius: 3px;
-      animation: blink 1s infinite;
-      color: #fff;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
     }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="index.html">🏠 Home</a>
-    <input id="search" type="text" placeholder="Search matches or teams"/>
-    <a href="https://t.me/BDStreamHub_Discussion0">⋮</a>
-  </nav>
-  <div id="notice" class="notice">Join our Telegram group for updates!</div>
-  <div class="tab-btns">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">BDStreamHub</div>
+    <div class="search-circle">
+      <input type="text" id="search" placeholder="🔍">
+    </div>
+    <div class="menu-dot" id="menuDot">⋮
+      <div class="menu-content" id="menuContent">
+        <a href="https://t.me/BDStreamHub_Discussion0" target="_blank">🔗 Join our Telegram</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- NOTICE BAR -->
+  <div class="notice-bar">
+    <div class="notice-text" id="noticeText"></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
     <button id="liveTab" class="active">Live</button>
     <button id="upcomingTab">Upcoming</button>
   </div>
+
+  <!-- MATCH LIST -->
   <div id="match-list"></div>
+
+  <!-- TELEGRAM POPUP -->
+  <div class="overlay" id="telegramOverlay">
+    <div class="popup">
+      <p>👉 Join our Telegram group for updates!</p>
+      <button id="joinBtn">Join Now</button>
+    </div>
+  </div>
+
   <script>
-    const api = "https://script.google.com/macros/s/AKfycbys6AFNs2s1MKZ1zyJxaeUW-_Vmq5BuIEC8Qjyr-zXkx_x28F7rWTi2D0EmQlnsPvTnCQ/exec";
+    // ====== Data fetch & state ======
+    const apiUrl = "https://script.google.com/macros/s/AKfycbys6AFNs2s1MKZ1zyJxaeUW-_Vmq5BuIEC8Qjyr-zXkx_x28F7rWTi2D0EmQlnsPvTnCQ/exec";
     let matches = [];
-    let hasJoinedTelegram = false;
+    let noticeMessage = "";
 
-    function fetchData() {
-      fetch(api).then(r => r.json()).then(data => {
+    // ====== Utility ======
+    function isMobile() {
+      return /Mobi|Android/i.test(navigator.userAgent);
+    }
+    function msToDhms(ms) {
+      let s = Math.floor(ms/1000), m = Math.floor(s/60), h = Math.floor(m/60), d = Math.floor(h/24);
+      h%=24; m%=60; s%=60;
+      return { d, h, m, s };
+    }
+    function formatDhms({d,h,m,s}) {
+      return `${d}d ${h}h ${m}m ${s}s`;
+    }
+
+    // ====== Render Notice ======
+    function updateNotice() {
+      const userMessage = isMobile() ? "Download BDStreamHub_Tv App" : "Use VLC Media Player to stream";
+      document.getElementById('noticeText').innerText = `${noticeMessage} — ${userMessage}`;
+    }
+
+    // ====== Fetch Data ======
+    async function fetchData() {
+      try {
+        const resp = await fetch(apiUrl);
+        const data = await resp.json();
         matches = data.matches;
-        document.getElementById('notice').innerText = data.Notice;
+        noticeMessage = data.Notice || "";
+        updateNotice();
         renderMatches();
-      });
-    }
-
-    function getNow() { return new Date(); }
-    function getCountdown(t) { return Math.max(0, new Date(t) - getNow()); }
-
-    function renderMatches() {
-      const live = getNow();
-      const list = document.getElementById('match-list');
-      list.innerHTML = "";
-      const filter = document.getElementById('search').value.toLowerCase();
-
-      const activeTab = document.querySelector('.tab-btns .active').id == 'liveTab' ? "live" : "upcoming";
-      matches.forEach((m, i) => {
-        const ct = new Date(m.MatchTime);
-        const diff = live - ct;
-        const isLive = diff >= 0 && diff < 2 * 60 * 60 * 1000; // e.g. 2h duration
-        if ((activeTab == "live" && !isLive) || (activeTab == "upcoming" && isLive)) return;
-        if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return;
-
-        const div = document.createElement('div'); div.className = "match";
-        div.innerHTML = `
-          <div class="teams"><img src="${m.Team1Logo}">${m.Team1} vs ${m.Team2}<img src="${m.Team2Logo}"></div>
-          ${isLive
-            ? `<div class="liveBlink">LIVE</div><div class="started">${Math.floor(diff / 60000)} minutes ago started</div>`
-            : `<div class="countdown" id="cd${i}"></div>`}
-          <div class="btns">
-            ${m.Intent1 ? `<a href="${m.Intent1}">Server 1</a>` : ""}
-            ${m.Intent2 ? `<a href="${m.Intent2}">Server 2</a>` : ""}
-            ${m.Intent3 ? `<a href="${m.Intent3}">Server 3</a>` : ""}
-          </div>`;
-        list.appendChild(div);
-        if (!isLive) setInterval(() => { div.querySelector(`#cd${i}`).innerText = formatCountdown(getCountdown(m.MatchTime)); }, 1000);
-      });
-    }
-
-    function formatCountdown(ms) {
-      let s = Math.floor(ms / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60), d = Math.floor(h / 24);
-      h %= 24; m %= 60; s %= 60;
-      return `${d} days ${h} hours ${m} minutes ${s} seconds left`;
-    }
-
-    document.getElementById('search').addEventListener('input', renderMatches);
-    document.getElementById('liveTab').onclick = e => { e.target.classList.add('active'); document.getElementById('upcomingTab').classList.remove('active'); renderMatches(); }
-    document.getElementById('upcomingTab').onclick = e => { e.target.classList.add('active'); document.getElementById('liveTab').classList.remove('active'); renderMatches(); }
-
-    fetchData();
-
-    // Telegram join pop-up
-    window.onload = function() {
-      if (!hasJoinedTelegram) {
-        alert("Join our Telegram group for updates!");
-        hasJoinedTelegram = true; // Set to true after the first pop-up
+      } catch (e) {
+        console.error(e);
       }
+    }
+
+    // ====== Render Menu ======
+    document.getElementById('menuDot').addEventListener('click', () => {
+      const mc = document.getElementById('menuContent');
+      mc.style.display = mc.style.display === 'block' ? 'none' : 'block';
+    });
+    window.addEventListener('click', e => {
+      if (!document.getElementById('menuDot').contains(e.target)) {
+        document.getElementById('menuContent').style.display = 'none';
+      }
+    });
+
+    // ====== Render Matches ======
+    function renderMatches() {
+      const listEl = document.getElementById('match-list');
+      listEl.innerHTML = "";
+      const now = new Date();
+      const filter = document.getElementById('search').value.toLowerCase();
+      const liveTab = document.getElementById('liveTab').classList.contains('active');
+
+      matches.forEach((m, i) => {
+        const start = new Date(m.MatchTime);
+        const diff = now - start;
+        const isLive = diff >= 0 && diff < 2 * 3600000;
+        const isUpcoming = diff < 0;
+        if (liveTab && !isLive) return;
+        if (!liveTab && !isUpcoming) return;
+        const textMatch = `${m.Team1} ${m.Team2} ${m.Match}`.toLowerCase();
+        if (filter && !textMatch.includes(filter)) return;
+
+        const card = document.createElement('div');
+        card.className = "match-card";
+
+        // Badge
+        const badge = document.createElement('div');
+        if (isLive) {
+          badge.className = "live-badge";
+          badge.innerText = "LIVE";
+        } else if (start - now <= 15 * 60000) {
+          badge.className = "coming-badge";
+          badge.innerText = "COMING";
+        }
+        if (badge.innerText) card.appendChild(badge);
+
+        // Teams
+        const teams = document.createElement('div');
+        teams.className = "teams";
+        teams.innerHTML = `<img src="${m.Team1Logo}"> ${m.Team1} vs ${m.Team2} <img src="${m.Team2Logo}">`;
+        card.appendChild(teams);
+
+        // Time info
+        const ti = document.createElement('div');
+        ti.className = "time-info";
+        ti.innerText = `${start.toLocaleDateString()} ${start.toLocaleTimeString()}`;
+        card.appendChild(ti);
+
+        // Timer/countdown
+        const timer = document.createElement('div');
+        timer.className = "timer";
+        card.appendChild(timer);
+
+        // Buttons
+        const btns = document.createElement('div');
+        btns.className = "btns";
+        ['Intent1','Intent2','Intent3'].forEach(key => {
+          if (m[key]) {
+            const a = document.createElement('a');
+            a.href = m[key];
+            a.target = "_blank";
+            a.innerText = `Server ${key.slice(-1)}`;
+            btns.appendChild(a);
+          }
+        });
+        card.appendChild(btns);
+
+        listEl.appendChild(card);
+
+        // Timer update
+        setInterval(() => {
+          const now2 = new Date();
+          const diff2 = now2 - start;
+          if (isLive) {
+            const since = msToDhms(diff2);
+            timer.innerText = `Started ${since.m}m ${since.s}s ago`;
+          } else {
+            const left = msToDhms(start - now2);
+            timer.innerText = `Starts in ${left.d}d ${left.h}h ${left.m}m ${left.s}s`;
+          }
+        }, 1000);
+      });
+    }
+
+    // Tab handlers
+    document.getElementById('liveTab').onclick = () => {
+      document.getElementById('liveTab').classList.add('active');
+      document.getElementById('upcomingTab').classList.remove('active');
+      renderMatches();
     };
+    document.getElementById('upcomingTab').onclick = () => {
+      document.getElementById('upcomingTab').classList.add('active');
+      document.getElementById('liveTab').classList.remove('active');
+      renderMatches();
+    };
+    document.getElementById('search').addEventListener('input', renderMatches);
+
+    // ====== Telegram Popup ======
+    const overlay = document.getElementById('telegramOverlay');
+    const joined = localStorage.getItem('tel_joined');
+    if (!joined) overlay.style.display = 'flex';
+
+    document.getElementById('joinBtn').onclick = () => {
+      window.open("https://t.me/BDStreamHub_Discussion0", "_blank");
+      localStorage.setItem('tel_joined', 'yes');
+      overlay.style.display = 'none';
+    };
+
+    // ====== Init ======
+    fetchData();
+    setInterval(fetchData, 60 * 1000); // refresh every minute
   </script>
 </body>
 </html>
