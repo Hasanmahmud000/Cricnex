@@ -1,184 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>BDStreamHub</title>
   <style>
-    /* ================ RESET + GLOBALS ================ */
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-    body { background: #111; color: #fff; }
-    a { color: #08f; text-decoration: none; }
-    button { cursor: pointer; }
+    /* Reset + Globals */
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body { background:#111; color:#eee; font-family:sans-serif; }
+    a { text-decoration:none; color:inherit; }
 
-    /* ================ HEADER ================ */
+    /* Header */
     header {
-      background: #222;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 50px 30px;
-      position: relative;
+      background:#222; display:flex; align-items:center;
+      justify-content:space-between; padding:10px 15px;
     }
-    .logo { font-size: 1.2rem; font-weight: bold; }
+    .brand { font-size:1.4rem; font-weight:bold; }
     .search-circle {
-      width: 40px; height: 40px;
-      border: 2px solid #08f;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width:40px; height:40px; border:2px solid #08f;
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      position:relative;
     }
     .search-circle input {
-      width: 30px; height: 30px;
-      background: transparent;
-      border: none;
-      color: #fff;
-      text-align: center;
+      width:100%; height:100%;
+      background:transparent; border:none; color:#fff;
+      text-align:center; font-size:1.2rem;
     }
-    .menu-dot {
-      font-size: 1.5rem;
-      position: relative;
-    }
+    .menu-dot { font-size:1.8rem; cursor:pointer; position:relative; }
     .menu-content {
-      display: none;
-      position: absolute;
-      right: 15px;
-      top: 45px;
-      background: #333;
-      padding: 10px;
-      border-radius: 5px;
+      display:none; position:absolute; top:45px; right:0;
+      background:#333; border-radius:6px; overflow:hidden;
     }
-    .menu-content a { display: block; }
+    .menu-content a {
+      display:block; padding:8px 12px; color:#08f;
+      white-space:nowrap;
+    }
 
-    /* ================ NOTICE BAR ================ */
+    /* Notice Bar */
     .notice-bar {
-      background: #ff0;
-      color: #000;
-      padding: 20px;
-      white-space: nowrap;
-      overflow: hidden;
+      background:#ffeb3b; color:#111; overflow:hidden;
+      white-space:nowrap; padding:8px 0;
     }
     .notice-text {
-      display: inline-block;
-      padding-left: 100%;
-      animation: scroll-left 15s linear infinite;
+      display:inline-block; padding-left:100%;
+      animation:scroll-left 12s linear infinite;
     }
     @keyframes scroll-left {
       0% { transform: translateX(0); }
       100% { transform: translateX(-100%); }
     }
 
-    /* ================ TABS ================ */
+    /* Tabs */
     .tabs {
-      display: flex;
-      justify-content: center;
-      margin: 15px 0;
+      display:flex; justify-content:center; gap:10px; padding:10px 0;
     }
     .tabs button {
-      background: #333;
-      color: #fff;
-      border: none;
-      padding: 8px 12px;
-      margin: 0 5px;
-      border-radius: 5px;
+      background:#222; color:#eee; border:none; padding:8px 16px;
+      border-radius:20px; cursor:pointer; transition:.3s;
     }
-    .tabs button.active { background: #08f; }
+    .tabs button.active { background:#08f; }
 
-    /* ================ MATCH CARDS ================ */
+    /* Match Cards */
     #match-list {
-  display: grid;
-  grid-template-columns: 1fr; /* সবসময় এক কলাম */
-  gap: 30px;
-}
-
-/* নিচের মিডিয়া কোয়েরি মুছে ফেলো বা কমেন্ট করে দাও */
-// @media(min-width: 800px) {
-//   #match-list {
-//     grid-template-columns: 1fr 1fr; /* দুই কলাম - এটা ডিলিট বা কমেন্ট */
-//   }
-// }
-    .match-card {
-      background: #222;
-      padding: 55px;
-      border-radius: 45px;
-      position: relative;
+      padding:0 15px 30px; display:grid; gap:15px;
+      grid-template-columns:1fr; 
     }
+    @media(min-width:800px) {
+      #match-list { grid-template-columns:1fr 1fr; }
+    }
+    .match-card {
+      background:#222; border-radius:12px; padding:15px;
+      position:relative; overflow:hidden;
+    }
+    .badge {
+      position:absolute; top:12px; left:12px;
+      padding:4px 10px; border-radius:4px;
+      font-size:.85rem; font-weight:bold;
+    }
+    .live-badge { background:red; color:#fff; animation:blink 1s infinite; }
+    .coming-badge { background:orange; color:#000; }
+    @keyframes blink { 50% { opacity: .3; } }
+
     .teams {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      font-weight: bold;
+      display:flex; align-items:center; justify-content:center;
+      gap:10px; font-size:1.1rem; font-weight:bold; margin-bottom:12px;
     }
     .teams img {
-      width: 90px; height: 90px;
-      border-radius: 50%;
-      margin: 0 25px;
-    }
-    .live-badge, .coming-badge {
-      position: absolute;
-      top: 40px; left: 40px;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      animation: blink 1s infinite alternate;
-    }
-    .live-badge { background: red; color: #fff; }
-    .coming-badge { background: orange; color: #000; }
-    @keyframes blink {
-      from { opacity: 1; } to { opacity: 0.3; }
-    }
-    .time-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 10px 0;
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-    .timer {
-      font-size: 0.95rem;
-      text-align: center;
-      padding: 6px 0;
-      color: #0f8;
-    }
-    .btns {
-      text-align: center;
-      margin-top: 10px;
-    }
-    .btns a {
-      margin: 0 5px;
-      padding: 6px 10px;
-      background: #08f;
-      border-radius: 5px;
-      color: #fff;
-      font-size: 0.9rem;
+      width:40px; height:40px; border-radius:50%;
+      object-fit:cover; border:2px solid #08f;
     }
 
-    /* ================ POPUP ================ */
+    .time-info, .countdown {
+      text-align:center; color:#ccc; margin-bottom:10px;
+    }
+    .server-btns {
+      text-align:center; margin-top:8px;
+    }
+    .server-btns a {
+      display:inline-block; margin:0 5px; padding:6px 12px;
+      background:#08f; color:#111; border-radius:6px;
+      font-size:.9rem; font-weight:600;
+    }
+
+    /* Telegram Popup */
     .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,.7); justify-content:center; align-items:center;
+      z-index:999;
     }
     .popup {
-      background: #222;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 90%;
-      text-align: center;
+      background:#222; padding:20px; border-radius:8px;
+      text-align:center; color:#eee;
     }
     .popup button {
-      background: #08f;
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      margin-top: 15px;
-      border-radius: 5px;
+      margin-top:12px; padding:8px 14px; background:#08f;
+      border:none; border-radius:6px; font-weight:bold; cursor:pointer;
     }
   </style>
 </head>
@@ -186,26 +122,22 @@
 
   <!-- HEADER -->
   <header>
-    <div class="logo">BDStreamHub</div>
-    <div class="search-circle">
-      <input type="text" id="search" placeholder="🔍">
-    </div>
-    <div class="menu-dot" id="menuDot">⋮
+    <div class="brand">BDStreamHub</div>
+    <div class="search-circle"><input id="search" placeholder="🔍"></div>
+    <div class="menu-dot" onclick="toggleMenu()">⋮
       <div class="menu-content" id="menuContent">
-        <a href="https://t.me/BDStreamHub_Discussion0" target="_blank">🔗 Join our Telegram</a>
+        <a href="https://t.me/BDStreamHub_Discussion0" target="_blank">Join Telegram</a>
       </div>
     </div>
   </header>
 
   <!-- NOTICE BAR -->
-  <div class="notice-bar">
-    <div class="notice-text" id="noticeText"></div>
-  </div>
+  <div class="notice-bar"><div class="notice-text" id="noticeText"></div></div>
 
   <!-- TABS -->
   <div class="tabs">
-    <button id="liveTab" class="active">Live</button>
-    <button id="upcomingTab">Upcoming</button>
+    <button id="liveBtn" class="active" onclick="showTab('live')">Live</button>
+    <button id="upcomingBtn" onclick="showTab('upcoming')">Upcoming</button>
   </div>
 
   <!-- MATCH LIST -->
@@ -214,168 +146,133 @@
   <!-- TELEGRAM POPUP -->
   <div class="overlay" id="telegramOverlay">
     <div class="popup">
-      <p>👉 Join our Telegram group for updates!</p>
-      <button id="joinBtn">Join Now</button>
+      <p>👉 আমাদের Telegram গ্রুপে জয়েন করুন!</p>
+      <button onclick="joinTelegram()">Join Now</button>
     </div>
   </div>
 
   <script>
-    // ====== Data fetch & state ======
-    const apiUrl = "https://script.google.com/macros/s/AKfycbyb-bETu6BMtHVr9f1ti5rYUFQqF51-vLjZ3ZJnRTFBODac_u7R0Q_rCvmZqljOJgR2jQ/exec";
-    let matches = [];
-    let noticeMessage = "";
+    const apiURL = "https://script.google.com/macros/s/AKfycbwxRYG33l5iXVvbGysPFixZThWftJ566wI5ko0cV5r7yOPSXr1D7Z_4qkLrYg-9U--4rg/exec?action=get";
+    let matches = [], noticeMsg = "", currentTab = 'live';
 
-    // ====== Utility ======
-    function isMobile() {
-      return /Mobi|Android/i.test(navigator.userAgent);
-    }
-    function msToDhms(ms) {
-      let s = Math.floor(ms/1000), m = Math.floor(s/60), h = Math.floor(m/60), d = Math.floor(h/24);
-      h%=24; m%=60; s%=60;
-      return { d, h, m, s };
-    }
-    function formatDhms({d,h,m,s}) {
-      return `${d}d ${h}h ${m}m ${s}s`;
-    }
-
-    // ====== Render Notice ======
-    function updateNotice() {
-      const userMessage = isMobile() ? "Download BDStreamHub_Tv App" : "Use VLC Media Player to stream";
-      document.getElementById('noticeText').innerText = `${noticeMessage} — ${userMessage}`;
-    }
-
-    // ====== Fetch Data ======
-    async function fetchData() {
-      try {
-        const resp = await fetch(apiUrl);
-        const data = await resp.json();
-        matches = data.matches;
-        noticeMessage = data.Notice || "";
-        updateNotice();
-        renderMatches();
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    // ====== Render Menu ======
-    document.getElementById('menuDot').addEventListener('click', () => {
+    // Toggle 3-dot menu
+    function toggleMenu() {
       const mc = document.getElementById('menuContent');
-      mc.style.display = mc.style.display === 'block' ? 'none' : 'block';
-    });
-    window.addEventListener('click', e => {
-      if (!document.getElementById('menuDot').contains(e.target)) {
-        document.getElementById('menuContent').style.display = 'none';
+      mc.style.display = mc.style.display==='block'?'none':'block';
+    }
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.menu-dot')) {
+        document.getElementById('menuContent').style.display='none';
       }
     });
 
-    // ====== Render Matches ======
-    function renderMatches() {
-      const listEl = document.getElementById('match-list');
-      listEl.innerHTML = "";
+    // Telegram popup
+    if (!localStorage.getItem('joinedTelegram')) {
+      document.getElementById('telegramOverlay').style.display = 'flex';
+    }
+    function joinTelegram() {
+      window.open('https://t.me/BDStreamHub_Discussion0','_blank');
+      localStorage.setItem('joinedTelegram','yes');
+      document.getElementById('telegramOverlay').style.display = 'none';
+    }
+
+    // Fetch data
+    async function fetchData(){
+      const res = await fetch(apiURL);
+      const json = await res.json();
+      matches = json.matches;
+      noticeMsg = "📢 মোবাইলে দেখা 👉 Network Stream Player | পিসিতে 👉 VLC Media Player";
+      document.getElementById('noticeText').innerText = noticeMsg;
+      renderMatches();
+    }
+
+    // Show Live or Upcoming
+    function showTab(tab){
+      currentTab = tab;
+      document.getElementById('liveBtn').classList.toggle('active', tab==='live');
+      document.getElementById('upcomingBtn').classList.toggle('active', tab==='upcoming');
+      renderMatches();
+    }
+
+    // Render matches
+    function renderMatches(){
       const now = new Date();
+      const list = document.getElementById('match-list');
+      list.innerHTML = '';
       const filter = document.getElementById('search').value.toLowerCase();
-      const liveTab = document.getElementById('liveTab').classList.contains('active');
 
       matches.forEach((m, i) => {
-        const start = new Date(m.MatchTime);
+        const start = new Date(m.matchTime);
         const diff = now - start;
-        const isLive = diff >= 0 && diff < 2 * 3600000;
-        const isUpcoming = diff < 0;
-        if (liveTab && !isLive) return;
-        if (!liveTab && !isUpcoming) return;
-        const textMatch = `${m.Team1} ${m.Team2} ${m.Match}`.toLowerCase();
-        if (filter && !textMatch.includes(filter)) return;
+        const isLive = diff>=0 && diff < 2*60*60*1000;
+        const until = start - now;
+        const comingSoon = until > 0 && until <= 15*60000;
+
+        if ((currentTab==='live' && !isLive) || (currentTab==='upcoming' && isLive)) return;
+        if (filter && !(m.matchTitle.toLowerCase().includes(filter) || m.team1.toLowerCase().includes(filter) || m.team2.toLowerCase().includes(filter))) return;
 
         const card = document.createElement('div');
-        card.className = "match-card";
+        card.className = 'match-card';
 
         // Badge
-        const badge = document.createElement('div');
-        if (isLive) {
-          badge.className = "live-badge";
-          badge.innerText = "LIVE";
-        } else if (start - now <= 15 * 60000) {
-          badge.className = "coming-badge";
-          badge.innerText = "COMING";
-        }
-        if (badge.innerText) card.appendChild(badge);
+        let badge = '';
+        if (isLive) badge = '<div class="badge live-badge">LIVE</div>';
+        else if (comingSoon) badge = '<div class="badge coming-badge">COMING</div>';
 
         // Teams
-        const teams = document.createElement('div');
-        teams.className = "teams";
-        teams.innerHTML = `<img src="${m.Team1Logo}"> ${m.Team1} vs ${m.Team2} <img src="${m.Team2Logo}">`;
-        card.appendChild(teams);
+        const teams = `<div class="teams">
+          <img src="${m.team1Logo}">${m.team1} vs ${m.team2}<img src="${m.team2Logo}">
+        </div>`;
 
-        // Time info
-        const ti = document.createElement('div');
-        ti.className = "time-info";
-        ti.innerText = `${start.toLocaleDateString()} ${start.toLocaleTimeString()}`;
-        card.appendChild(ti);
+        // Time/Countdown
+        let timeInfo = '';
+        if (isLive) {
+          timeInfo = `<div class="time-info">${Math.floor(diff/60000)}m ${Math.floor((diff%60000)/1000)}s ago</div>`;
+        } else {
+          const d = Math.floor(until/86400000),
+                h = Math.floor((until%86400000)/3600000),
+                mm = Math.floor((until%3600000)/60000),
+                s = Math.floor((until%60000)/1000);
+          timeInfo = `
+            <div class="time-info">${start.toLocaleString('en-GB',{timeZone:'Asia/Dhaka'})}</div>
+            <div class="countdown">${d}d ${h}h ${mm}m ${s}s left</div>
+          `;
+        }
 
-        // Timer/countdown
-        const timer = document.createElement('div');
-        timer.className = "timer";
-        card.appendChild(timer);
+        // Servers
+        const servers = ['server1','server2','server3'].map((key,idx) => 
+          m[key] ? `<a href="${m[key]}" onclick="openLink(event,'${m[key]}')" target="_blank">Server ${idx+1}</a>` : ''
+        ).join('');
 
-        // Buttons
-        const btns = document.createElement('div');
-        btns.className = "btns";
-        ['Intent1','Intent2','Intent3'].forEach(key => {
-          if (m[key]) {
-            const a = document.createElement('a');
-            a.href = m[key];
-            a.target = "_blank";
-            a.innerText = `Server ${key.slice(-1)}`;
-            btns.appendChild(a);
-          }
-        });
-        card.appendChild(btns);
+        card.innerHTML = badge + teams + timeInfo +
+          `<div class="server-btns">${servers}</div>`;
 
-        listEl.appendChild(card);
+        list.appendChild(card);
 
-        // Timer update
-        setInterval(() => {
-          const now2 = new Date();
-          const diff2 = now2 - start;
-          if (isLive) {
-            const since = msToDhms(diff2);
-            timer.innerText = `Started ${since.m}m ${since.s}s ago`;
-          } else {
-            const left = msToDhms(start - now2);
-            timer.innerText = `Starts in ${left.d}d ${left.h}h ${left.m}m ${left.s}s`;
-          }
-        }, 1000);
+        // update countdown every second
+        if (!isLive) {
+          setInterval(() => {
+            const elems = document.getElementsByClassName('countdown');
+            if (elems[i]) elems[i].innerText = `${Math.floor((start - new Date())/86400000)}d ${Math.floor(((start-new Date())%86400000)/3600000)}h ${Math.floor(((start-new Date())%3600000)/60000)}m ${Math.floor(((start-new Date())%60000)/1000)}s left`;
+          }, 1000);
+        }
       });
     }
 
-    // Tab handlers
-    document.getElementById('liveTab').onclick = () => {
-      document.getElementById('liveTab').classList.add('active');
-      document.getElementById('upcomingTab').classList.remove('active');
-      renderMatches();
-    };
-    document.getElementById('upcomingTab').onclick = () => {
-      document.getElementById('upcomingTab').classList.add('active');
-      document.getElementById('liveTab').classList.remove('active');
-      renderMatches();
-    };
+    // Device-specific link opener
+    function openLink(e, url) {
+      e.preventDefault();
+      const ua = navigator.userAgent;
+      if (/Mobi|Android/i.test(ua)) {
+        window.location.href = url; // network streams handled by player
+      } else {
+        window.location.href = 'vlc://' + url;
+      }
+    }
+
     document.getElementById('search').addEventListener('input', renderMatches);
-
-    // ====== Telegram Popup ======
-    const overlay = document.getElementById('telegramOverlay');
-    const joined = localStorage.getItem('tel_joined');
-    if (!joined) overlay.style.display = 'flex';
-
-    document.getElementById('joinBtn').onclick = () => {
-      window.open("https://t.me/BDStreamHub_Discussion0", "_blank");
-      localStorage.setItem('tel_joined', 'yes');
-      overlay.style.display = 'none';
-    };
-
-    // ====== Init ======
     fetchData();
-    setInterval(fetchData, 60 * 1000); // refresh every minute
+    setInterval(fetchData, 60000);
   </script>
 </body>
 </html>
