@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BDStreamHub</title>
   <style>
     body {
@@ -105,7 +105,7 @@
       justify-content: center;
       font-size: 16px;
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-top: 10px;
     }
     .teams img {
       height: 45px;
@@ -113,11 +113,17 @@
       border-radius: 50%;
       margin: 0 10px;
     }
+    .match-time {
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 6px;
+      color: #bbb;
+    }
     .countdown, .started {
       font-size: 15px;
       text-align: center;
       color: #0f0;
-      margin-top: 5px;
+      margin-bottom: 8px;
     }
     .btns {
       text-align: center;
@@ -139,6 +145,7 @@
       display: inline-block;
       animation: blink 1s infinite;
       font-weight: bold;
+      margin-bottom: 5px;
     }
     @keyframes blink {
       0%, 100% { opacity: 1; }
@@ -148,102 +155,141 @@
 </head>
 <body>
 
-  <nav>
-    <div class="logo">BDStreamHub</div>
-    <div class="search-container">
-      <input id="search" type="text" placeholder="Search matches or teams"/>
-    </div>
-    <div class="menu">⋮
-      <div class="dropdown">
-        <a href="https://t.me/bdstreamhub" target="_blank">Telegram</a>
-      </div>
-    </div>
-  </nav>
-
-  <div class="notice">
-    <marquee scrollamount="5">Welcome to BDStreamHub</marquee>
+<nav>
+  <div class="logo">BDStreamHub</div>
+  <div class="search-container">
+    <input id="search" type="text" placeholder="Search matches or teams"/>
   </div>
-
-  <div class="tab-btns">
-    <button id="liveTab" class="active">Live</button>
-    <button id="upcomingTab">Upcoming</button>
+  <div class="menu">⋮
+    <div class="dropdown">
+      <a href="https://t.me/bdstreamhub" target="_blank">Telegram</a>
+    </div>
   </div>
+</nav>
 
-  <div id="match-list"></div>
+<div class="notice">
+  <marquee scrollamount="5">Welcome to BDStreamHub</marquee>
+</div>
 
-  <script>
-    const api = "https://script.google.com/macros/s/AKfycbys6AFNs2s1MKZ1zyJxaeUW-_Vmq5BuIEC8Qjyr-zXkx_x28F7rWTi2D0EmQlnsPvTnCQ/exec";
-    let matches = [];
+<div class="tab-btns">
+  <button id="liveTab" class="active">Live</button>
+  <button id="upcomingTab">Upcoming</button>
+</div>
 
-    function fetchData(){
-      fetch(api).then(r=>r.json()).then(data=>{
-        matches = data.matches;
-        renderMatches();
-      });
-    }
+<div id="match-list"></div>
 
-    function getNow(){ return new Date(); }
-    function getCountdown(t){ return Math.max(0, new Date(t) - getNow()); }
+<script>
+  const api = "https://script.google.com/macros/s/AKfycbys6AFNs2s1MKZ1zyJxaeUW-_Vmq5BuIEC8Qjyr-zXkx_x28F7rWTi2D0EmQlnsPvTnCQ/exec";
+  let matches = [];
+  let intervals = [];
 
-    function renderMatches(){
-      const live = getNow();
-      const list = document.getElementById('match-list');
-      list.innerHTML = "";
-      const filter = document.getElementById('search').value.toLowerCase();
-      const activeTab = document.querySelector('.tab-btns .active').id === 'liveTab' ? "live" : "upcoming";
+  function clearIntervals(){
+    intervals.forEach(i => clearInterval(i));
+    intervals = [];
+  }
 
-      matches.forEach((m,i)=>{
-        const ct = new Date(m.MatchTime);
-        const diff = live - ct;
-        const isLive = diff >= 0 && diff < 2*60*60*1000;
+  function fetchData(){
+    fetch(api).then(r => r.json()).then(data => {
+      matches = data.matches;
+      renderMatches();
+    });
+  }
 
-        if((activeTab==="live" && !isLive) || (activeTab==="upcoming" && isLive)) return;
-        if(filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return;
+  function getNow(){ return new Date(); }
+  function getCountdown(t){ return Math.max(0, new Date(t) - getNow()); }
 
-        const div = document.createElement('div');
-        div.className = "match";
-        div.innerHTML = `
-          <div class="teams">
-            <img src="${m.Team1Logo}">${m.Team1} vs ${m.Team2}<img src="${m.Team2Logo}">
-          </div>
-          ${isLive 
-            ? `<div class="liveBlink">LIVE</div><div class="started">Started ${Math.floor(diff / 60000)} mins ago</div>`
-            : `<div class="countdown" id="cd${i}"></div>`}
-          <div class="btns">
-            ${m.Intent1 ? `<a href="${m.Intent1}">Server 1</a>` : ""}
-            ${m.Intent2 ? `<a href="${m.Intent2}">Server 2</a>` : ""}
-            ${m.Intent3 ? `<a href="${m.Intent3}">Server 3</a>` : ""}
-          </div>
+  function formatCountdown(ms){
+    let s = Math.floor(ms/1000), m=Math.floor(s/60), h=Math.floor(m/60), d=Math.floor(h/24);
+    h %= 24; m %= 60; s %= 60;
+    return `${d}d ${h}h ${m}m ${s}s left`;
+  }
+
+  function renderMatches(){
+    clearIntervals();
+
+    const live = getNow();
+    const list = document.getElementById('match-list');
+    list.innerHTML = "";
+    const filter = document.getElementById('search').value.toLowerCase();
+    const activeTab = document.querySelector('.tab-btns .active').id === 'liveTab' ? "live" : "upcoming";
+
+    matches.forEach((m, i) => {
+      const ct = new Date(m.MatchTime);
+      const diff = live - ct;
+      const isLive = diff >= 0 && diff < 2*60*60*1000;
+
+      if ((activeTab === "live" && !isLive) || (activeTab === "upcoming" && isLive)) return;
+      if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return;
+
+      const div = document.createElement('div');
+      div.className = "match";
+
+      // উপরে: শুরু হওয়ার তারিখ/সময় + লাইভ/কাউন্টডাউন
+      let timerHtml = '';
+      if (isLive) {
+        timerHtml = `
+          <div class="liveBlink">LIVE</div>
+          <div class="countdown" id="cd${i}">Started ${Math.floor(diff / 60000)} mins ago</div>
         `;
-        list.appendChild(div);
+      } else {
+        timerHtml = `
+          <div class="match-time">Starts at: ${ct.toLocaleString()}</div>
+          <div class="countdown" id="cd${i}">${formatCountdown(getCountdown(m.MatchTime))}</div>
+        `;
+      }
 
-        if (!isLive) {
-          setInterval(()=>{
-            div.querySelector(`#cd${i}`).innerText = formatCountdown(getCountdown(m.MatchTime));
-          }, 1000);
-        }
-      });
-    }
+      div.innerHTML = `
+        ${timerHtml}
+        <div class="teams">
+          <img src="${m.Team1Logo}" alt="${m.Team1} logo">${m.Team1} vs ${m.Team2}<img src="${m.Team2Logo}" alt="${m.Team2} logo">
+        </div>
+        <div class="btns">
+          ${m.Intent1 ? `<a href="${m.Intent1}">Server 1</a>` : ""}
+          ${m.Intent2 ? `<a href="${m.Intent2}">Server 2</a>` : ""}
+          ${m.Intent3 ? `<a href="${m.Intent3}">Server 3</a>` : ""}
+        </div>
+      `;
 
-    function formatCountdown(ms){
-      let s = Math.floor(ms/1000), m=Math.floor(s/60), h=Math.floor(m/60), d=Math.floor(h/24);
-      h%=24; m%=60; s%=60;
-      return `${d}d ${h}h ${m}m ${s}s left`;
-    }
+      list.appendChild(div);
 
-    document.getElementById('search').addEventListener('input', renderMatches);
-    document.getElementById('liveTab').onclick = e => {
-      e.target.classList.add('active');
-      document.getElementById('upcomingTab').classList.remove('active');
-      renderMatches();
-    }
-    document.getElementById('upcomingTab').onclick = e => {
-      e.target.classList.add('active');
-      document.getElementById('liveTab').classList.remove('active');
-      renderMatches();
-    }
+      // লাইভ নয় হলে কাউন্টডাউন আপডেট রাখবো
+      if (!isLive) {
+        intervals.push(setInterval(() => {
+          const cdEl = div.querySelector(`#cd${i}`);
+          if(cdEl){
+            const remain = getCountdown(m.MatchTime);
+            cdEl.innerText = remain > 0 ? formatCountdown(remain) : "Starting soon";
+          }
+        }, 1000));
+      }
+      else {
+        // লাইভ ম্যাচে মিনিট ক্যালকুলেশন আপডেট রাখা (Started X mins ago)
+        intervals.push(setInterval(() => {
+          const cdEl = div.querySelector(`#cd${i}`);
+          if(cdEl){
+            const diffLive = getNow() - ct;
+            cdEl.innerText = `Started ${Math.floor(diffLive / 60000)} mins ago`;
+          }
+        }, 60000)); // প্রতি ১ মিনিটে আপডেট
+      }
+    });
+  }
 
-    fetchData();
-  </script>
+  document.getElementById('search').addEventListener('input', renderMatches);
+  document.getElementById('liveTab').onclick = e => {
+    e.target.classList.add('active');
+    document.getElementById('upcomingTab').classList.remove('active');
+    renderMatches();
+  }
+  document.getElementById('upcomingTab').onclick = e => {
+    e.target.classList.add('active');
+    document.getElementById('liveTab').classList.remove('active');
+    renderMatches();
+  }
+
+  fetchData();
+
+</script>
+
 </body>
 </html>
