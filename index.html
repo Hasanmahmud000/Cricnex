@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0af">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  
   <title>BDStreamHub - Live Matches & Upcoming</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>
+
+  <!-- ✅ এই দুইটা ঠিক জায়গায় বসানো -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0af">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>  
+
   <style>
-    <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log('✅ Service Worker registered!'))
-      .catch(err => console.error('❌ SW registration failed:', err));
-  }
-</script>
+    /* ... সব CSS এখানেই থাকবে ... */
+  </style>
     body {
       margin: 0;
       background: #111;
@@ -471,6 +470,15 @@ document.getElementById('subToday').addEventListener('click', () => {
       console.error('Error fetching matches:', e);
       document.getElementById('match-list').innerHTML = '<p style="text-align:center; color:#f00;">Failed to load match data.</p>';
     });
+  <!-- ... আপনার পুরো body content ... -->
+
+<!-- ✅ Service Worker রেজিস্ট্রেশন -->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('✅ Service Worker registered!'))
+      .catch(err => console.error('❌ SW registration failed:', err));
+  }
 </script>
 
 </body>
