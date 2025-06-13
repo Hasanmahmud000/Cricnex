@@ -168,7 +168,7 @@
 </nav>
 
 <div class="notice">
-  <marquee scrollamount="5">Welcome to BDStreamHub</marquee>
+  <marquee scrollamount="5">Welcome To BDStreamHub ! Android User Download Now Network Stream (Video) Player Or Video Not Playing ! Pc or IPhone User Player Coming Soon... !  Apps Link Google Play Store Or BDStreamHub Telegram ! </marquee>
 </div>
 
 <div class="tab-btns">
@@ -183,31 +183,36 @@
   let matches = [];
   let intervals = [];
 
-  function clearIntervals(){
+  function clearIntervals() {
     intervals.forEach(i => clearInterval(i));
     intervals = [];
   }
 
-  function fetchData(){
+  function fetchData() {
     fetch(api).then(r => r.json()).then(data => {
       matches = data.matches;
       renderMatches();
     });
   }
 
-  function getNow(){ return new Date(); }
-  function getCountdown(t){ return Math.max(0, new Date(t) - getNow()); }
+  function getNow() { return new Date(); }
+  function getCountdown(t) { return Math.max(0, new Date(t) - getNow()); }
 
-  function formatCountdown(ms){
-    let s = Math.floor(ms/1000), m=Math.floor(s/60), h=Math.floor(m/60), d=Math.floor(h/24);
+  function formatCountdown(ms) {
+    let s = Math.floor(ms / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60), d = Math.floor(h / 24);
     h %= 24; m %= 60; s %= 60;
     return `${d}d ${h}h ${m}m ${s}s left`;
   }
 
-  function renderMatches(){
-    clearIntervals();
+  function formatCountUp(ms) {
+    let s = Math.floor(ms / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60);
+    s %= 60; m %= 60;
+    return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s ago`;
+  }
 
-    const live = getNow();
+  function renderMatches() {
+    clearIntervals();
+    const now = getNow();
     const list = document.getElementById('match-list');
     list.innerHTML = "";
     const filter = document.getElementById('search').value.toLowerCase();
@@ -215,8 +220,7 @@
 
     matches.forEach((m, i) => {
       const ct = new Date(m.MatchTime);
-      const diff = live - ct;
-      const isLive = diff >= 0 && diff < 2*60*60*1000;
+      const isLive = now >= ct;
 
       if ((activeTab === "live" && !isLive) || (activeTab === "upcoming" && isLive)) return;
       if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return;
@@ -224,18 +228,18 @@
       const div = document.createElement('div');
       div.className = "match";
 
-      // উপরে: শুরু হওয়ার তারিখ/সময় + লাইভ/কাউন্টডাউন
       let timerHtml = '';
       if (isLive) {
+        const diffLive = getNow() - ct;
         timerHtml = `
           <div class="liveBlink">LIVE</div>
-          <div class="countdown" id="cd${i}">Started ${Math.floor(diff / 60000)} mins ago</div>
+          <div class="countdown" id="cd${i}">Started ${formatCountUp(diffLive)}</div>
         `;
       } else {
         timerHtml = `
-          <div class="match-time">Starts at: ${ct.toLocaleString()}</div>
-          <div class="countdown" id="cd${i}">${formatCountdown(getCountdown(m.MatchTime))}</div>
-        `;
+  <div class="match-time">Starts at: ${ct.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</div>
+  <div class="countdown" id="cd${i}">${formatCountdown(getCountdown(m.MatchTime))}</div>
+`;
       }
 
       div.innerHTML = `
@@ -252,25 +256,22 @@
 
       list.appendChild(div);
 
-      // লাইভ নয় হলে কাউন্টডাউন আপডেট রাখবো
       if (!isLive) {
         intervals.push(setInterval(() => {
           const cdEl = div.querySelector(`#cd${i}`);
-          if(cdEl){
+          if (cdEl) {
             const remain = getCountdown(m.MatchTime);
             cdEl.innerText = remain > 0 ? formatCountdown(remain) : "Starting soon";
           }
         }, 1000));
-      }
-      else {
-        // লাইভ ম্যাচে মিনিট ক্যালকুলেশন আপডেট রাখা (Started X mins ago)
+      } else {
         intervals.push(setInterval(() => {
           const cdEl = div.querySelector(`#cd${i}`);
-          if(cdEl){
+          if (cdEl) {
             const diffLive = getNow() - ct;
-            cdEl.innerText = `Started ${Math.floor(diffLive / 60000)} mins ago`;
+            cdEl.innerText = `Started ${formatCountUp(diffLive)}`;
           }
-        }, 60000)); // প্রতি ১ মিনিটে আপডেট
+        }, 1000));
       }
     });
   }
@@ -280,14 +281,15 @@
     e.target.classList.add('active');
     document.getElementById('upcomingTab').classList.remove('active');
     renderMatches();
-  }
+  };
   document.getElementById('upcomingTab').onclick = e => {
     e.target.classList.add('active');
     document.getElementById('liveTab').classList.remove('active');
     renderMatches();
-  }
+  };
 
   fetchData();
+</script>
 
 </script>
 
