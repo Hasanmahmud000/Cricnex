@@ -3,9 +3,9 @@
   "short_name": "Cricnex",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#111111",
+  "background_color": "#111",
   "theme_color": "#0af",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon-192.png",
