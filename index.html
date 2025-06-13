@@ -6,6 +6,50 @@
   <title>BDStreamHub - Live Matches & Upcoming</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>
   <style>
+  	.menu-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.menu-toggle {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #0ff;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 10px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 30px;
+  background-color: #222;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.7);
+  border-radius: 8px;
+  z-index: 1001;
+  overflow: hidden;
+  min-width: 180px;
+}
+
+.dropdown-content a {
+  color: #fff;
+  padding: 10px 16px;
+  display: block;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.dropdown-content a:hover {
+  background-color: #0af;
+}
+
+.menu-dropdown:hover .dropdown-content {
+  display: block;
+}
     body {
       margin: 0;
       background: #111;
@@ -201,11 +245,17 @@
   <div class="logo">BDStreamHub</div>
   <div class="search-container">
     <input id="search" type="text" placeholder="Search matches or teams" />
+    
+  <div class="menu-dropdown">
+  <button class="menu-toggle">⋮</button>
+  <div class="dropdown-content">
+    <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" target="_blank">📲 Download NS Player</a>
+    <a href="https://t.me/BDStreamHub" target="_blank">📣 Join Telegram</a>
   </div>
 </nav>
 
 <div class="notice">
-  <marquee scrollamount="5">Welcome To BDStreamHub ! ⚠️ Attention All Users ! For flawless live sports streaming on your mobile device ! please install the NS Player app now !Without NS Player, videos may not play properly or could stop unexpectedly ! 📲 Don’t miss a single moment — install NS Player today and enjoy uninterrupted live matches ! You can download the app from:
+  <marquee scrollamount="5">Welcome To BDStreamHub ! ⚠️ Attention All Users ! For flawless live sports streaming on your mobile device ! please install the NS Player app now ! Without NS Player, videos may not play properly or could stop unexpectedly ! 📲 Don’t miss a single moment — install NS Player today and enjoy uninterrupted live matches ! You can download the app from:
 Google Play Store or join our Telegram channel for the latest updates and app links:BDStreamHub Telegram ! </marquee>
 </div>
 
