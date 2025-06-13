@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BDStreamHub - Live Matches & Upcoming</title>
   
-  <!-- Manifest and Theme Color -->
-<link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#0af" />
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0af">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>
   <style>
@@ -467,9 +466,6 @@ document.getElementById('subToday').addEventListener('click', () => {
       console.error('Error fetching matches:', e);
       document.getElementById('match-list').innerHTML = '<p style="text-align:center; color:#f00;">Failed to load match data.</p>';
     });
-</script>
-
-<!-- Service Worker -->
 <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
