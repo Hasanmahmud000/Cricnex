@@ -210,6 +210,7 @@
 <!-- সাব-ট্যাব শুধুমাত্র Live Category তে দেখাবে -->
 <div id="subTabs" class="sub-tab-btns" style="display:none;">
   <button id="subLive" class="active">Live</button>
+  <button id="subToday">Today</button>       <!-- নতুন Today বাটন -->
   <button id="subUpcoming">Upcoming</button>
 </div>
 
@@ -260,87 +261,94 @@
   }
 
   function renderMatches(type = 'live') {
-    clearIntervals();
-    const now = getNow();
-    const list = document.getElementById('match-list');
-    list.innerHTML = "";
-    const filter = document.getElementById('search').value.toLowerCase();
+  clearIntervals();
+  const now = getNow();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
-    let filteredMatches = matches.filter(m => {
-      const ct = new Date(m.MatchTime);
-      const isLive = now >= ct;
+  const list = document.getElementById('match-list');
+  list.innerHTML = "";
+  const filter = document.getElementById('search').value.toLowerCase();
 
-      if(type === 'live' && !isLive) return false;
-      if(type === 'upcoming' && isLive) return false;
+  let filteredMatches = matches.filter(m => {
+    const ct = new Date(m.MatchTime);
+    const isLive = now >= ct;
 
-      if(filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;
+    if (type === 'live' && !isLive) return false;
+    else if (type === 'today') {
+      // আজকের ম্যাচ + এখনো লাইভ না
+      if (ct < todayStart || ct >= todayEnd || isLive) return false;
+    }
+    else if (type === 'upcoming' && isLive) return false;
 
-      return true;
-    });
+    if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;
 
-    if(filteredMatches.length === 0) {
-      list.innerHTML = `<p style="text-align:center; color:#aaa;">No ${type} matches found.</p>`;
-      return;
+    return true;
+  });
+
+  if (filteredMatches.length === 0) {
+    list.innerHTML = `<p style="text-align:center; color:#aaa;">No ${type} matches found.</p>`;
+    return;
+  }
+
+  filteredMatches.forEach((m, i) => {
+    const ct = new Date(m.MatchTime);
+    const isLive = now >= ct;
+
+    const div = document.createElement('div');
+    div.className = "match";
+
+    let timerHtml = '';
+    if (isLive) {
+      const diffLive = getNow() - ct;
+      timerHtml = `
+        <div class="liveBlink">LIVE</div>
+        <div class="countdown" id="cd${type}${i}">Started ${formatCountUp(diffLive)}</div>
+      `;
+    } else {
+      timerHtml = `
+        <div class="match-time">Starts at: ${ct.toLocaleDateString()} ${ct.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+        <div class="countdown" id="cd${type}${i}">${formatCountdown(getCountdown(m.MatchTime))}</div>
+      `;
     }
 
-    filteredMatches.forEach((m, i) => {
-      const ct = new Date(m.MatchTime);
-      const isLive = now >= ct;
+    div.innerHTML = `
+      <div class="teams">
+        <img src="${m.Team1Logo}" alt="${m.Team1} logo" loading="lazy" />
+        ${m.Team1}
+        <span style="margin: 0 10px; color: #0af;">vs</span>
+        ${m.Team2}
+        <img src="${m.Team2Logo}" alt="${m.Team2} logo" loading="lazy" />
+      </div>
+      ${timerHtml}
+      <div class="btns">
+        ${m.Intent1 ? `<a href="${m.Intent1}" target="_blank" rel="noopener noreferrer">Server 1</a>` : ""}
+        ${m.Intent2 ? `<a href="${m.Intent2}" target="_blank" rel="noopener noreferrer">Server 2</a>` : ""}
+        ${m.Intent3 ? `<a href="${m.Intent3}" target="_blank" rel="noopener noreferrer">Server 3</a>` : ""}
+      </div>
+    `;
 
-      const div = document.createElement('div');
-      div.className = "match";
+    list.appendChild(div);
 
-      let timerHtml = '';
-      if(isLive){
-        const diffLive = getNow() - ct;
-        timerHtml = `
-          <div class="liveBlink">LIVE</div>
-          <div class="countdown" id="cd${type}${i}">Started ${formatCountUp(diffLive)}</div>
-        `;
-      } else {
-        timerHtml = `
-          <div class="match-time">Starts at: ${ct.toLocaleDateString()} ${ct.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-          <div class="countdown" id="cd${type}${i}">${formatCountdown(getCountdown(m.MatchTime))}</div>
-        `;
-      }
-
-      div.innerHTML = `
-        <div class="teams">
-          <img src="${m.Team1Logo}" alt="${m.Team1} logo" loading="lazy" />
-          ${m.Team1}
-          <span style="margin: 0 10px; color: #0af;">vs</span>
-          ${m.Team2}
-          <img src="${m.Team2Logo}" alt="${m.Team2} logo" loading="lazy" />
-        </div>
-        ${timerHtml}
-        <div class="btns">
-          ${m.Intent1 ? `<a href="${m.Intent1}" target="_blank" rel="noopener noreferrer">Server 1</a>` : ""}
-          ${m.Intent2 ? `<a href="${m.Intent2}" target="_blank" rel="noopener noreferrer">Server 2</a>` : ""}
-          ${m.Intent3 ? `<a href="${m.Intent3}" target="_blank" rel="noopener noreferrer">Server 3</a>` : ""}
-        </div>
-      `;
-
-      list.appendChild(div);
-
-      if(!isLive) {
-        intervals.push(setInterval(() => {
-          const cdEl = div.querySelector(`#cd${type}${i}`);
-          if(cdEl){
-            const remain = getCountdown(m.MatchTime);
-            cdEl.innerText = remain > 0 ? formatCountdown(remain) : "Starting soon";
-          }
-        }, 1000));
-      } else {
-        intervals.push(setInterval(() => {
-          const cdEl = div.querySelector(`#cd${type}${i}`);
-          if(cdEl){
-            const diffLive = getNow() - ct;
-            cdEl.innerText = `Started ${formatCountUp(diffLive)}`;
-          }
-        }, 1000));
-      }
-    });
-  }
+    if (!isLive) {
+      intervals.push(setInterval(() => {
+        const cdEl = div.querySelector(`#cd${type}${i}`);
+        if (cdEl) {
+          const remain = getCountdown(m.MatchTime);
+          cdEl.innerText = remain > 0 ? formatCountdown(remain) : "Starting soon";
+        }
+      }, 1000));
+    } else {
+      intervals.push(setInterval(() => {
+        const cdEl = div.querySelector(`#cd${type}${i}`);
+        if (cdEl) {
+          const diffLive = getNow() - ct;
+          cdEl.innerText = `Started ${formatCountUp(diffLive)}`;
+        }
+      }, 1000));
+    }
+  });
+}
 
   // নিচের বড় ট্যাব হ্যান্ডলার
   function showCategory(category) {
@@ -378,26 +386,36 @@
 
   // সাব-ট্যাব হ্যান্ডলার
   function setActiveSubTab(subTab) {
-    document.getElementById('subLive').classList.remove('active');
-    document.getElementById('subUpcoming').classList.remove('active');
-    document.getElementById('sub' + subTab.charAt(0).toUpperCase() + subTab.slice(1)).classList.add('active');
-  }
+  document.getElementById('subLive').classList.remove('active');
+  document.getElementById('subToday').classList.remove('active');   // নতুন Today এর জন্য
+  document.getElementById('subUpcoming').classList.remove('active');
+
+  document.getElementById('sub' + subTab.charAt(0).toUpperCase() + subTab.slice(1)).classList.add('active');
+}
 
   document.getElementById('bottomLive').addEventListener('click', () => showCategory('live'));
   document.getElementById('bottomTV').addEventListener('click', () => showCategory('tv'));
   document.getElementById('bottomFM').addEventListener('click', () => showCategory('fm'));
 
-  document.getElementById('subLive').addEventListener('click', () => {
-    currentSubTab = 'live';
-    setActiveSubTab(currentSubTab);
-    renderMatches(currentSubTab);
-  });
+  // Sub Tab buttons click
+document.getElementById('subLive').addEventListener('click', () => {
+  currentSubTab = 'live';
+  setActiveSubTab(currentSubTab);
+  renderMatches(currentSubTab);
+});
 
-  document.getElementById('subUpcoming').addEventListener('click', () => {
-    currentSubTab = 'upcoming';
-    setActiveSubTab(currentSubTab);
-    renderMatches(currentSubTab);
-  });
+document.getElementById('subUpcoming').addEventListener('click', () => {
+  currentSubTab = 'upcoming';
+  setActiveSubTab(currentSubTab);
+  renderMatches(currentSubTab);
+});
+
+// ✅ এই লাইনটা নিচে বসাও
+document.getElementById('subToday').addEventListener('click', () => {
+  currentSubTab = 'today';
+  setActiveSubTab(currentSubTab);
+  renderMatches(currentSubTab);
+});
 
   document.getElementById('search').addEventListener('input', () => {
     if(document.getElementById('subTabs').style.display === 'block'){
