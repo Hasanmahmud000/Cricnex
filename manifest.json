@@ -1,11 +1,10 @@
 {
-  "name": "Cricnex",
-  "short_name": "Cricnex",
-  "start_url": "index.html",
+  "name": "BDStreamHub",
+  "short_name": "BDStream",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#111",
-  "theme_color": "#0af",
-  "orientation": "portrait-primary",
+  "background_color": "#111111",
+  "theme_color": "#00ffff",
   "icons": [
     {
       "src": "icon-192.png",
