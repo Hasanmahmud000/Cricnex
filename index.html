@@ -98,6 +98,11 @@
       padding: 15px;
       margin-bottom: 15px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .match:hover {
+      box-shadow: 0 0 15px #0af;
+      transform: scale(1.03);
     }
     .teams {
       display: flex;
@@ -138,18 +143,34 @@
       margin: 0 4px;
     }
     .liveBlink {
-      background: red;
-      color: white;
-      padding: 4px 8px;
-      border-radius: 5px;
+      position: relative;
       display: inline-block;
-      animation: blink 1s infinite;
-      font-weight: bold;
-      margin-bottom: 5px;
+      padding: 6px 12px;
+      font-weight: 900;
+      font-size: 16px;
+      color: white;
+      background: linear-gradient(45deg, #ff003c, #ff7700, #ff003c);
+      background-size: 200% 200%;
+      border-radius: 25px;
+      animation: gradientPulse 3s ease infinite, blinkOpacity 1.5s infinite;
+      box-shadow: 0 0 10px #ff003c, 0 0 20px #ff7700;
+      user-select: none;
+      text-transform: uppercase;
     }
-    @keyframes blink {
+    @keyframes blinkOpacity {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.3; }
+    }
+    @keyframes gradientPulse {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
     }
   </style>
 </head>
@@ -237,16 +258,20 @@
         `;
       } else {
         timerHtml = `
-  <div class="match-time">Starts at: ${ct.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</div>
-  <div class="countdown" id="cd${i}">${formatCountdown(getCountdown(m.MatchTime))}</div>
-`;
+          <div class="match-time">Starts at: ${ct.toLocaleDateString('en-US')} ${ct.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</div>
+          <div class="countdown" id="cd${i}">${formatCountdown(getCountdown(m.MatchTime))}</div>
+        `;
       }
 
       div.innerHTML = `
-        ${timerHtml}
-        <div class="teams">
-          <img src="${m.Team1Logo}" alt="${m.Team1} logo">${m.Team1} vs ${m.Team2}<img src="${m.Team2Logo}" alt="${m.Team2} logo">
+        <div class="teams" style="margin-bottom: 5px; justify-content: center; font-weight: bold; font-size: 16px;">
+          <img src="${m.Team1Logo}" alt="${m.Team1} logo" style="height:30px; width:30px; border-radius:50%; margin-right: 8px;">
+          ${m.Team1}
+          <span style="margin: 0 10px; color: #0af; font-weight: normal;">vs</span>
+          ${m.Team2}
+          <img src="${m.Team2Logo}" alt="${m.Team2} logo" style="height:30px; width:30px; border-radius:50%; margin-left: 8px;">
         </div>
+        ${timerHtml}
         <div class="btns">
           ${m.Intent1 ? `<a href="${m.Intent1}">Server 1</a>` : ""}
           ${m.Intent2 ? `<a href="${m.Intent2}">Server 2</a>` : ""}
@@ -289,8 +314,6 @@
   };
 
   fetchData();
-</script>
-
 </script>
 
 </body>
