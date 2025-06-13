@@ -164,9 +164,9 @@
     }
     .liveBlink {
       display: inline-block;
-      padding: 6px 14px;
+      padding: 6px 10px;
       font-weight: 900;
-      font-size: 16px;
+      font-size: 10px;
       color: white;
       background: linear-gradient(45deg, #ff003c, #ff7700, #ff003c);
       background-size: 200% 200%;
@@ -336,7 +336,7 @@ Google Play Store or join our Telegram channel for the latest updates and app li
       `;
     } else {
       timerHtml = `
-        <div class="match-time">Starts at: ${ct.toLocaleDateString()} ${ct.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+        <div class="match-time">Starts at: ${ct.toLocaleDateString('en-US')} ${ct.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</div>
         <div class="countdown" id="cd${type}${i}">${formatCountdown(getCountdown(m.MatchTime))}</div>
       `;
     }
