@@ -273,20 +273,23 @@ Google Play Store or join our Telegram channel for the latest updates and app li
   const filter = document.getElementById('search').value.toLowerCase();
 
   let filteredMatches = matches.filter(m => {
-    const ct = new Date(m.MatchTime);
-    const isLive = now >= ct;
+  const ct = new Date(m.MatchTime);
+  const isLive = now >= ct;
 
-    if (type === 'live' && !isLive) return false;
-    else if (type === 'today') {
-      // আজকের ম্যাচ + এখনো লাইভ না
-      if (ct < todayStart || ct >= todayEnd || isLive) return false;
-    }
-    else if (type === 'upcoming' && isLive) return false;
+  if (type === 'live' && !isLive) return false;
 
-    if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;
+  else if (type === 'today') {
+    if (ct < todayStart || ct >= todayEnd) return false;
+  }
 
-    return true;
-  });
+  else if (type === 'upcoming') {
+    if (ct < now || (ct >= todayStart && ct < todayEnd)) return false;
+  }
+
+  if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;
+
+  return true;
+});
 
   if (filteredMatches.length === 0) {
   let emojiMessage = '😴 No matches available right now.';
