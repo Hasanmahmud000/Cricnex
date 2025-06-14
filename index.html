@@ -272,9 +272,9 @@ Google Play Store or join our Telegram channel for the latest updates and app li
 
 <!-- সাব-ট্যাব শুধুমাত্র Live Category তে দেখাবে -->
 <div id="subTabs" class="sub-tab-btns" style="display:none;">
-  <button id="subLive" class="active">Live</button>
-  <button id="subToday">Today</button>       <!-- নতুন Today বাটন -->
-  <button id="subUpcoming">Upcoming</button>
+  <button id="subLive" class="active">Live <span id="countLive"></span></button>
+  <button id="subToday">Today <span id="countToday"></span></button>
+  <button id="subUpcoming">Upcoming <span id="countUpcoming"></span></button>
 </div>
 
 <div id="match-list"></div>
@@ -333,23 +333,23 @@ Google Play Store or join our Telegram channel for the latest updates and app li
   list.innerHTML = "";
   const filter = document.getElementById('search').value.toLowerCase();
 
-  let filteredMatches = matches.filter(m => {
-  const ct = new Date(m.MatchTime);
-  const isLive = now >= ct;
-
-  if (type === 'live' && !isLive) return false;
-
-  else if (type === 'today') {
-    if (ct < todayStart || ct >= todayEnd) return false;
-  }
-
-  else if (type === 'upcoming') {
-    if (ct < now || (ct >= todayStart && ct < todayEnd)) return false;
-  }
-
-  if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;
-
-  return true;
+  let filteredMatches = matches.filter(m => {  
+  const ct = new Date(m.MatchTime);  
+  const isLive = now >= ct;  
+  
+  if (type === 'live' && !isLive) return false;  
+  
+  else if (type === 'today') {  
+    if (ct < todayStart || ct >= todayEnd || isLive) return false;  
+  }  
+  
+  else if (type === 'upcoming') {  
+    if (ct < now || (ct >= todayStart && ct < todayEnd)) return false;  
+  }  
+  
+  if (filter && !(m.Match.toLowerCase().includes(filter) || m.Team1.toLowerCase().includes(filter) || m.Team2.toLowerCase().includes(filter))) return false;  
+  
+  return true;  
 });
 
   if (filteredMatches.length === 0) {
@@ -518,11 +518,48 @@ document.getElementById('subToday').addEventListener('click', () => {
 
   // প্রথমে ডাটা লোড করে Live Category দেখাবে
   fetch(matchesApi)
-    .then(res => res.json())
-    .then(data => {
-      matches = data.matches || [];
-      showCategory('live');
-    })
+  .then(res => res.json())
+  .then(data => {
+    matches = data.matches || [];
+
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+    // 🔹 সংখ্যাগুলো বের করো
+    const liveCount = matches.filter(m => new Date(m.MatchTime) <= now).length;
+    const todayCount = matches.filter(m => {
+      const ct = new Date(m.MatchTime);
+      return ct >= todayStart && ct < todayEnd && ct > now;
+    }).length;
+    const upcomingCount = matches.filter(m => new Date(m.MatchTime) > todayEnd).length;
+
+    // 🔹 UI তে সংখ্যা বসাও
+    document.getElementById("countLive").innerText = `(${liveCount})`;
+    document.getElementById("countToday").innerText = `(${todayCount})`;
+    document.getElementById("countUpcoming").innerText = `(${upcomingCount})`;
+
+    // 🔹 ম্যাচগুলোকে ফিল্টার করে সাজাও
+    const todayMatches = matches.filter(m => {
+      const ct = new Date(m.MatchTime);
+      return ct >= todayStart && ct < todayEnd && ct > now;
+    });
+
+    const upcomingMatches = matches.filter(m => {
+      const ct = new Date(m.MatchTime);
+      return ct > todayEnd;
+    });
+
+    const liveMatches = matches.filter(m => new Date(m.MatchTime) <= now);
+
+    matches = [
+      ...liveMatches.map(m => ({ ...m, isLive: true })),
+      ...todayMatches.map(m => ({ ...m, isToday: true })),
+      ...upcomingMatches.map(m => ({ ...m, isUpcoming: true })),
+    ];
+
+    showCategory('live');
+  })
     .catch(e => {
       console.error('Error fetching matches:', e);
       document.getElementById('match-list').innerHTML = '<p style="text-align:center; color:#f00;">Failed to load match data.</p>';
