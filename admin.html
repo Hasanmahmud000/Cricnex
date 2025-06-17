@@ -1,87 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BDStreamHub Admin</title>
+
+  <!-- PWA Support -->
+  <link rel="manifest" href="manifest.json" />
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(function(registration) {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      }, function(err) {
+        console.log('ServiceWorker registration failed: ', err);
+      });
+    }
+  </script>
+
   <style>
     body {
-      background: #f9f9f9;
-      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #f0f2f5, #d9e4f5);
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
       margin: 0;
       padding: 0;
     }
+
     header {
-      background: #0a0a23;
-      color: #fff;
-      padding: 15px 20px;
+      background: #0d1b2a;
+      color: #ffffff;
+      padding: 20px;
       text-align: center;
-      font-size: 24px;
-      font-weight: bold;
+      font-size: 26px;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
+
     .container {
-      max-width: 600px;
-      margin: 30px auto;
-      background: #fff;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 700px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
+
     input, textarea, button {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 6px;
+      padding: 12px 14px;
+      margin: 12px 0;
+      border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 16px;
+      transition: border 0.3s;
     }
+
+    input:focus, textarea:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
     button {
       background: #007bff;
-      color: #fff;
+      color: white;
+      font-weight: bold;
       border: none;
-      cursor: pointer;
+      transition: background 0.3s;
     }
+
     button:hover {
       background: #0056b3;
     }
+
     .match {
-      background: #f1f1f1;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 6px;
+      background: #f8f9fa;
+      padding: 15px;
+      margin: 12px 0;
+      border-radius: 10px;
+      border-left: 4px solid #007bff;
     }
+
+    .match strong {
+      font-size: 18px;
+    }
+
     .match-actions {
       text-align: right;
-      margin-top: 5px;
+      margin-top: 10px;
     }
+
     .match-actions button {
-      margin-left: 5px;
       font-size: 14px;
-      padding: 5px 10px;
+      padding: 6px 12px;
+      margin-left: 5px;
+      border-radius: 6px;
+      border: none;
+      color: white;
     }
+
+    .match-actions .delete-btn {
+      background: #dc3545;
+    }
+
+    .match-actions .delete-btn:hover {
+      background: #b92b39;
+    }
+
+    .match-actions .edit-btn {
+      background: #28a745;
+    }
+
+    .match-actions .edit-btn:hover {
+      background: #218838;
+    }
+
     #login {
-      max-width: 300px;
-      margin: 80px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      max-width: 320px;
+      margin: 100px auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    #login h2 {
+      margin-bottom: 20px;
+      color: #0d1b2a;
     }
   </style>
 </head>
 <body>
 
+<!-- Login Box -->
 <div id="login">
-  <h2>Admin Login</h2>
+  <h2>🔒 CricZone Admin Login</h2>
   <input type="password" id="password" placeholder="Enter admin password">
   <button onclick="login()">Login</button>
 </div>
 
+<!-- Admin Panel -->
 <div id="adminPanel" style="display:none;">
-  <header>BDStreamHub – Admin Panel</header>
+  <header>CricZone – Admin Panel</header>
   <div class="container">
     <form id="matchForm">
-      <input name="Match" placeholder="Match Name" required>
+      <input name="Match" placeholder="Match Title" required>
       <input name="Team1" placeholder="Team 1 Name" required>
       <input name="Team2" placeholder="Team 2 Name" required>
       <input name="Team1Logo" placeholder="Team 1 Logo URL" required>
@@ -91,17 +153,19 @@
       <input name="Intent2" placeholder="Stream URL 2">
       <input name="Intent3" placeholder="Stream URL 3">
       <textarea name="Notice" placeholder="Notice (optional)"></textarea>
-      <button type="submit">Add Match</button>
+      <button type="submit" id="submitBtn">➕ Add Match</button>
     </form>
 
-    <h3>Match History</h3>
-    <div id="matchList">Loading...</div>
+    <h3 style="margin-top: 30px;">🕒 Match History</h3>
+    <div id="matchList">⏳ Loading...</div>
   </div>
 </div>
 
 <script>
-  const adminPassword = "bdhub123"; // Change this password
+  const adminPassword = "bdhub6065";
   const sheetAPI = "https://script.google.com/macros/s/AKfycbys6AFNs2s1MKZ1zyJxaeUW-_Vmq5BuIEC8Qjyr-zXkx_x28F7rWTi2D0EmQlnsPvTnCQ/exec";
+
+  let editIndex = -1;
 
   function login() {
     const pass = document.getElementById("password").value;
@@ -110,7 +174,7 @@
       document.getElementById("adminPanel").style.display = "block";
       loadMatches();
     } else {
-      alert("Incorrect password");
+      alert("🔐 Incorrect password!");
     }
   }
 
@@ -118,34 +182,40 @@
     e.preventDefault();
     const form = e.target;
     const data = Object.fromEntries(new FormData(form).entries());
-    data.MatchTime = new Date(data.MatchTime).toISOString(); // Convert to ISO
+    data.MatchTime = new Date(data.MatchTime).toISOString();
 
-    fetch(sheetAPI, {
+    const url = editIndex === -1 ? sheetAPI : `${sheetAPI}?edit=${editIndex}`;
+    fetch(url, {
       method: 'POST',
       body: JSON.stringify(data)
     }).then(res => res.text())
       .then(() => {
-        alert("Match added!");
+        alert(editIndex === -1 ? "✅ Match added!" : "✏️ Match updated!");
         form.reset();
+        editIndex = -1;
+        document.getElementById("submitBtn").innerText = "➕ Add Match";
         loadMatches();
       });
   };
 
   function loadMatches() {
-    fetch(sheetAPI).then(res => res.json()).then(data => {
-      const matches = data.matches || [];
-      const list = document.getElementById("matchList");
-      list.innerHTML = matches.map((m, i) => `
-        <div class="match">
-          <strong>${m.Match}</strong><br>
-          ${m.Team1} vs ${m.Team2} <br>
-          Time: ${new Date(m.MatchTime).toLocaleString("en-BD", { timeZone: "Asia/Dhaka" })}<br>
-          <div class="match-actions">
-            <button onclick="deleteMatch(${i})">Delete</button>
+    fetch(sheetAPI)
+      .then(res => res.json())
+      .then(data => {
+        const matches = data.matches || [];
+        const list = document.getElementById("matchList");
+        list.innerHTML = matches.length ? matches.map((m, i) => `
+          <div class="match">
+            <strong>${m.Match}</strong><br>
+            ${m.Team1} vs ${m.Team2} <br>
+            🕒 Time: ${new Date(m.MatchTime).toLocaleString("en-BD", { timeZone: "Asia/Dhaka" })}<br>
+            <div class="match-actions">
+              <button class="edit-btn" onclick="editMatch(${i})">📝 Edit</button>
+              <button class="delete-btn" onclick="deleteMatch(${i})">🗑 Delete</button>
+            </div>
           </div>
-        </div>
-      `).join("") || "No matches found.";
-    });
+        `).join("") : "📭 No matches found.";
+      });
   }
 
   function deleteMatch(index) {
@@ -153,8 +223,30 @@
     fetch(sheetAPI + `?delete=${index}`, { method: 'GET' })
       .then(res => res.text())
       .then(() => {
-        alert("Match deleted.");
+        alert("🗑 Match deleted.");
         loadMatches();
+      });
+  }
+
+  function editMatch(index) {
+    fetch(sheetAPI)
+      .then(res => res.json())
+      .then(data => {
+        const match = data.matches[index];
+        const form = document.getElementById("matchForm");
+        form.Match.value = match.Match;
+        form.Team1.value = match.Team1;
+        form.Team2.value = match.Team2;
+        form.Team1Logo.value = match.Team1Logo;
+        form.Team2Logo.value = match.Team2Logo;
+        form.MatchTime.value = new Date(match.MatchTime).toISOString().slice(0, 16);
+        form.Intent1.value = match.Intent1;
+        form.Intent2.value = match.Intent2;
+        form.Intent3.value = match.Intent3;
+        form.Notice.value = match.Notice;
+        editIndex = index;
+        document.getElementById("submitBtn").innerText = "✏️ Update Match";
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
   }
 </script>
