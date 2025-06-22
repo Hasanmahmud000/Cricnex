@@ -13,201 +13,529 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0f0f0f;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
             color: #fff;
             line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Login Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            min-width: 400px;
+        }
+
+        .login-box h1 {
+            color: #fff;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 16px;
+            backdrop-filter: blur(5px);
+        }
+
+        .login-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #00bcd4, #0097a7);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.4);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 10px;
+            font-size: 14px;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
+        /* Enhanced Header */
         .header {
-            background: #1a1a1a;
-            padding: 20px;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 20px;
             margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.1;
+        }
+
+        .header h1 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Enhanced Form Container */
+        .form-container {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-container h2 {
+            background: linear-gradient(45deg, #00bcd4, #0097a7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            font-size: 2em;
             text-align: center;
         }
         
-        .header h1 {
-            color: #00bcd4;
-            margin-bottom: 10px;
-        }
-        
-        .form-container {
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-        
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             color: #00bcd4;
             font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .form-group input, .form-group select {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #333;
-            border-radius: 5px;
-            background: #2a2a2a;
+            padding: 15px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
             color: #fff;
             font-size: 14px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
         
         .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: #00bcd4;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 188, 212, 0.3);
         }
         
         .servers-container {
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 20px;
-            background: #2a2a2a;
+            border: 2px solid rgba(0, 188, 212, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            background: rgba(0, 188, 212, 0.05);
+            backdrop-filter: blur(10px);
         }
         
         .server-item {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 15px;
+            margin-bottom: 20px;
             align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .server-item input {
             flex: 1;
+            margin: 0;
         }
         
         .btn {
-            padding: 10px 20px;
+            padding: 12px 25px;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
             font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
         
         .btn-primary {
-            background: #00bcd4;
+            background: linear-gradient(45deg, #00bcd4, #0097a7);
             color: white;
+            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3);
         }
         
         .btn-primary:hover {
-            background: #0097a7;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 188, 212, 0.4);
         }
         
         .btn-success {
-            background: #4caf50;
+            background: linear-gradient(45deg, #4caf50, #45a049);
             color: white;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
         }
         
         .btn-success:hover {
-            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
         }
         
         .btn-danger {
-            background: #f44336;
+            background: linear-gradient(45deg, #f44336, #da190b);
             color: white;
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
         }
         
         .btn-danger:hover {
-            background: #da190b;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
         }
         
         .btn-secondary {
-            background: #666;
+            background: linear-gradient(45deg, #666, #555);
             color: white;
+            box-shadow: 0 5px 15px rgba(102, 102, 102, 0.3);
         }
         
         .btn-secondary:hover {
-            background: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 102, 102, 0.4);
         }
         
         .btn-warning {
-            background: #ff9800;
+            background: linear-gradient(45deg, #ff9800, #f57c00);
             color: white;
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
         }
         
         .btn-warning:hover {
-            background: #f57c00;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4);
         }
         
         .btn-small {
-            padding: 6px 12px;
+            padding: 8px 15px;
             font-size: 12px;
             margin: 2px;
         }
-        
+
+        /* Enhanced Matches List */
         .matches-list {
-            background: #1a1a1a;
-            border-radius: 10px;
-            padding: 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .matches-list h2 {
+            background: linear-gradient(45deg, #00bcd4, #0097a7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        .search-container {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid rgba(0, 188, 212, 0.3);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00bcd4;
+            font-size: 20px;
         }
         
         .match-item {
-            background: #2a2a2a;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 4px solid #00bcd4;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #00bcd4;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .match-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
         }
         
         .match-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
         }
         
         .match-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             color: #00bcd4;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .match-status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-live {
+            background: linear-gradient(45deg, #f44336, #ff5722);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .status-upcoming {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        .status-finished {
+            background: linear-gradient(45deg, #666, #555);
+            color: white;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(244, 67, 54, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
         }
         
         .match-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin-bottom: 15px;
+                        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .match-detail-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .match-detail-item strong {
+            color: #00bcd4;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .team-logos {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .team-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-logo img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid #00bcd4;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .team-logo img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.5);
+        }
+
+        .team-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .vs-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00bcd4;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
         
         .servers-display {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .server-badge {
-            background: #00bcd4;
+            background: linear-gradient(45deg, #00bcd4, #0097a7);
             color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
+            padding: 8px 15px;
+            border-radius: 20px;
             font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 3px 10px rgba(0, 188, 212, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .server-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.5);
         }
         
         .action-buttons {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            justify-content: center;
         }
         
         .loading {
             text-align: center;
             padding: 50px;
             color: #666;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 188, 212, 0.3);
+            border-radius: 50%;
+            border-top-color: #00bcd4;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         .modal {
@@ -219,144 +547,432 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
         }
         
         .modal-content {
-            background-color: #1a1a1a;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            margin: 2% auto;
+            padding: 40px;
+            border-radius: 20px;
             width: 90%;
-            max-width: 800px;
-            max-height: 80vh;
+            max-width: 900px;
+            max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .close {
             color: #aaa;
             float: right;
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
         
         .close:hover {
-            color: #fff;
+            color: #00bcd4;
+            transform: scale(1.2);
         }
-        
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.1) 0%, rgba(0, 151, 167, 0.1) 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(0, 188, 212, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00bcd4;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #ccc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12px;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
             }
+
+            .login-box {
+                min-width: 300px;
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .form-container, .matches-list {
+                padding: 20px;
+            }
             
             .server-item {
                 flex-direction: column;
+                gap: 10px;
             }
             
             .match-header {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 10px;
             }
             
             .action-buttons {
                 justify-content: center;
             }
+
+            .team-logos {
+                justify-content: center;
+            }
+
+            .match-details {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #00bcd4, #0097a7);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #0097a7, #00838f);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(45deg, #4caf50, #45a049);
+        }
+
+        .notification.error {
+            background: linear-gradient(45deg, #f44336, #da190b);
+        }
+
+        .notification.warning {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+        }
+
+        /* Time Display */
+        .time-display {
+            background: rgba(0, 188, 212, 0.1);
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 188, 212, 0.3);
+            margin: 10px 0;
+        }
+
+        .time-display .label {
+            color: #00bcd4;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .time-display .time {
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🏏 CricStreamZone Admin Panel</h1>
-            <p>Manage live cricket matches and streaming servers</p>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <h1>🏏 Admin Login</h1>
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 30px;">CricStreamZone Admin Panel</p>
+            <input type="password" id="passwordInput" class="login-input" placeholder="Enter Admin Password" autocomplete="current-password">
+            <button onclick="login()" class="login-btn">Login</button>
+            <div id="loginError" class="error-message"></div>
         </div>
+    </div>
 
-        <div class="form-container">
-            <h2 style="color: #00bcd4; margin-bottom: 20px;" id="formTitle">Add New Match</h2>
-            <form id="matchForm">
-                <input type="hidden" id="editMatchId" value="">
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                    <div class="form-group">
-                        <label>Match Name</label>
-                        <input type="text" id="matchName" placeholder="e.g., IND vs PAK T20 World Cup" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Team 1</label>
-                        <input type="text" id="team1" placeholder="e.g., India" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Team 2</label>
-                        <input type="text" id="team2" placeholder="e.g., Pakistan" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Team 1 Logo URL</label>
-                        <input type="url" id="team1Logo" placeholder="https://example.com/india-logo.png">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Team 2 Logo URL</label>
-                        <input type="url" id="team2Logo" placeholder="https://example.com/pakistan-logo.png">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Match Date & Time</label>
-                        <input type="datetime-local" id="matchTime" required>
-                    </div>
+    <!-- Main Admin Panel -->
+    <div id="adminPanel" style="display: none;">
+        <div class="container">
+            <div class="header">
+                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+                <h1>🏏 CricStreamZone Admin Panel</h1>
+                <p>Manage live cricket matches and streaming servers</p>
+                <div id="currentTime" style="margin-top: 15px; font-size: 14px; opacity: 0.9;"></div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalMatches">0</div>
+                    <div class="stat-label">Total Matches</div>
                 </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="liveMatches">0</div>
+                    <div class="stat-label">Live Matches</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="upcomingMatches">0</div>
+                    <div class="stat-label">Upcoming Matches</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalServers">0</div>
+                    <div class="stat-label">Total Servers</div>
+                </div>
+            </div>
 
-                <div class="form-group">
-                    <label>Streaming Servers</label>
-                    <div class="servers-container">
-                        <div style="background: #333; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 12px; color: #ccc;">
-                            <strong>📝 Link Format Examples:</strong><br>
-                            • Intent Link: <code>intent://stream.example.com/live.m3u8#Intent;package=com.genuine.leone;scheme=https;end</code><br>
-                            • M3U8 Link: <code>https://stream.example.com/live/playlist.m3u8</code><br>
-                            • HLS Link: <code>https://stream.example.com/hls/stream.m3u8</code>
+            <div class="form-container">
+                <h2 id="formTitle">Add New Match</h2>
+                <form id="matchForm">
+                    <input type="hidden" id="editMatchId" value="">
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                        <div class="form-group">
+                            <label>Match Name</label>
+                            <input type="text" id="matchName" placeholder="e.g., IND vs PAK T20 World Cup" required>
                         </div>
                         
-                        <div id="serversContainer">
-                            <div class="server-item">
-                                <input type="text" placeholder="Server Name (e.g., HD Server)" class="server-name">
-                                <input type="url" placeholder="intent://stream-url#Intent;package=com.genuine.leone;scheme=https;end" class="server-link">
-                                <button type="button" class="btn btn-danger btn-small" onclick="removeServer(this)">Remove</button>
+                        <div class="form-group">
+                            <label>Team 1</label>
+                            <input type="text" id="team1" placeholder="e.g., India" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Team 2</label>
+                            <input type="text" id="team2" placeholder="e.g., Pakistan" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Team 1 Logo URL</label>
+                            <input type="url" id="team1Logo" placeholder="https://example.com/india-logo.png">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Team 2 Logo URL</label>
+                            <input type="url" id="team2Logo" placeholder="https://example.com/pakistan-logo.png">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Match Date & Time (Bangladesh Time)</label>
+                            <input type="datetime-local" id="matchTime" required>
+                            <div class="time-display">
+                                <div class="label">Current Bangladesh Time</div>
+                                <div class="time" id="bdTime"></div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-secondary" onclick="addServer()">+ Add Another Server</button>
                     </div>
+
+                    <div class="form-group">
+                        <label>Streaming Servers</label>
+                        <div class="servers-container">
+                            <div style="background: rgba(0, 188, 212, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; font-size: 12px; color: #ccc; border: 1px solid rgba(0, 188, 212, 0.3);">
+                                <strong style="color: #00bcd4;">📝 Link Format Examples:</strong><br>
+                                • Intent Link: <code>intent://stream.example.com/live.m3u8#Intent;package=com.genuine.leone;scheme=https;end</code><br>
+                                • M3U8 Link: <code>https://stream.example.com/live/playlist.m3u8</code><br>
+                                • HLS Link: <code>https://stream.example.com/hls/stream.m3u8</code>
+                            </div>
+                            
+                            <div id="serversContainer">
+                                <div class="server-item">
+                                    <input type="text" placeholder="Server Name (e.g., HD Server)" class="server-name">
+                                    <input type="url" placeholder="intent://stream-url#Intent;package=com.genuine.leone;scheme=https;end" class="server-link">
+                                    <button type="button" class="btn btn-danger btn-small" onclick="removeServer(this)">🗑️ Remove</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary" onclick="addServer()">➕ Add Another Server</button>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 40px;">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">✅ Add Match</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Reset Form</button>
+                        <button type="button" class="btn btn-warning" id="cancelEditBtn" onclick="cancelEdit()" style="display: none;">❌ Cancel Edit</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="matches-list">
+                <h2>Existing Matches</h2>
+                
+                <div class="search-container">
+                    <input type="text" id="searchMatches" class="search-input" placeholder="Search matches by name, team, or status...">
+                    <span class="search-icon">🔍</span>
                 </div>
 
-                <div style="text-align: center; margin-top: 30px;">
-                    <button type="submit" class="btn btn-primary" id="submitBtn">Add Match</button>
-                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
-                    <button type="button" class="btn btn-warning" id="cancelEditBtn" onclick="cancelEdit()" style="display: none;">Cancel Edit</button>
+                <div style="margin-bottom: 20px; text-align: center;">
+                	                    <button class="btn btn-secondary btn-small" onclick="exportMatches()">📥 Export Matches</button>
+                    <button class="btn btn-primary btn-small" onclick="loadMatches()">🔄 Refresh</button>
                 </div>
-            </form>
-        </div>
 
-        <div class="matches-list">
-            <h2 style="color: #00bcd4; margin-bottom: 20px;">Existing Matches</h2>
-            <div id="matchesList" class="loading">Loading matches...</div>
+                <div id="matchesList" class="loading">Loading matches...</div>
+            </div>
         </div>
     </div>
 
-    <!-- Edit Modal -->
-    <div id="editModal" class="modal">
+    <!-- View Modal -->
+    <div id="viewModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeEditModal()">&times;</span>
-            <h2 style="color: #00bcd4; margin-bottom: 20px;">Edit Match</h2>
-            <div id="editFormContainer"></div>
+            <span class="close" onclick="closeViewModal()">&times;</span>
+            <h2 style="color: #00bcd4; margin-bottom: 20px;">Match Details</h2>
+            <div id="viewModalContent"></div>
         </div>
     </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxzx4xcwEGidoxEd7BQshkR9FKHjK5o0p8ukNY4NsKNR0EsShY7eV3MUxA2iXz1V8bmHg/exec'; // আপনার API URL দিন
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxzx4xcwEGidoxEd7BQshkR9FKHjK5o0p8ukNY4NsKNR0EsShY7eV3MUxA2iXz1V8bmHg/exec';
+        const ADMIN_PASSWORD = 'admin123'; // Change this password
 
         let allMatches = [];
         let isEditing = false;
+        let editingMatchId = null;
+
+        // Bangladesh timezone offset (UTC+6)
+        const BD_TIMEZONE_OFFSET = 6 * 60; // 6 hours in minutes
+
+        // Get Bangladesh time
+        function getBangladeshTime() {
+            const now = new Date();
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const bdTime = new Date(utc + (BD_TIMEZONE_OFFSET * 60000));
+            return bdTime;
+        }
+
+        // Format time for Bangladesh
+        function formatBDTime(date) {
+            const bdDate = new Date(date.getTime() + (BD_TIMEZONE_OFFSET * 60000));
+            return bdDate.toLocaleString('en-BD', {
+                timeZone: 'Asia/Dhaka',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        // Update current time display
+        function updateCurrentTime() {
+            const bdTime = getBangladeshTime();
+            document.getElementById('currentTime').textContent = 
+                `Current Bangladesh Time: ${formatBDTime(bdTime)}`;
+            
+            const bdTimeElement = document.getElementById('bdTime');
+            if (bdTimeElement) {
+                bdTimeElement.textContent = formatBDTime(bdTime);
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Login function
+        function login() {
+            const password = document.getElementById('passwordInput').value;
+            const errorElement = document.getElementById('loginError');
+            
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                localStorage.setItem('adminLoggedIn', 'true');
+                loadMatches();
+                updateCurrentTime();
+                setInterval(updateCurrentTime, 1000);
+                showNotification('Successfully logged in!', 'success');
+            } else {
+                errorElement.textContent = 'Invalid password!';
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('adminLoggedIn');
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('adminPanel').style.display = 'none';
+                document.getElementById('passwordInput').value = '';
+                showNotification('Logged out successfully!', 'warning');
+            }
+        }
+
+        // Check login status on page load
+        function checkLoginStatus() {
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadMatches();
+                updateCurrentTime();
+                setInterval(updateCurrentTime, 1000);
+            }
+        }
+
+        // Enter key login
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
 
         // Add new server input
         function addServer() {
@@ -366,7 +982,7 @@
             serverItem.innerHTML = `
                 <input type="text" placeholder="Server Name (e.g., Mobile Server)" class="server-name">
                 <input type="url" placeholder="intent://stream-url#Intent;package=com.genuine.leone;scheme=https;end" class="server-link">
-                <button type="button" class="btn btn-danger btn-small" onclick="removeServer(this)">Remove</button>
+                <button type="button" class="btn btn-danger btn-small" onclick="removeServer(this)">🗑️ Remove</button>
             `;
             container.appendChild(serverItem);
         }
@@ -377,7 +993,7 @@
             if (container.children.length > 1) {
                 button.parentElement.remove();
             } else {
-                alert('At least one server is required!');
+                showNotification('At least one server is required!', 'warning');
             }
         }
 
@@ -385,46 +1001,58 @@
         function resetForm() {
             document.getElementById('matchForm').reset();
             document.getElementById('editMatchId').value = '';
+            editingMatchId = null;
+            
             const container = document.getElementById('serversContainer');
             container.innerHTML = `
                 <div class="server-item">
                     <input type="text" placeholder="Server Name (e.g., HD Server)" class="server-name">
                     <input type="url" placeholder="intent://stream-url#Intent;package=com.genuine.leone;scheme=https;end" class="server-link">
-                    <button type="button" class="btn btn-danger btn-small" onclick="removeServer(this)">Remove</button>
+                    <button type="button" class="btn btn-danger btn-small" onclick="removeServer(this)">🗑️ Remove</button>
                 </div>
             `;
             
             // Reset form title and button
             document.getElementById('formTitle').textContent = 'Add New Match';
-            document.getElementById('submitBtn').textContent = 'Add Match';
+            document.getElementById('submitBtn').innerHTML = '✅ Add Match';
             document.getElementById('cancelEditBtn').style.display = 'none';
             isEditing = false;
+            
+            // Set default time to current BD time
+            const bdTime = getBangladeshTime();
+            const formattedTime = bdTime.toISOString().slice(0, 16);
+            document.getElementById('matchTime').value = formattedTime;
         }
 
         // Cancel edit mode
         function cancelEdit() {
             resetForm();
+            showNotification('Edit cancelled', 'warning');
         }
 
         // Edit match
         function editMatch(matchId) {
             const match = allMatches.find(m => m.id === matchId);
             if (!match) {
-                alert('Match not found!');
+                showNotification('Match not found!', 'error');
                 return;
             }
+
+            isEditing = true;
+            editingMatchId = matchId;
 
             // Fill form with match data
             document.getElementById('editMatchId').value = matchId;
             document.getElementById('matchName').value = match.Match;
             document.getElementById('team1').value = match.Team1;
             document.getElementById('team2').value = match.Team2;
-            document.getElementById('team1Logo').value = match.Team1Logo;
-            document.getElementById('team2Logo').value = match.Team2Logo;
+            document.getElementById('team1Logo').value = match.Team1Logo || '';
+            document.getElementById('team2Logo').value = match.Team2Logo || '';
             
-            // Format datetime for input
+            // Convert match time to Bangladesh time for editing
             const matchTime = new Date(match.MatchTime);
-            const formattedTime = matchTime.toISOString().slice(0, 16);
+            const bdMatchTime = new Date(matchTime.getTime() + (BD_TIMEZONE_OFFSET * 60000));
+            const formattedTime = bdMatchTime.toISOString().slice(0, 16);
             document.getElementById('matchTime').value = formattedTime;
 
             // Clear and populate servers
@@ -438,34 +1066,33 @@
                     serverItem.innerHTML = `
                         <input type="text" placeholder="Server Name" class="server-name" value="${server.name}">
                         <input type="url" placeholder="Server Link" class="server-link" value="${server.link}">
-                                                <button type="button" class="btn btn-danger btn-small" onclick="removeServer(this)">Remove</button>
+                        <button type="button" class="btn btn-danger btn-small" onclick="removeServer(this)">🗑️ Remove</button>
                     `;
                     container.appendChild(serverItem);
                 });
             } else {
-                // Add default server input if no servers
                 addServer();
             }
 
             // Update form title and button
             document.getElementById('formTitle').textContent = 'Edit Match';
-            document.getElementById('submitBtn').textContent = 'Update Match';
+            document.getElementById('submitBtn').innerHTML = '✏️ Update Match';
             document.getElementById('cancelEditBtn').style.display = 'inline-block';
-            isEditing = true;
 
             // Scroll to form
             document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+            showNotification('Match loaded for editing', 'success');
         }
 
         // Delete match
         function deleteMatch(matchId) {
             const match = allMatches.find(m => m.id === matchId);
             if (!match) {
-                alert('Match not found!');
+                showNotification('Match not found!', 'error');
                 return;
             }
 
-            if (confirm(`Are you sure you want to delete "${match.Match}"?`)) {
+            if (confirm(`Are you sure you want to delete "${match.Match}"?\n\nThis action cannot be undone.`)) {
                 fetch(API_URL, {
                     method: 'POST',
                     body: JSON.stringify({
@@ -476,14 +1103,14 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Match deleted successfully!');
+                        showNotification('Match deleted successfully!', 'success');
                         loadMatches();
                     } else {
-                        alert('Error deleting match!');
+                        showNotification('Error deleting match!', 'error');
                     }
                 })
                 .catch(error => {
-                    alert('Network error: ' + error.message);
+                    showNotification('Network error: ' + error.message, 'error');
                 });
             }
         }
@@ -492,71 +1119,135 @@
         function viewMatch(matchId) {
             const match = allMatches.find(m => m.id === matchId);
             if (!match) {
-                alert('Match not found!');
+                showNotification('Match not found!', 'error');
                 return;
             }
 
             const matchTime = new Date(match.MatchTime);
-            const now = new Date();
+            const bdMatchTime = formatBDTime(matchTime);
+            const now = getBangladeshTime();
             const isLive = now >= matchTime;
-            const status = isLive ? '🔴 LIVE' : '⏰ UPCOMING';
+            const isFinished = now > new Date(matchTime.getTime() + (6 * 60 * 60 * 1000)); // 6 hours after start
+            
+            let status, statusClass;
+            if (isFinished) {
+                status = '⚫ FINISHED';
+                statusClass = 'status-finished';
+            } else if (isLive) {
+                status = '🔴 LIVE';
+                statusClass = 'status-live';
+            } else {
+                status = '⏰ UPCOMING';
+                statusClass = 'status-upcoming';
+            }
 
             let serversHtml = '';
             if (match.servers && match.servers.length > 0) {
-                serversHtml = match.servers.map(server => 
-                    `<div class="server-badge">${server.name}: ${server.link}</div>`
+                serversHtml = match.servers.map((server, index) => 
+                    `<div class="server-badge" style="margin: 5px;">
+                        <strong>Server ${index + 1}:</strong> ${server.name}<br>
+                        <small style="opacity: 0.8;">${server.link}</small>
+                    </div>`
                 ).join('');
             } else {
-                serversHtml = '<div style="color: #888;">No servers available</div>';
+                serversHtml = '<div style="color: #888; text-align: center; padding: 20px;">No servers available</div>';
             }
 
             const modalContent = `
-                <div style="background: #2a2a2a; padding: 20px; border-radius: 8px;">
-                    <h3 style="color: #00bcd4; margin-bottom: 15px;">${match.Match}</h3>
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="text-align: center; margin-bottom: 25px;">
+                        <h3 style="color: #00bcd4; margin-bottom: 10px; font-size: 1.8em;">${match.Match}</h3>
+                        <span class="match-status ${statusClass}">${status}</span>
+                    </div>
                     
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px;">
-                        <div>
-                            <strong>Team 1:</strong> ${match.Team1}<br>
-                            <strong>Team 2:</strong> ${match.Team2}<br>
-                            <strong>Status:</strong> ${status}
+                    <div class="team-logos" style="justify-content: center; margin: 25px 0;">
+                        <div class="team-logo">
+                            <img src="${match.Team1Logo || 'https://via.placeholder.com/60x60/00bcd4/fff?text=' + match.Team1.charAt(0)}" 
+                                 alt="${match.Team1}" 
+                                 onerror="this.src='https://via.placeholder.com/60x60/00bcd4/fff?text=${match.Team1.charAt(0)}'">
+                            <div class="team-name">${match.Team1}</div>
                         </div>
-                        <div>
-                            <strong>Date:</strong> ${matchTime.toLocaleDateString()}<br>
-                            <strong>Time:</strong> ${matchTime.toLocaleTimeString()}<br>
-                            <strong>Match ID:</strong> ${matchId}
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom: 15px;">
-                        <strong>Team Logos:</strong><br>
-                        <div style="display: flex; gap: 20px; margin-top: 10px;">
-                            <div>
-                                <img src="${match.Team1Logo}" alt="${match.Team1}" style="width: 50px; height: 50px; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/333/fff?text=?'">
-                                <div style="text-align: center; margin-top: 5px; font-size: 12px;">${match.Team1}</div>
-                            </div>
-                            <div>
-                                <img src="${match.Team2Logo}" alt="${match.Team2}" style="width: 50px; height: 50px; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/333/fff?text=?'">
-                                <div style="text-align: center; margin-top: 5px; font-size: 12px;">${match.Team2}</div>
-                            </div>
+                        <div class="vs-text">VS</div>
+                        <div class="team-logo">
+                            <img src="${match.Team2Logo || 'https://via.placeholder.com/60x60/00bcd4/fff?text=' + match.Team2.charAt(0)}" 
+                                 alt="${match.Team2}" 
+                                 onerror="this.src='https://via.placeholder.com/60x60/00bcd4/fff?text=${match.Team2.charAt(0)}'">
+                            <div class="team-name">${match.Team2}</div>
                         </div>
                     </div>
 
-                    <div>
-                        <strong>Streaming Servers:</strong><br>
-                        <div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 25px 0;">
+                        <div class="match-detail-item">
+                            <strong>Match Date & Time</strong>
+                            ${bdMatchTime} (BD Time)
+                        </div>
+                        <div class="match-detail-item">
+                            <strong>Match ID</strong>
+                            ${matchId}
+                        </div>
+                        <div class="match-detail-item">
+                            <strong>Total Servers</strong>
+                            ${match.servers ? match.servers.length : 0}
+                        </div>
+                        <div class="match-detail-item">
+                            <strong>Status</strong>
+                            ${status}
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 25px;">
+                        <strong style="color: #00bcd4; font-size: 1.2em; display: block; margin-bottom: 15px;">📡 Streaming Servers:</strong>
+                        <div style="background: rgba(0, 188, 212, 0.05); padding: 20px; border-radius: 10px; border: 1px solid rgba(0, 188, 212, 0.2);">
                             ${serversHtml}
                         </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 25px;">
+                        <button class="btn btn-warning btn-small" onclick="closeViewModal(); editMatch(${matchId})">
+                            ✏️ Edit This Match
+                                        </button>
+                        <button class="btn btn-danger btn-small" onclick="closeViewModal(); deleteMatch(${matchId})">
+                            🗑️ Delete This Match
+                        </button>
                     </div>
                 </div>
             `;
 
-            document.getElementById('editFormContainer').innerHTML = modalContent;
-            document.getElementById('editModal').style.display = 'block';
+            document.getElementById('viewModalContent').innerHTML = modalContent;
+            document.getElementById('viewModal').style.display = 'block';
         }
 
-        // Close edit modal
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
+        // Close view modal
+        function closeViewModal() {
+            document.getElementById('viewModal').style.display = 'none';
+        }
+
+        // Update statistics
+        function updateStats() {
+            const now = getBangladeshTime();
+            let liveCount = 0;
+            let upcomingCount = 0;
+            let totalServers = 0;
+
+            allMatches.forEach(match => {
+                const matchTime = new Date(match.MatchTime);
+                const isLive = now >= matchTime && now <= new Date(matchTime.getTime() + (6 * 60 * 60 * 1000));
+                
+                if (isLive) {
+                    liveCount++;
+                } else if (now < matchTime) {
+                    upcomingCount++;
+                }
+
+                if (match.servers) {
+                    totalServers += match.servers.length;
+                }
+            });
+
+            document.getElementById('totalMatches').textContent = allMatches.length;
+            document.getElementById('liveMatches').textContent = liveCount;
+            document.getElementById('upcomingMatches').textContent = upcomingCount;
+            document.getElementById('totalServers').textContent = totalServers;
         }
 
         // Submit form
@@ -575,9 +1266,13 @@
             });
 
             if (servers.length === 0) {
-                alert('Please add at least one server!');
+                showNotification('Please add at least one server!', 'warning');
                 return;
             }
+
+            // Convert Bangladesh time to UTC for storage
+            const bdTime = new Date(document.getElementById('matchTime').value);
+            const utcTime = new Date(bdTime.getTime() - (BD_TIMEZONE_OFFSET * 60000));
 
             const matchData = {
                 action: isEditing ? 'update' : 'add',
@@ -587,16 +1282,21 @@
                     Team2: document.getElementById('team2').value,
                     Team1Logo: document.getElementById('team1Logo').value,
                     Team2Logo: document.getElementById('team2Logo').value,
-                    MatchTime: document.getElementById('matchTime').value,
+                    MatchTime: utcTime.toISOString(),
                     servers: servers
                 }
             };
 
             if (isEditing) {
-                matchData.id = document.getElementById('editMatchId').value;
+                matchData.id = editingMatchId;
             }
 
             try {
+                const submitBtn = document.getElementById('submitBtn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '⏳ Processing...';
+                submitBtn.disabled = true;
+
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     body: JSON.stringify(matchData)
@@ -605,48 +1305,98 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    alert(isEditing ? 'Match updated successfully!' : 'Match added successfully!');
+                    showNotification(isEditing ? 'Match updated successfully!' : 'Match added successfully!', 'success');
                     resetForm();
                     loadMatches();
                 } else {
-                    alert('Error saving match!');
+                    showNotification('Error saving match: ' + (result.error || 'Unknown error'), 'error');
                 }
+
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+
             } catch (error) {
-                alert('Network error: ' + error.message);
+                showNotification('Network error: ' + error.message, 'error');
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('submitBtn').innerHTML = isEditing ? '✏️ Update Match' : '✅ Add Match';
             }
         });
 
         // Load existing matches
         async function loadMatches() {
             try {
+                document.getElementById('matchesList').innerHTML = '<div class="loading">Loading matches...</div>';
+                
                 const response = await fetch(API_URL);
                 const data = await response.json();
                 allMatches = data.matches || [];
+                
+                // Sort matches by time (upcoming first, then live, then finished)
+                allMatches.sort((a, b) => {
+                    const now = getBangladeshTime();
+                    const timeA = new Date(a.MatchTime);
+                    const timeB = new Date(b.MatchTime);
+                    
+                    const isLiveA = now >= timeA && now <= new Date(timeA.getTime() + (6 * 60 * 60 * 1000));
+                    const isLiveB = now >= timeB && now <= new Date(timeB.getTime() + (6 * 60 * 60 * 1000));
+                    const isUpcomingA = now < timeA;
+                    const isUpcomingB = now < timeB;
+                    
+                    // Live matches first
+                    if (isLiveA && !isLiveB) return -1;
+                    if (!isLiveA && isLiveB) return 1;
+                    
+                    // Then upcoming matches
+                    if (isUpcomingA && !isUpcomingB) return -1;
+                    if (!isUpcomingA && isUpcomingB) return 1;
+                    
+                    // Within same category, sort by time
+                    return timeA - timeB;
+                });
                 
                 const container = document.getElementById('matchesList');
                 
                 if (allMatches.length === 0) {
                     container.innerHTML = `
-                        <div style="text-align: center; padding: 50px; color: #666;">
-                            <h3>No matches found</h3>
-                            <p>Add your first match using the form above.</p>
+                        <div style="text-align: center; padding: 50px; background: rgba(255, 255, 255, 0.05); border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                            <h3 style="color: #00bcd4; margin-bottom: 15px;">📭 No matches found</h3>
+                            <p style="color: #ccc; margin-bottom: 20px;">Add your first match using the form above.</p>
+                            <button class="btn btn-primary" onclick="document.getElementById('matchName').focus()">
+                                ➕ Add First Match
+                            </button>
                         </div>
                     `;
+                    updateStats();
                     return;
                 }
 
                 container.innerHTML = allMatches.map(match => {
                     const matchTime = new Date(match.MatchTime);
-                    const now = new Date();
-                    const isLive = now >= matchTime;
-                    const status = isLive ? '🔴 LIVE' : '⏰ UPCOMING';
-                    const statusColor = isLive ? '#f44336' : '#ff9800';
+                    const bdMatchTime = formatBDTime(matchTime);
+                    const now = getBangladeshTime();
+                    const isLive = now >= matchTime && now <= new Date(matchTime.getTime() + (6 * 60 * 60 * 1000));
+                    const isFinished = now > new Date(matchTime.getTime() + (6 * 60 * 60 * 1000));
+                    
+                    let status, statusClass;
+                    if (isFinished) {
+                        status = '⚫ FINISHED';
+                        statusClass = 'status-finished';
+                    } else if (isLive) {
+                        status = '🔴 LIVE';
+                        statusClass = 'status-live';
+                    } else {
+                        status = '⏰ UPCOMING';
+                        statusClass = 'status-upcoming';
+                    }
 
                     let serversHtml = '';
                     if (match.servers && match.servers.length > 0) {
-                        serversHtml = match.servers.map(server => 
+                        serversHtml = match.servers.slice(0, 3).map((server, index) => 
                             `<span class="server-badge">${server.name}</span>`
                         ).join('');
+                        if (match.servers.length > 3) {
+                            serversHtml += `<span class="server-badge" style="background: #666;">+${match.servers.length - 3} more</span>`;
+                        }
                     } else {
                         serversHtml = '<span style="color: #888; font-size: 12px;">No servers</span>';
                     }
@@ -655,21 +1405,37 @@
                         <div class="match-item">
                             <div class="match-header">
                                 <div class="match-title">${match.Match}</div>
-                                <div style="color: ${statusColor}; font-weight: bold; font-size: 14px;">${status}</div>
+                                <div class="match-status ${statusClass}">${status}</div>
                             </div>
                             
+                            <div class="team-logos">
+                                <div class="team-logo">
+                                    <img src="${match.Team1Logo || 'https://via.placeholder.com/60x60/00bcd4/fff?text=' + match.Team1.charAt(0)}" 
+                                         alt="${match.Team1}" 
+                                         onerror="this.src='https://via.placeholder.com/60x60/00bcd4/fff?text=${match.Team1.charAt(0)}'">
+                                    <div class="team-name">${match.Team1}</div>
+                                </div>
+                                <div class="vs-text">VS</div>
+                                <div class="team-logo">
+                                    <img src="${match.Team2Logo || 'https://via.placeholder.com/60x60/00bcd4/fff?text=' + match.Team2.charAt(0)}" 
+                                         alt="${match.Team2}" 
+                                         onerror="this.src='https://via.placeholder.com/60x60/00bcd4/fff?text=${match.Team2.charAt(0)}'">
+                                    <div class="team-name">${match.Team2}</div>
+                                </div>
+                            </div>
+
                             <div class="match-details">
-                                <div>
-                                    <strong>Teams:</strong> ${match.Team1} vs ${match.Team2}
+                                <div class="match-detail-item">
+                                    <strong>Date & Time</strong>
+                                    ${bdMatchTime} (BD)
                                 </div>
-                                <div>
-                                    <strong>Date:</strong> ${matchTime.toLocaleDateString()}
+                                <div class="match-detail-item">
+                                    <strong>Servers</strong>
+                                    ${match.servers ? match.servers.length : 0} Available
                                 </div>
-                                <div>
-                                    <strong>Time:</strong> ${matchTime.toLocaleTimeString()}
-                                </div>
-                                <div>
-                                    <strong>Servers:</strong> ${match.servers ? match.servers.length : 0}
+                                <div class="match-detail-item">
+                                    <strong>Match ID</strong>
+                                    #${match.id}
                                 </div>
                             </div>
 
@@ -692,25 +1458,82 @@
                     `;
                 }).join('');
 
+                updateStats();
+
             } catch (error) {
                 document.getElementById('matchesList').innerHTML = `
-                    <div style="text-align: center; padding: 50px; color: #f44336;">
-                        <h3>Error loading matches</h3>
-                        <p>${error.message}</p>
-                        <button class="btn btn-primary" onclick="loadMatches()">Retry</button>
+                    <div style="text-align: center; padding: 50px; background: rgba(244, 67, 54, 0.1); border-radius: 15px; border: 1px solid rgba(244, 67, 54, 0.3);">
+                        <h3 style="color: #f44336; margin-bottom: 15px;">❌ Error loading matches</h3>
+                        <p style="color: #ccc; margin-bottom: 20px;">${error.message}</p>
+                        <button class="btn btn-primary" onclick="loadMatches()">🔄 Try Again</button>
                     </div>
                 `;
+                showNotification('Error loading matches: ' + error.message, 'error');
             }
         }
 
-        // Auto-refresh matches every 30 seconds
-        setInterval(loadMatches, 30000);
+        // Search functionality
+        document.getElementById('searchMatches').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const matchItems = document.querySelectorAll('.match-item');
+            let visibleCount = 0;
+            
+            matchItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Show search results count
+            if (searchTerm) {
+                showNotification(`Found ${visibleCount} matches for "${searchTerm}"`, 'success');
+            }
+        });
+
+        // Export matches to JSON
+        function exportMatches() {
+            if (allMatches.length === 0) {
+                showNotification('No matches to export!', 'warning');
+                return;
+            }
+
+            const exportData = {
+                exportDate: getBangladeshTime().toISOString(),
+                totalMatches: allMatches.length,
+                matches: allMatches.map(match => ({
+                    ...match,
+                    MatchTime_BD: formatBDTime(new Date(match.MatchTime))
+                }))
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `cricstreamzone_matches_${new Date().toISOString().slice(0, 10)}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            showNotification('Matches exported successfully!', 'success');
+        }
+
+        // Auto-refresh matches every 60 seconds
+        setInterval(() => {
+            if (document.getElementById('adminPanel').style.display !== 'none') {
+                loadMatches();
+            }
+        }, 60000);
 
         // Close modal when clicking outside
         window.onclick = function(event) {
-            const modal = document.getElementById('editModal');
-            if (event.target === modal) {
-                closeEditModal();
+            const viewModal = document.getElementById('viewModal');
+            if (event.target === viewModal) {
+                closeViewModal();
             }
         }
 
@@ -718,7 +1541,7 @@
         document.addEventListener('keydown', function(e) {
             // ESC to close modal
             if (e.key === 'Escape') {
-                closeEditModal();
+                closeViewModal();
             }
             
             // Ctrl+N for new match
@@ -726,71 +1549,341 @@
                 e.preventDefault();
                 resetForm();
                 document.getElementById('matchName').focus();
+                showNotification('New match form ready!', 'success');
+            }
+
+            // Ctrl+R for refresh
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                loadMatches();
+                showNotification('Matches refreshed!', 'success');
+            }
+
+            // Ctrl+E for export
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                exportMatches();
             }
         });
 
-        // Search functionality
-        function addSearchFeature() {
-            const searchContainer = document.createElement('div');
-            searchContainer.innerHTML = `
-                <div style="margin-bottom: 20px;">
-                    <input type="text" id="searchMatches" placeholder="Search matches..." style="width: 100%; padding: 12px; border: 1px solid #333; border-radius: 5px; background: #2a2a2a; color: #fff;">
-                </div>
-            `;
-            
-            const matchesList = document.querySelector('.matches-list');
-            matchesList.insertBefore(searchContainer, document.getElementById('matchesList'));
+        // Form validation
+        function validateForm() {
+            const requiredFields = ['matchName', 'team1', 'team2', 'matchTime'];
+            let isValid = true;
 
-            document.getElementById('searchMatches').addEventListener('input', function(e) {
-                const searchTerm = e.target.value.toLowerCase();
-                const matchItems = document.querySelectorAll('.match-item');
-                
-                matchItems.forEach(item => {
-                    const text = item.textContent.toLowerCase();
-                    if (text.includes(searchTerm)) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#f44336';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#00bcd4';
+                }
+            });
+
+            return isValid;
+        }
+
+        // Add real-time validation
+        ['matchName', 'team1', 'team2', 'matchTime'].forEach(fieldId => {
+                        document.getElementById(fieldId).addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.style.borderColor = '#00bcd4';
+                } else {
+                    this.style.borderColor = '#f44336';
+                }
+            });
+        });
+
+        // Prevent duplicate matches during edit
+        function checkDuplicateMatch(matchName, team1, team2, excludeId = null) {
+            return allMatches.some(match => {
+                if (excludeId && match.id === excludeId) return false;
+                return match.Match.toLowerCase() === matchName.toLowerCase() ||
+                       (match.Team1.toLowerCase() === team1.toLowerCase() && 
+                        match.Team2.toLowerCase() === team2.toLowerCase()) ||
+                       (match.Team1.toLowerCase() === team2.toLowerCase() && 
+                        match.Team2.toLowerCase() === team1.toLowerCase());
             });
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            loadMatches();
-            addSearchFeature();
+        // Enhanced form submission with duplicate check
+        document.getElementById('matchForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            // Set default datetime to current time
-            const now = new Date();
-            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-            document.getElementById('matchTime').value = now.toISOString().slice(0, 16);
+            if (!validateForm()) {
+                showNotification('Please fill all required fields!', 'error');
+                return;
+            }
+
+            const matchName = document.getElementById('matchName').value.trim();
+            const team1 = document.getElementById('team1').value.trim();
+            const team2 = document.getElementById('team2').value.trim();
+
+            // Check for duplicate matches
+            if (checkDuplicateMatch(matchName, team1, team2, editingMatchId)) {
+                showNotification('A similar match already exists!', 'warning');
+                return;
+            }
+
+            const servers = [];
+            const serverItems = document.querySelectorAll('.server-item');
+            
+            serverItems.forEach(item => {
+                const name = item.querySelector('.server-name').value.trim();
+                const link = item.querySelector('.server-link').value.trim();
+                if (name && link) {
+                    servers.push({ name, link });
+                }
+            });
+
+            if (servers.length === 0) {
+                showNotification('Please add at least one server!', 'warning');
+                return;
+            }
+
+            // Convert Bangladesh time to UTC for storage
+            const bdTime = new Date(document.getElementById('matchTime').value);
+            const utcTime = new Date(bdTime.getTime() - (BD_TIMEZONE_OFFSET * 60000));
+
+            const matchData = {
+                action: isEditing ? 'update' : 'add',
+                match: {
+                    Match: matchName,
+                    Team1: team1,
+                    Team2: team2,
+                    Team1Logo: document.getElementById('team1Logo').value.trim(),
+                    Team2Logo: document.getElementById('team2Logo').value.trim(),
+                    MatchTime: utcTime.toISOString(),
+                    servers: servers
+                }
+            };
+
+            if (isEditing) {
+                matchData.id = editingMatchId;
+            }
+
+            try {
+                const submitBtn = document.getElementById('submitBtn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '⏳ Processing...';
+                submitBtn.disabled = true;
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(matchData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification(isEditing ? 'Match updated successfully!' : 'Match added successfully!', 'success');
+                    resetForm();
+                    loadMatches();
+                } else {
+                    showNotification('Error saving match: ' + (result.error || 'Unknown error'), 'error');
+                }
+
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+
+            } catch (error) {
+                showNotification('Network error: ' + error.message, 'error');
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('submitBtn').innerHTML = isEditing ? '✏️ Update Match' : '✅ Add Match';
+            }
         });
 
-        // Export matches to JSON
-        function exportMatches() {
-            const dataStr = JSON.stringify(allMatches, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'cricstreamzone_matches.json';
-            link.click();
+        // Auto-save draft functionality
+        function saveDraft() {
+            const draft = {
+                matchName: document.getElementById('matchName').value,
+                team1: document.getElementById('team1').value,
+                team2: document.getElementById('team2').value,
+                team1Logo: document.getElementById('team1Logo').value,
+                team2Logo: document.getElementById('team2Logo').value,
+                matchTime: document.getElementById('matchTime').value,
+                servers: Array.from(document.querySelectorAll('.server-item')).map(item => ({
+                    name: item.querySelector('.server-name').value,
+                    link: item.querySelector('.server-link').value
+                }))
+            };
+            localStorage.setItem('matchDraft', JSON.stringify(draft));
         }
 
-        // Add export button
-        function addExportButton() {
-            const header = document.querySelector('.header');
-            const exportBtn = document.createElement('button');
-            exportBtn.className = 'btn btn-secondary';
-            exportBtn.innerHTML = '📥 Export Matches';
-            exportBtn.onclick = exportMatches;
-            exportBtn.style.marginTop = '10px';
-            header.appendChild(exportBtn);
+        function loadDraft() {
+            const draft = localStorage.getItem('matchDraft');
+            if (draft && !isEditing) {
+                const data = JSON.parse(draft);
+                if (data.matchName || data.team1 || data.team2) {
+                    if (confirm('Found a saved draft. Would you like to restore it?')) {
+                        document.getElementById('matchName').value = data.matchName || '';
+                        document.getElementById('team1').value = data.team1 || '';
+                        document.getElementById('team2').value = data.team2 || '';
+                        document.getElementById('team1Logo').value = data.team1Logo || '';
+                        document.getElementById('team2Logo').value = data.team2Logo || '';
+                        document.getElementById('matchTime').value = data.matchTime || '';
+                        
+                        // Restore servers
+                        const container = document.getElementById('serversContainer');
+                        container.innerHTML = '';
+                        if (data.servers && data.servers.length > 0) {
+                            data.servers.forEach(server => {
+                                if (server.name || server.link) {
+                                    const serverItem = document.createElement('div');
+                                    serverItem.className = 'server-item';
+                                    serverItem.innerHTML = `
+                                        <input type="text" placeholder="Server Name" class="server-name" value="${server.name || ''}">
+                                        <input type="url" placeholder="Server Link" class="server-link" value="${server.link || ''}">
+                                        <button type="button" class="btn btn-danger btn-small" onclick="removeServer(this)">🗑️ Remove</button>
+                                    `;
+                                    container.appendChild(serverItem);
+                                }
+                            });
+                        }
+                        if (container.children.length === 0) {
+                            addServer();
+                        }
+                        showNotification('Draft restored successfully!', 'success');
+                    }
+                }
+            }
         }
 
-        // Initialize export feature
-        setTimeout(addExportButton, 1000);
+        // Auto-save every 30 seconds
+        setInterval(saveDraft, 30000);
+
+        // Save on form input
+        document.getElementById('matchForm').addEventListener('input', saveDraft);
+
+        // Clear draft on successful submission
+        function clearDraft() {
+            localStorage.removeItem('matchDraft');
+        }
+
+        // Enhanced error handling
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.error);
+            showNotification('An unexpected error occurred. Please refresh the page.', 'error');
+        });
+
+        // Network status monitoring
+        window.addEventListener('online', function() {
+            showNotification('Connection restored!', 'success');
+            loadMatches();
+        });
+
+        window.addEventListener('offline', function() {
+            showNotification('Connection lost! Working in offline mode.', 'warning');
+        });
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            
+            // Set default datetime to current BD time
+            const bdTime = getBangladeshTime();
+            const formattedTime = bdTime.toISOString().slice(0, 16);
+            document.getElementById('matchTime').value = formattedTime;
+            
+            // Load draft if available
+            setTimeout(loadDraft, 1000);
+            
+            // Add keyboard shortcuts info
+            console.log(`
+🎯 CricStreamZone Admin Panel Shortcuts:
+• Ctrl+N: New Match
+• Ctrl+R: Refresh Matches  
+• Ctrl+E: Export Matches
+• ESC: Close Modal
+• Enter: Login (on password field)
+            `);
+        });
+
+        // Service Worker for offline functionality (optional)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(function(error) {
+                console.log('ServiceWorker registration failed: ', error);
+            });
+        }
+
+        // Performance monitoring
+        function logPerformance() {
+            if (performance.timing) {
+                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                console.log(`Page load time: ${loadTime}ms`);
+            }
+        }
+
+        window.addEventListener('load', logPerformance);
+
+        // Cleanup function
+        function cleanup() {
+            clearDraft();
+            localStorage.removeItem('adminLoggedIn');
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function(e) {
+            if (isEditing) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+
+        // Add tooltips for better UX
+        function addTooltips() {
+            const tooltips = {
+                'matchName': 'Enter a descriptive name for the cricket match',
+                'team1': 'Enter the first team name',
+                'team2': 'Enter the second team name',
+                'team1Logo': 'URL of the first team logo image',
+                'team2Logo': 'URL of the second team logo image',
+                'matchTime': 'Select match date and time in Bangladesh timezone'
+            };
+
+            Object.keys(tooltips).forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.title = tooltips[id];
+                }
+            });
+        }
+
+        // Initialize tooltips
+        setTimeout(addTooltips, 500);
+
+        // Add copy to clipboard functionality
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                showNotification('Copied to clipboard!', 'success');
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+                showNotification('Failed to copy to clipboard', 'error');
+            });
+        }
+
+        // Enhanced match view with copy functionality
+        function enhanceMatchView() {
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('server-badge')) {
+                    const serverText = e.target.textContent;
+                    copyToClipboard(serverText);
+                }
+            });
+        }
+
+        // Initialize enhanced features
+        setTimeout(enhanceMatchView, 1000);
+
+        // Final initialization message
+        console.log('🏏 CricStreamZone Admin Panel Loaded Successfully!');
+        console.log('Version: 2.0.0 | Enhanced Edition');
+        console.log('Features: Password Protection, Bangladesh Time, Duplicate Prevention, Auto-save');
 
     </script>
 </body>
