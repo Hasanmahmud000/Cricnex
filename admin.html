@@ -355,67 +355,75 @@
             font-size: 18px;
         }
 
-        .match-item {
-            background: linear-gradient(
-                135deg,
-                rgba(255, 255, 255, 0.1) 0%,
-                rgba(255, 255, 255, 0.05) 100%
-            );
-            padding: 25px;
+        /* List Style for Matches */
+        .matches-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
-            margin-bottom: 20px;
-            border-left: 4px solid #00bcd4;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .matches-table th {
+            background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .matches-table td {
+            padding: 15px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            vertical-align: middle;
+        }
+
+        .matches-table tr {
             transition: all 0.3s ease;
         }
 
-        .match-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        .matches-table tr:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        .match-item.updated {
-            border-left-color: #4caf50;
+        .matches-table tr.updated {
+            background: rgba(76, 175, 80, 0.2);
             animation: highlightUpdate 2s ease;
         }
 
         @keyframes highlightUpdate {
             0% {
-                background: rgba(76, 175, 80, 0.2);
+                background: rgba(76, 175, 80, 0.3);
             }
             100% {
-                background: linear-gradient(
-                    135deg,
-                    rgba(255, 255, 255, 0.1) 0%,
-                    rgba(255, 255, 255, 0.05) 100%
-                );
+                background: rgba(255, 255, 255, 0.05);
             }
         }
 
-        .match-header {
+        .team-cell {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .match-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #00bcd4;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        .team-logo-small {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .match-status {
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 6px 12px;
+            border-radius: 15px;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            display: inline-block;
         }
 
         .status-live {
@@ -446,104 +454,19 @@
             }
         }
 
-        .match-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .detail-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .detail-label {
-            font-size: 12px;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-
-        .detail-value {
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .teams-display {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        .team-info {
-            text-align: center;
-            flex: 1;
-            min-width: 120px;
-        }
-
-        .team-logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin-bottom: 10px;
-            border: 3px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .team-logo:hover {
-            transform: scale(1.1);
-            border-color: #00bcd4;
-        }
-
-        .team-name {
-            font-weight: 600;
-            color: #fff;
-            font-size: 14px;
-        }
-
-        .vs-text {
-            font-size: 24px;
-            font-weight: bold;
-            color: #00bcd4;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .servers-display {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .server-badge {
+                .servers-count {
             background: linear-gradient(45deg, #00bcd4, #0097a7);
             color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 11px;
             font-weight: 600;
-            box-shadow: 0 2px 10px rgba(0, 188, 212, 0.3);
-            transition: all 0.3s ease;
         }
 
-        .server-badge:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
-        }
-
-        .action-buttons {
+        .action-buttons-table {
             display: flex;
-            gap: 10px;
+            gap: 5px;
             flex-wrap: wrap;
-            justify-content: center;
         }
 
         .loading {
@@ -552,7 +475,7 @@
             color: #666;
         }
 
-               .loading-spinner {
+        .loading-spinner {
             width: 50px;
             height: 50px;
             border: 4px solid rgba(0, 188, 212, 0.3);
@@ -733,38 +656,23 @@
                 min-width: auto;
             }
 
-            .match-header {
+            .matches-table {
+                font-size: 12px;
+            }
+
+            .matches-table th,
+            .matches-table td {
+                padding: 8px 5px;
+            }
+
+            .action-buttons-table {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .match-title {
-                font-size: 18px;
-            }
-
-            .teams-display {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .vs-text {
-                order: 2;
-                font-size: 18px;
-            }
-
-            .action-buttons {
-                justify-content: center;
-            }
-
-            .btn {
-                padding: 10px 16px;
-                font-size: 13px;
+                gap: 3px;
             }
 
             .btn-small {
-                padding: 8px 12px;
-                font-size: 11px;
+                padding: 6px 10px;
+                font-size: 10px;
             }
 
             .modal-content {
@@ -798,13 +706,9 @@
                 grid-template-columns: 1fr;
             }
 
-            .match-details {
-                grid-template-columns: 1fr;
-            }
-
-            .team-logo {
-                width: 50px;
-                height: 50px;
+            .team-logo-small {
+                width: 25px;
+                height: 25px;
             }
 
             .login-box {
@@ -863,6 +767,23 @@
                 transform: translateY(0);
                 opacity: 1;
             }
+        }
+
+        /* Table responsive wrapper */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+
+        .no-matches {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+
+        .no-matches h3 {
+            margin-bottom: 10px;
+            color: #999;
         }
     </style>
 </head>
@@ -939,7 +860,7 @@
 
                         <div class="form-group">
                             <label>🖼️ Team 1 Logo URL</label>
-                            <input type="url" id="team1Logo" placeholder="https://example.com/india-logo.png" />
+                            <input type="url" id="team1Logo" placeholder="https://example.com/Bangladesh-logo.png" />
                         </div>
 
                         <div class="form-group">
@@ -1003,12 +924,11 @@
     <script>
         // Configuration
         const CONFIG = {
-            API_URL:
-                'https://script.google.com/macros/s/AKfycbxzx4xcwEGidoxEd7BQshkR9FKHjK5o0p8ukNY4NsKNR0EsShY7eV3MUxA2iXz1V8bmHg/exec',
-            ADMIN_PASSWORD: 'bdhub2008', // Change this password
+            API_URL: 'https://script.google.com/macros/s/AKfycbxzx4xcwEGidoxEd7BQshkR9FKHjK5o0p8ukNY4NsKNR0EsShY7eV3MUxA2iXz1V8bmHg/exec',
+            ADMIN_PASSWORD: 'bdhub2008',
             SESSION_KEY: 'cricstream_admin_session',
-            REALTIME_INTERVAL: 5000, // 5 seconds
-            BROADCAST_CHANNEL: 'cricstream_updates',
+            REALTIME_INTERVAL: 3000, // 3 seconds for faster updates
+                        BROADCAST_CHANNEL: 'cricstream_updates',
         };
 
         let allMatches = [];
@@ -1102,7 +1022,7 @@
                 updateStats();
 
                 if (updatedMatches.length > 0) {
-                    showToast(`${updatedMatches.length} match(es) updated in real-time! 🔄`, 'success');
+                    showToast(`${updatedMatches.length} match(es) updated! 🔄`, 'success');
                 }
             }
 
@@ -1159,7 +1079,7 @@
                 switch (status) {
                     case 'connected':
                         indicator.className = 'status-indicator';
-                                                indicator.style.background = '#4caf50';
+                        indicator.style.background = '#4caf50';
                         statusText.textContent = 'Live Updates';
                         this.isConnected = true;
                         break;
@@ -1329,7 +1249,7 @@
             document.getElementById('matchTime').value = now.toISOString().slice(0, 16);
         }
 
-        // Match CRUD Operations with Real-time Broadcasting
+        // Match CRUD Operations
         function editMatch(matchId) {
             const match = allMatches.find((m) => m.id === matchId);
             if (!match) {
@@ -1346,7 +1266,7 @@
             document.getElementById('team1Logo').value = match.Team1Logo || '';
             document.getElementById('team2Logo').value = match.Team2Logo || '';
 
-            // IMPORTANT CHANGE: Keep the existing match time as is, do NOT reset it to current time
+            // Keep the existing match time unchanged
             if (match.MatchTime) {
                 const matchTime = new Date(match.MatchTime);
                 const formattedTime = matchTime.toISOString().slice(0, 16);
@@ -1391,11 +1311,7 @@
                 return;
             }
 
-            if (
-                confirm(
-                    `🗑️ Are you sure you want to delete "${match.Match}"?\n\nThis action cannot be undone.`
-                )
-            ) {
+            if (confirm(`🗑️ Are you sure you want to delete "${match.Match}"?\n\nThis action cannot be undone.`)) {
                 const deleteBtn = event.target;
                 const originalText = deleteBtn.innerHTML;
                 deleteBtn.innerHTML = '⏳ Deleting...';
@@ -1412,11 +1328,11 @@
                     .then((data) => {
                         if (data.success) {
                             showToast('Match deleted successfully!', 'success');
-
-                            // Trigger immediate update
-                            if (realtimeUpdater) {
-                                setTimeout(() => realtimeUpdater.checkForUpdates(), 500);
-                            }
+                            
+                            // Immediate refresh
+                            setTimeout(() => {
+                                loadMatches();
+                            }, 500);
                         } else {
                             showToast('Error deleting match!', 'error');
                         }
@@ -1440,8 +1356,7 @@
 
             const matchTime = new Date(match.MatchTime);
             const now = new Date();
-            const isLive =
-                now >= matchTime && now <= new Date(matchTime.getTime() + 6 * 60 * 60 * 1000);
+            const isLive = now >= matchTime && now <= new Date(matchTime.getTime() + 6 * 60 * 60 * 1000);
             const isFinished = now > new Date(matchTime.getTime() + 6 * 60 * 60 * 1000);
 
             let status, statusClass;
@@ -1459,88 +1374,71 @@
             let serversHtml = '';
             if (match.servers && match.servers.length > 0) {
                 serversHtml = match.servers
-                    .map(
-                        (server, index) => `
-                    <div class="detail-item">
-                        <div class="detail-label">Server ${index + 1}</div>
-                        <div class="detail-value">${server.name}</div>
-                        <div style="font-size: 12px; color: #999; margin-top: 5px; word-break: break-all;">${server.link}</div>
+                    .map((server, index) => `
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                        <div style="color: #00bcd4; font-weight: 600; margin-bottom: 5px;">Server ${index + 1}: ${server.name}</div>
+                        <div style="font-size: 12px; color: #999; word-break: break-all;">${server.link}</div>
                     </div>`
                     )
                     .join('');
             } else {
-                serversHtml =
-                    '<div class="detail-item"><div class="detail-value" style="color: #888;">No servers available</div></div>';
+                serversHtml = '<div style="color: #888; text-align: center; padding: 20px;">No servers available</div>';
             }
 
             const modalContent = `
-                <div class="match-item" style="margin: 0; border-left: none; border: 2px solid #00bcd4;">
-                    <div class="match-header">
-                        <div class="match-title">${match.Match}</div>
-                        <div class="match-status ${statusClass}">${status}</div>
+                <div style="border: 2px solid #00bcd4; border-radius: 12px; padding: 25px; background: rgba(255, 255, 255, 0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                        <h3 style="color: #00bcd4; margin: 0;">${match.Match}</h3>
+                                                <div class="match-status ${statusClass}">${status}</div>
                     </div>
                     
-                    <div class="teams-display">
-                        <div class="team-info">
-                            <img src="${
-                                match.Team1Logo ||
-                                'https://via.placeholder.com/60x60/333/fff?text=' +
-                                    (match.Team1 ? match.Team1.charAt(0) : '?')
-                            }" 
-                                 alt="${match.Team1}" class="team-logo" 
-                                 onerror="this.src='https://via.placeholder.com/60x60/333/fff?text=${
-                                     match.Team1 ? match.Team1.charAt(0) : '?'
-                                 }'">
-                            <div class="team-name">${match.Team1}</div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin: 25px 0; flex-wrap: wrap;">
+                        <div style="text-align: center;">
+                            <img src="${match.Team1Logo || 'https://via.placeholder.com/80x80/333/fff?text=' + (match.Team1 ? match.Team1.charAt(0) : '?')}" 
+                                 alt="${match.Team1}" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, 0.2); margin-bottom: 10px;"
+                                 onerror="this.src='https://via.placeholder.com/80x80/333/fff?text=${match.Team1 ? match.Team1.charAt(0) : '?'}'">
+                            <div style="font-weight: 600; color: #fff;">${match.Team1}</div>
                         </div>
-                        <div class="vs-text">VS</div>
-                        <div class="team-info">
-                            <img src="${
-                                match.Team2Logo ||
-                                'https://via.placeholder.com/60x60/333/fff?text=' +
-                                    (match.Team2 ? match.Team2.charAt(0) : '?')
-                            }" 
-                                 alt="${match.Team2}" class="team-logo"
-                                 onerror="this.src='https://via.placeholder.com/60x60/333/fff?text=${
-                                     match.Team2 ? match.Team2.charAt(0) : '?'
-                                 }'">
-                            <div class="team-name">${match.Team2}</div>
+                        <div style="font-size: 28px; font-weight: bold; color: #00bcd4;">VS</div>
+                        <div style="text-align: center;">
+                            <img src="${match.Team2Logo || 'https://via.placeholder.com/80x80/333/fff?text=' + (match.Team2 ? match.Team2.charAt(0) : '?')}" 
+                                 alt="${match.Team2}" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, 0.2); margin-bottom: 10px;"
+                                 onerror="this.src='https://via.placeholder.com/80x80/333/fff?text=${match.Team2 ? match.Team2.charAt(0) : '?'}'">
+                            <div style="font-weight: 600; color: #fff;">${match.Team2}</div>
                         </div>
                     </div>
 
-                    <div class="match-details">
-                        <div class="detail-item">
-                            <div class="detail-label">Match Date</div>
-                            <div class="detail-value">${matchTime.toLocaleDateString('en-US', {
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 25px 0;">
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 12px; color: #999; margin-bottom: 5px;">MATCH DATE</div>
+                            <div style="font-weight: 600; color: #fff;">${matchTime.toLocaleDateString('en-US', {
                                 weekday: 'long',
                                 year: 'numeric',
                                 month: 'long',
                                 day: 'numeric',
                             })}</div>
                         </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Match Time</div>
-                            <div class="detail-value">${matchTime.toLocaleTimeString('en-US', {
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 12px; color: #999; margin-bottom: 5px;">MATCH TIME</div>
+                            <div style="font-weight: 600; color: #fff;">${matchTime.toLocaleTimeString('en-US', {
                                 hour: '2-digit',
                                 minute: '2-digit',
                                 hour12: true,
                             })}</div>
                         </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Match ID</div>
-                            <div class="detail-value">#${matchId}</div>
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 12px; color: #999; margin-bottom: 5px;">MATCH ID</div>
+                            <div style="font-weight: 600; color: #fff;">#${matchId}</div>
                         </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Total Servers</div>
-                            <div class="detail-value">${match.servers ? match.servers.length : 0}</div>
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 12px; color: #999; margin-bottom: 5px;">TOTAL SERVERS</div>
+                            <div style="font-weight: 600; color: #fff;">${match.servers ? match.servers.length : 0}</div>
                         </div>
                     </div>
 
                     <div style="margin-top: 25px;">
                         <h3 style="color: #00bcd4; margin-bottom: 15px;">📡 Streaming Servers</h3>
-                        <div class="match-details">
-                            ${serversHtml}
-                        </div>
+                        ${serversHtml}
                     </div>
                 </div>
             `;
@@ -1553,7 +1451,7 @@
             document.getElementById('viewModal').style.display = 'none';
         }
 
-        // Enhanced Form Submit Handler with Real-time Broadcasting
+        // Enhanced Form Submit Handler
         document.getElementById('matchForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
@@ -1612,13 +1510,10 @@
                     );
                     resetForm();
 
-                    // Trigger immediate real-time update
-                    if (realtimeUpdater) {
-                        setTimeout(() => realtimeUpdater.checkForUpdates(), 500);
-                    }
-
-                    // Broadcast update to user panels
-                    broadcastToUserPanels(matchData.action, result.match || matchData.match);
+                    // Immediate refresh
+                    setTimeout(() => {
+                        loadMatches();
+                    }, 500);
                 } else {
                     showToast('Error saving match! Please try again.', 'error');
                 }
@@ -1629,33 +1524,6 @@
                 submitBtn.disabled = false;
             }
         });
-
-        // Broadcast to User Panels
-        function broadcastToUserPanels(action, matchData) {
-            // Create a broadcast event for user panels
-            const updateEvent = {
-                type: 'ADMIN_UPDATE',
-                action: action,
-                match: matchData,
-                timestamp: new Date().toISOString(),
-            };
-
-            // Use BroadcastChannel to notify user panels
-            if (broadcastChannel) {
-                broadcastChannel.postMessage(updateEvent);
-            }
-
-            // Also store in localStorage for cross-tab communication
-            localStorage.setItem('cricstream_last_update', JSON.stringify(updateEvent));
-
-            // Trigger storage event for other tabs
-            window.dispatchEvent(
-                new StorageEvent('storage', {
-                    key: 'cricstream_last_update',
-                    newValue: JSON.stringify(updateEvent),
-                })
-            );
-        }
 
         // Load and Display Matches
         async function loadMatches() {
@@ -1710,7 +1578,7 @@
 
             if (matches.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 60px; color: #666;">
+                    <div class="no-matches">
                         <div style="font-size: 64px; margin-bottom: 20px;">🏏</div>
                         <h3>No matches found</h3>
                         <p>Add your first match using the form above.</p>
@@ -1719,144 +1587,91 @@
                 return;
             }
 
-            container.innerHTML = matches
-                .map((match) => {
-                    const matchTime = new Date(match.MatchTime);
-                    const now = new Date();
-                    const status = getMatchStatus(matchTime, now);
+            const tableHTML = `
+                <div class="table-wrapper">
+                    <table class="matches-table">
+                        <thead>
+                            <tr>
+                                <th>Match</th>
+                                <th>Teams</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Servers</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${matches.map((match) => {
+                                const matchTime = new Date(match.MatchTime);
+                                const now = new Date();
+                                const status = getMatchStatus(matchTime, now);
 
-                    let statusDisplay, statusClass;
-                    switch (status) {
-                        case 'live':
-                            statusDisplay = '🔴 LIVE';
-                            statusClass = 'status-live';
-                            break;
-                        case 'finished':
-                            statusDisplay = '✅ FINISHED';
-                            statusClass = 'status-finished';
-                            break;
-                        default:
-                            statusDisplay = '⏰ UPCOMING';
-                            statusClass = 'status-upcoming';
-                    }
+                                let statusDisplay, statusClass;
+                                switch (status) {
+                                    case 'live':
+                                        statusDisplay = '🔴 LIVE';
+                                        statusClass = 'status-live';
+                                        break;
+                                    case 'finished':
+                                        statusDisplay = '✅ FINISHED';
+                                        statusClass = 'status-finished';
+                                        break;
+                                    default:
+                                        statusDisplay = '⏰ UPCOMING';
+                                        statusClass = 'status-upcoming';
+                                }
 
-                    let serversHtml = '';
-                    if (match.servers && match.servers.length > 0) {
-                        serversHtml = match.servers
-                            .slice(0, 3)
-                            .map(
-                                (server) =>
-                                    `<span class="server-badge">${server.name}</span>`
-                            )
-                            .join('');
+                                return `
+                                    <tr data-match-id="${match.id}">
+                                        <td>
+                                            <div style="font-weight: 600; color: #00bcd4; margin-bottom: 5px;">${match.Match}</div>
+                                            <div style="font-size: 11px; color: #999;">ID: #${match.id}</div>
+                                        </td>
+                                        <td>
+                                            <div class="team-cell">
+                                                <img src="${match.Team1Logo || 'https://via.placeholder.com/30x30/333/fff?text=' + (match.Team1 ? match.Team1.charAt(0) : '?')}" 
+                                                     alt="${match.Team1}" class="team-logo-small"
+                                                     onerror="this.src='https://via.placeholder.com/30x30/333/fff?text=${match.Team1 ? match.Team1.charAt(0) : '?'}'">
+                                                <span>${match.Team1}</span>
+                                            </div>
+                                            <div style="text-align: center; margin: 5px 0; color: #666; font-size: 12px;">VS</div>
+                                            <div class="team-cell">
+                                                <img src="${match.Team2Logo || 'https://via.placeholder.com/30x30/333/fff?text=' + (match.Team2 ? match.Team2.charAt(0) : '?')}" 
+                                                     alt="${match.Team2}" class="team-logo-small"
+                                                     onerror="this.src='https://via.placeholder.com/30x30/333/fff?text=${match.Team2 ? match.Team2.charAt(0) : '?'}'">
+                                                <span>${match.Team2}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="font-weight: 600; margin-bottom: 3px;">${matchTime.toLocaleDateString()}</div>
+                                            <div style="font-size: 12px; color: #999;">${matchTime.toLocaleTimeString([], {
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                            })}</div>
+                                        </td>
+                                        <td>
+                                            <div class="match-status ${statusClass}">${statusDisplay}</div>
+                                        </td>
+                                        <td>
+                                            <div class="servers-count">${match.servers ? match.servers.length : 0} servers</div>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons-table">
+                                                <button class="btn btn-primary btn-small" onclick="viewMatch(${match.id})">👁️</button>
+                                                <button class="btn btn-warning btn-small" onclick="editMatch(${match.id})">✏️</button>
+                                                <button class="btn btn-danger btn-small" onclick="deleteMatch(${match.id})">🗑️</button>
+                                                <button class="btn btn-secondary btn-small" onclick="duplicateMatch(${match.id})">📋</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
 
-                        if (match.servers.length > 3) {
-                            serversHtml += `<span class="server-badge" style="background: #666;">+${
-                                match.servers.length - 3
-                            } more</span>`;
-                        }
-                    } else {
-                        serversHtml =
-                            '<span style="color: #888; font-size: 12px;">No servers</span>';
-                    }
-
-                    const timeUntilMatch = matchTime - now;
-                    const daysUntil = Math.floor(timeUntilMatch / (1000 * 60 * 60 * 24));
-                    const hoursUntil = Math.floor(
-                        (timeUntilMatch % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-                    );
-
-                    let timeInfo = '';
-                    if (status === 'upcoming') {
-                        if (daysUntil > 0) {
-                            timeInfo = `<div style="font-size: 12px; color: #ff9800; margin-top: 5px;">⏱️ ${daysUntil} days, ${hoursUntil} hours to go</div>`;
-                        } else if (hoursUntil > 0) {
-                            timeInfo = `<div style="font-size: 12px; color: #ff9800; margin-top: 5px;">⏱️ ${hoursUntil} hours to go</div>`;
-                        } else {
-                            timeInfo = `<div style="font-size: 12px; color: #ff9800; margin-top: 5px;">⏱️ Starting soon!</div>`;
-                        }
-                    }
-
-                    return `
-                    <div class="match-item fade-in" data-match-id="${match.id}">
-                        <div class="match-header">
-                            <div class="match-title">${match.Match}</div>
-                            <div class="match-status ${statusClass}">${statusDisplay}</div>
-                        </div>
-                        
-                        <div class="teams-display">
-                            <div class="team-info">
-                                <img src="${
-                                    match.Team1Logo ||
-                                    'https://via.placeholder.com/60x60/333/fff?text=' +
-                                        (match.Team1 ? match.Team1.charAt(0) : '?')
-                                }" 
-                                     alt="${match.Team1}" class="team-logo" 
-                                     onerror="this.src='https://via.placeholder.com/60x60/333/fff?text=${
-                                         match.Team1 ? match.Team1.charAt(0) : '?'
-                                     }'">
-                                <div class="team-name">${match.Team1}</div>
-                            </div>
-                            <div class="vs-text">VS</div>
-                            <div class="team-info">
-                                <img src="${
-                                    match.Team2Logo ||
-                                    'https://via.placeholder.com/60x60/333/fff?text=' +
-                                        (match.Team2 ? match.Team2.charAt(0) : '?')
-                                }" 
-                                     alt="${match.Team2}" class="team-logo"
-                                     onerror="this.src='https://via.placeholder.com/60x60/333/fff?text=${
-                                         match.Team2 ? match.Team2.charAt(0) : '?'
-                                     }'">
-                                <div class="team-name">${match.Team2}</div>
-                            </div>
-                        </div>
-
-                        <div class="match-details">
-                            <div class="detail-item">
-                                <div class="detail-label">Date</div>
-                                <div class="detail-value">${matchTime.toLocaleDateString()}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Time</div>
-                                <div class="detail-value">${matchTime.toLocaleTimeString([], {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                })}</div>
-                                ${timeInfo}
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Servers</div>
-                                <div class="detail-value">${match.servers ? match.servers.length : 0}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Match ID</div>
-                                <div class="detail-value">#${match.id}</div>
-                            </div>
-                        </div>
-
-                        <div class="servers-display">
-                            ${serversHtml}
-                        </div>
-
-                        <div class="action-buttons">
-                            <button class="btn btn-primary btn-small" onclick="viewMatch(${match.id})">
-                                👁️ View
-                            </button>
-                            <button class="btn btn-warning btn-small" onclick="editMatch(${match.id})">
-                                ✏️ Edit
-                            </button>
-                            <button class="btn btn-danger btn-small" onclick="deleteMatch(${match.id})">
-                                🗑️ Delete
-                            </button>
-                            <button class="btn btn-secondary btn-small" onclick="duplicateMatch(${match.id})">
-                                📋 Duplicate
-                            </button>
-                        </div>
-                    </div>
-                `;
-                })
-                .join('');
+            container.innerHTML = tableHTML;
         }
 
         function updateStats() {
@@ -1899,7 +1714,7 @@
 
             const newTime = new Date();
             newTime.setHours(newTime.getHours() + 1);
-            newTime.setMinutes(newTime.getMinutes() - newTime.getTimezoneOffset());
+                        newTime.setMinutes(newTime.getMinutes() - newTime.getTimezoneOffset());
             document.getElementById('matchTime').value = newTime.toISOString().slice(0, 16);
 
             const container = document.getElementById('serversContainer');
@@ -2030,9 +1845,7 @@
                     if (updateData.type === 'ADMIN_UPDATE') {
                         // Handle cross-tab updates
                         setTimeout(() => {
-                            if (realtimeUpdater) {
-                                realtimeUpdater.checkForUpdates();
-                            }
+                            loadMatches();
                         }, 1000);
                     }
                 } catch (error) {
@@ -2134,8 +1947,8 @@
 
         // Final initialization
         console.log('🏏 CricStreamZone Admin Panel with Real-time Updates Loaded Successfully!');
-        console.log('Version: 3.0.0');
-        console.log('Features: Real-time Updates, Cross-tab Communication, Broadcast Channel, Auto-refresh');
+        console.log('Version: 3.1.0');
+        console.log('Features: Real-time Updates, Table View, Instant Refresh, Time Preservation');
     </script>
 </body>
-</html>
+    </html>
