@@ -355,7 +355,7 @@
             font-size: 18px;
         }
 
-        /* List Style for Matches */
+        /* Enhanced Table Design */
         .matches-table {
             width: 100%;
             border-collapse: collapse;
@@ -363,22 +363,27 @@
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .matches-table th {
             background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
             color: white;
-            padding: 15px 10px;
+            padding: 20px 15px;
             text-align: left;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 14px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .matches-table td {
-            padding: 15px 10px;
+            padding: 20px 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             vertical-align: middle;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.02);
         }
 
         .matches-table tr {
@@ -386,7 +391,9 @@
         }
 
         .matches-table tr:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 188, 212, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.2);
         }
 
         .matches-table tr.updated {
@@ -406,30 +413,87 @@
         .team-cell {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            margin-bottom: 8px;
         }
 
         .team-logo-small {
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(0, 188, 212, 0.3);
+            object-fit: cover;
+        }
+
+        .team-name {
+            font-weight: 600;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .vs-divider {
+            text-align: center;
+            color: #00bcd4;
+            font-weight: bold;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .match-name {
+            font-weight: 700;
+            color: #00bcd4;
+            margin-bottom: 8px;
+                        font-size: 16px;
+            line-height: 1.3;
+        }
+
+        .match-id {
+            font-size: 11px;
+            color: #999;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .date-time-container {
+            text-align: center;
+        }
+
+        .match-date {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .match-time {
+            font-size: 12px;
+            color: #00bcd4;
+            background: rgba(0, 188, 212, 0.1);
+            padding: 4px 8px;
+            border-radius: 8px;
+            display: inline-block;
         }
 
         .match-status {
-            padding: 6px 12px;
-            border-radius: 15px;
+            padding: 10px 16px;
+            border-radius: 25px;
             font-weight: bold;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 1px;
             display: inline-block;
+            text-align: center;
+            min-width: 90px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .status-live {
             background: linear-gradient(45deg, #f44336, #d32f2f);
             color: white;
             animation: pulse 2s infinite;
+            box-shadow: 0 0 20px rgba(244, 67, 54, 0.5);
         }
 
         .status-upcoming {
@@ -454,19 +518,61 @@
             }
         }
 
-                .servers-count {
+        .servers-count {
             background: linear-gradient(45deg, #00bcd4, #0097a7);
             color: white;
-            padding: 4px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            display: inline-block;
+            min-width: 50px;
+            box-shadow: 0 2px 10px rgba(0, 188, 212, 0.3);
         }
 
-        .action-buttons-table {
+        .action-buttons {
             display: flex;
-            gap: 5px;
+            gap: 8px;
             flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 10px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .view-btn {
+            background: linear-gradient(45deg, #2196f3, #1976d2);
+            color: white;
+        }
+
+        .edit-btn {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        .delete-btn {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .duplicate-btn {
+            background: linear-gradient(45deg, #9c27b0, #7b1fa2);
+            color: white;
         }
 
         .loading {
@@ -611,6 +717,32 @@
             background: linear-gradient(45deg, #ff9800, #f57c00);
         }
 
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            margin-top: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .no-matches {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .no-matches h3 {
+            margin-bottom: 10px;
+            color: #999;
+            font-size: 18px;
+        }
+
+        .no-matches p {
+            font-size: 14px;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .container {
@@ -662,17 +794,17 @@
 
             .matches-table th,
             .matches-table td {
-                padding: 8px 5px;
+                padding: 12px 8px;
             }
 
-            .action-buttons-table {
+            .action-buttons {
                 flex-direction: column;
-                gap: 3px;
+                gap: 5px;
             }
 
-            .btn-small {
-                padding: 6px 10px;
-                font-size: 10px;
+            .action-btn {
+                padding: 8px 10px;
+                font-size: 12px;
             }
 
             .modal-content {
@@ -698,6 +830,15 @@
             .form-actions .btn {
                 width: 100%;
                 max-width: 300px;
+            }
+
+            .team-cell {
+                gap: 8px;
+            }
+
+            .team-logo-small {
+                width: 30px;
+                height: 30px;
             }
         }
 
@@ -768,23 +909,6 @@
                 opacity: 1;
             }
         }
-
-        /* Table responsive wrapper */
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 12px;
-        }
-
-        .no-matches {
-            text-align: center;
-            padding: 60px;
-            color: #666;
-        }
-
-        .no-matches h3 {
-            margin-bottom: 10px;
-            color: #999;
-        }
     </style>
 </head>
 <body>
@@ -840,7 +964,7 @@
             <div class="form-container slide-up">
                 <h2 style="color: #00bcd4; margin-bottom: 25px; text-align: center;" id="formTitle">✨ Add New Match</h2>
                 <form id="matchForm">
-                    <input type="hidden" id="editMatchId" value="" />
+                                        <input type="hidden" id="editMatchId" value="" />
 
                     <div class="form-grid">
                         <div class="form-group">
@@ -927,13 +1051,14 @@
             API_URL: 'https://script.google.com/macros/s/AKfycbxzx4xcwEGidoxEd7BQshkR9FKHjK5o0p8ukNY4NsKNR0EsShY7eV3MUxA2iXz1V8bmHg/exec',
             ADMIN_PASSWORD: 'bdhub2008',
             SESSION_KEY: 'cricstream_admin_session',
-            REALTIME_INTERVAL: 3000, // 3 seconds for faster updates
-                        BROADCAST_CHANNEL: 'cricstream_updates',
+            REALTIME_INTERVAL: 3000,
+            BROADCAST_CHANNEL: 'cricstream_updates',
         };
 
         let allMatches = [];
         let isEditing = false;
         let editingMatchId = null;
+        let originalMatchTime = null; // Store original time during edit
         let realtimeInterval = null;
         let lastUpdateTime = null;
         let broadcastChannel = null;
@@ -965,7 +1090,6 @@
                     this.checkForUpdates();
                 }, CONFIG.REALTIME_INTERVAL);
 
-                // Initial check
                 this.checkForUpdates();
             }
 
@@ -977,12 +1101,10 @@
                     if (data.success && data.matches) {
                         const currentTime = new Date().toISOString();
 
-                        // Check if data has changed
                         if (this.hasDataChanged(data.matches)) {
                             this.handleMatchUpdate(data.matches);
                             lastUpdateTime = currentTime;
 
-                            // Broadcast to other tabs
                             if (broadcastChannel) {
                                 broadcastChannel.postMessage({
                                     type: 'MATCH_UPDATE',
@@ -1005,8 +1127,6 @@
                 if (!allMatches || allMatches.length !== newMatches.length) {
                     return true;
                 }
-
-                // Deep comparison of matches
                 return JSON.stringify(allMatches) !== JSON.stringify(newMatches);
             }
 
@@ -1014,10 +1134,7 @@
                 const previousMatches = [...allMatches];
                 allMatches = newMatches;
 
-                // Find updated matches
                 const updatedMatches = this.findUpdatedMatches(previousMatches, newMatches);
-
-                // Update display with animation
                 this.updateMatchesWithAnimation(updatedMatches);
                 updateStats();
 
@@ -1028,21 +1145,18 @@
 
             findUpdatedMatches(oldMatches, newMatches) {
                 const updated = [];
-
                 newMatches.forEach((newMatch) => {
                     const oldMatch = oldMatches.find((m) => m.id === newMatch.id);
                     if (!oldMatch || JSON.stringify(oldMatch) !== JSON.stringify(newMatch)) {
                         updated.push(newMatch.id);
                     }
                 });
-
                 return updated;
             }
 
             updateMatchesWithAnimation(updatedMatchIds) {
                 displayMatches(allMatches);
 
-                // Highlight updated matches
                 setTimeout(() => {
                     updatedMatchIds.forEach((matchId) => {
                         const matchElement = document.querySelector(`[data-match-id="${matchId}"]`);
@@ -1063,7 +1177,6 @@
                     this.updateStatus('disconnected');
                     showToast('Real-time updates disconnected. Retrying...', 'warning');
 
-                    // Reset retry count after a longer delay
                     setTimeout(() => {
                         this.retryCount = 0;
                     }, 30000);
@@ -1130,7 +1243,6 @@
             document.getElementById('loginScreen').style.display = 'flex';
             document.getElementById('mainApp').style.display = 'none';
 
-            // Stop real-time updates
             if (realtimeUpdater) {
                 realtimeUpdater.stop();
                 realtimeUpdater = null;
@@ -1141,7 +1253,6 @@
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
 
-            // Start real-time updates
             if (!realtimeUpdater) {
                 realtimeUpdater = new RealtimeUpdater();
             }
@@ -1220,6 +1331,7 @@
             document.getElementById('matchForm').reset();
             document.getElementById('editMatchId').value = '';
             editingMatchId = null;
+            originalMatchTime = null;
 
             const container = document.getElementById('serversContainer');
             container.innerHTML = `
@@ -1244,9 +1356,11 @@
         }
 
         function setDefaultDateTime() {
-            const now = new Date();
-            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-            document.getElementById('matchTime').value = now.toISOString().slice(0, 16);
+            if (!isEditing) {
+                const now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                document.getElementById('matchTime').value = now.toISOString().slice(0, 16);
+            }
         }
 
         // Match CRUD Operations
@@ -1258,6 +1372,10 @@
             }
 
             editingMatchId = matchId;
+            isEditing = true;
+
+            // Store original time
+            originalMatchTime = match.MatchTime;
 
             document.getElementById('editMatchId').value = matchId;
             document.getElementById('matchName').value = match.Match;
@@ -1266,11 +1384,12 @@
             document.getElementById('team1Logo').value = match.Team1Logo || '';
             document.getElementById('team2Logo').value = match.Team2Logo || '';
 
-            // Keep the existing match time unchanged
+            // Set the existing match time - PRESERVE ORIGINAL TIME
             if (match.MatchTime) {
                 const matchTime = new Date(match.MatchTime);
-                const formattedTime = matchTime.toISOString().slice(0, 16);
-                document.getElementById('matchTime').value = formattedTime;
+                                // Convert to local timezone for datetime-local input
+                const localTime = new Date(matchTime.getTime() - matchTime.getTimezoneOffset() * 60000);
+                document.getElementById('matchTime').value = localTime.toISOString().slice(0, 16);
             }
 
             const container = document.getElementById('serversContainer');
@@ -1294,14 +1413,13 @@
             document.getElementById('formTitle').innerHTML = '✏️ Edit Match';
             document.getElementById('submitBtn').innerHTML = '💾 Update Match';
             document.getElementById('cancelEditBtn').style.display = 'inline-block';
-            isEditing = true;
 
             document.querySelector('.form-container').scrollIntoView({
                 behavior: 'smooth',
                 block: 'start',
             });
 
-            showToast('Match loaded for editing', 'success');
+            showToast('Match loaded for editing - Time preserved!', 'success');
         }
 
         function deleteMatch(matchId) {
@@ -1314,7 +1432,7 @@
             if (confirm(`🗑️ Are you sure you want to delete "${match.Match}"?\n\nThis action cannot be undone.`)) {
                 const deleteBtn = event.target;
                 const originalText = deleteBtn.innerHTML;
-                deleteBtn.innerHTML = '⏳ Deleting...';
+                deleteBtn.innerHTML = '⏳';
                 deleteBtn.disabled = true;
 
                 fetch(CONFIG.API_URL, {
@@ -1329,7 +1447,6 @@
                         if (data.success) {
                             showToast('Match deleted successfully!', 'success');
                             
-                            // Immediate refresh
                             setTimeout(() => {
                                 loadMatches();
                             }, 500);
@@ -1389,7 +1506,7 @@
                 <div style="border: 2px solid #00bcd4; border-radius: 12px; padding: 25px; background: rgba(255, 255, 255, 0.05);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                         <h3 style="color: #00bcd4; margin: 0;">${match.Match}</h3>
-                                                <div class="match-status ${statusClass}">${status}</div>
+                        <div class="match-status ${statusClass}">${status}</div>
                     </div>
                     
                     <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin: 25px 0; flex-wrap: wrap;">
@@ -1510,7 +1627,6 @@
                     );
                     resetForm();
 
-                    // Immediate refresh
                     setTimeout(() => {
                         loadMatches();
                     }, 500);
@@ -1592,12 +1708,12 @@
                     <table class="matches-table">
                         <thead>
                             <tr>
-                                <th>Match</th>
-                                <th>Teams</th>
-                                <th>Date & Time</th>
-                                <th>Status</th>
-                                <th>Servers</th>
-                                <th>Actions</th>
+                                <th style="width: 25%;">🏆 Match Details</th>
+                                <th style="width: 25%;">👥 Teams</th>
+                                <th style="width: 15%;">📅 Date & Time</th>
+                                <th style="width: 10%;">📊 Status</th>
+                                <th style="width: 10%;">📡 Servers</th>
+                                <th style="width: 15%;">⚙️ Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1605,8 +1721,7 @@
                                 const matchTime = new Date(match.MatchTime);
                                 const now = new Date();
                                 const status = getMatchStatus(matchTime, now);
-
-                                let statusDisplay, statusClass;
+                                                                let statusDisplay, statusClass;
                                 switch (status) {
                                     case 'live':
                                         statusDisplay = '🔴 LIVE';
@@ -1623,28 +1738,28 @@
 
                                 return `
                                     <tr data-match-id="${match.id}">
-                                        <td>
-                                            <div style="font-weight: 600; color: #00bcd4; margin-bottom: 5px;">${match.Match}</div>
-                                            <div style="font-size: 11px; color: #999;">ID: #${match.id}</div>
+                                        <td class="match-name-cell">
+                                            <div class="match-name-title">${match.Match}</div>
+                                            <div class="match-id">ID: #${match.id}</div>
                                         </td>
-                                        <td>
+                                        <td class="teams-cell">
                                             <div class="team-cell">
-                                                <img src="${match.Team1Logo || 'https://via.placeholder.com/30x30/333/fff?text=' + (match.Team1 ? match.Team1.charAt(0) : '?')}" 
+                                                <img src="${match.Team1Logo || 'https://via.placeholder.com/35x35/333/fff?text=' + (match.Team1 ? match.Team1.charAt(0) : '?')}" 
                                                      alt="${match.Team1}" class="team-logo-small"
-                                                     onerror="this.src='https://via.placeholder.com/30x30/333/fff?text=${match.Team1 ? match.Team1.charAt(0) : '?'}'">
+                                                     onerror="this.src='https://via.placeholder.com/35x35/333/fff?text=${match.Team1 ? match.Team1.charAt(0) : '?'}'">
                                                 <span>${match.Team1}</span>
                                             </div>
-                                            <div style="text-align: center; margin: 5px 0; color: #666; font-size: 12px;">VS</div>
+                                            <div class="vs-divider">VS</div>
                                             <div class="team-cell">
-                                                <img src="${match.Team2Logo || 'https://via.placeholder.com/30x30/333/fff?text=' + (match.Team2 ? match.Team2.charAt(0) : '?')}" 
+                                                <img src="${match.Team2Logo || 'https://via.placeholder.com/35x35/333/fff?text=' + (match.Team2 ? match.Team2.charAt(0) : '?')}" 
                                                      alt="${match.Team2}" class="team-logo-small"
-                                                     onerror="this.src='https://via.placeholder.com/30x30/333/fff?text=${match.Team2 ? match.Team2.charAt(0) : '?'}'">
+                                                     onerror="this.src='https://via.placeholder.com/35x35/333/fff?text=${match.Team2 ? match.Team2.charAt(0) : '?'}'">
                                                 <span>${match.Team2}</span>
                                             </div>
                                         </td>
-                                        <td>
-                                            <div style="font-weight: 600; margin-bottom: 3px;">${matchTime.toLocaleDateString()}</div>
-                                            <div style="font-size: 12px; color: #999;">${matchTime.toLocaleTimeString([], {
+                                        <td class="datetime-cell">
+                                            <div class="date-display">${matchTime.toLocaleDateString('en-GB')}</div>
+                                            <div class="time-display">${matchTime.toLocaleTimeString([], {
                                                 hour: '2-digit',
                                                 minute: '2-digit',
                                             })}</div>
@@ -1653,14 +1768,14 @@
                                             <div class="match-status ${statusClass}">${statusDisplay}</div>
                                         </td>
                                         <td>
-                                            <div class="servers-count">${match.servers ? match.servers.length : 0} servers</div>
+                                            <div class="servers-count">${match.servers ? match.servers.length : 0}</div>
                                         </td>
                                         <td>
-                                            <div class="action-buttons-table">
-                                                <button class="btn btn-primary btn-small" onclick="viewMatch(${match.id})">👁️</button>
-                                                <button class="btn btn-warning btn-small" onclick="editMatch(${match.id})">✏️</button>
-                                                <button class="btn btn-danger btn-small" onclick="deleteMatch(${match.id})">🗑️</button>
-                                                <button class="btn btn-secondary btn-small" onclick="duplicateMatch(${match.id})">📋</button>
+                                            <div class="action-buttons">
+                                                <button class="btn btn-primary btn-small action-btn view-btn" onclick="viewMatch(${match.id})" title="View Details">👁️</button>
+                                                <button class="btn btn-warning btn-small action-btn edit-btn" onclick="editMatch(${match.id})" title="Edit Match">✏️</button>
+                                                <button class="btn btn-danger btn-small action-btn delete-btn" onclick="deleteMatch(${match.id})" title="Delete Match">🗑️</button>
+                                                <button class="btn btn-secondary btn-small action-btn duplicate-btn" onclick="duplicateMatch(${match.id})" title="Duplicate Match">📋</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -1714,7 +1829,7 @@
 
             const newTime = new Date();
             newTime.setHours(newTime.getHours() + 1);
-                        newTime.setMinutes(newTime.getMinutes() - newTime.getTimezoneOffset());
+            newTime.setMinutes(newTime.getMinutes() - newTime.getTimezoneOffset());
             document.getElementById('matchTime').value = newTime.toISOString().slice(0, 16);
 
             const container = document.getElementById('serversContainer');
@@ -1843,7 +1958,6 @@
                 try {
                     const updateData = JSON.parse(e.newValue);
                     if (updateData.type === 'ADMIN_UPDATE') {
-                        // Handle cross-tab updates
                         setTimeout(() => {
                             loadMatches();
                         }, 1000);
@@ -1857,7 +1971,6 @@
         // Page visibility change handler
         document.addEventListener('visibilitychange', function () {
             if (!document.hidden && realtimeUpdater) {
-                // Page became visible, check for updates
                 realtimeUpdater.checkForUpdates();
             }
         });
@@ -1946,9 +2059,9 @@
         }
 
         // Final initialization
-        console.log('🏏 CricStreamZone Admin Panel with Real-time Updates Loaded Successfully!');
-        console.log('Version: 3.1.0');
-        console.log('Features: Real-time Updates, Table View, Instant Refresh, Time Preservation');
+        console.log('🏏 CricStreamZone Admin Panel with Enhanced Features Loaded Successfully!');
+        console.log('Version: 3.2.0');
+        console.log('Features: Real-time Updates, Categorized Tables, Time Preservation, Enhanced UI');
     </script>
 </body>
-    </html>
+</html>
