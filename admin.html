@@ -150,22 +150,22 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
-        /* Side Menu */
+        /* Side Menu - Left Side */
         .side-menu {
             position: fixed;
             top: 0;
-            right: -300px;
+            left: -300px;
             width: 280px;
             height: 100vh;
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            transition: right 0.3s ease;
+            transition: left 0.3s ease;
             z-index: 1001;
-            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 5px 0 20px rgba(0, 0, 0, 0.3);
             overflow-y: auto;
         }
 
         .side-menu.open {
-            right: 0;
+            left: 0;
         }
 
         .menu-overlay {
@@ -236,17 +236,17 @@
             color: #fff;
             text-decoration: none;
             transition: all 0.3s ease;
-            border-left: 3px solid transparent;
+            border-right: 3px solid transparent;
         }
 
         .menu-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            border-left-color: #00bcd4;
+            border-right-color: #00bcd4;
         }
 
         .menu-item.active {
             background: rgba(0, 188, 212, 0.2);
-            border-left-color: #00bcd4;
+            border-right-color: #00bcd4;
         }
 
         .menu-item i {
@@ -468,7 +468,7 @@
             display: block;
         }
 
-        .match-card {
+                .match-card {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 15px;
             padding: 20px;
@@ -482,7 +482,7 @@
             transform: scale(0.98);
         }
 
-                .match-card.updated {
+        .match-card.updated {
             background: rgba(76, 175, 80, 0.2);
             animation: highlightUpdate 2s ease;
         }
@@ -981,7 +981,7 @@
             border-bottom: none;
         }
 
-        .setting-label {
+                .setting-label {
             color: #fff;
             font-size: 14px;
         }
@@ -1006,7 +1006,7 @@
             background: #00bcd4;
         }
 
-                .toggle-switch::after {
+        .toggle-switch::after {
             content: '';
             position: absolute;
             top: 2px;
@@ -1288,8 +1288,8 @@
     <div id="mainApp" class="app-container">
         <!-- Header -->
         <div class="header">
-            <div class="header-title">CricStreamZone</div>
             <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <div class="header-title">CricStreamZone</div>
         </div>
 
         <!-- Menu Overlay -->
@@ -1450,7 +1450,7 @@
                 
                 <div class="profile-card">
                     <div class="profile-avatar" id="profileAvatar">A</div>
-                    <div class="profile-name" id="profileName">Admin User</div>
+                                        <div class="profile-name" id="profileName">Admin User</div>
                     <div class="profile-role" id="profileRole">Administrator</div>
                     
                     <div class="profile-stats">
@@ -1462,7 +1462,7 @@
                             <div class="profile-stat-number" id="profileLiveMatches">0</div>
                             <div class="profile-stat-label">Live Matches</div>
                         </div>
-                                        <div class="profile-stat">
+                        <div class="profile-stat">
                             <div class="profile-stat-number" id="profileUpcomingMatches">0</div>
                             <div class="profile-stat-label">Upcoming</div>
                         </div>
@@ -1677,7 +1677,7 @@
             saveUsers() {
                 const customUsers = { ...this.users };
                 // Remove default users from storage
-                delete customUsers.admin;
+                delete customUsers.CricZone;
                 delete customUsers.user1;
                 localStorage.setItem('cricstream_users', JSON.stringify(customUsers));
             }
@@ -1722,7 +1722,7 @@
             }
 
             deleteUser(username) {
-                if (username === 'admin') {
+                if (username === 'CricZone') {
                     throw new Error('Cannot delete admin user');
                 }
 
@@ -1852,7 +1852,7 @@
                 return updated;
             }
 
-            updateMatchesWithAnimation(updatedMatchIds) {
+                        updateMatchesWithAnimation(updatedMatchIds) {
                 displayMatches(allMatches);
 
                 setTimeout(() => {
@@ -1880,7 +1880,7 @@
                 }
             }
 
-                        stop() {
+            stop() {
                 if (realtimeInterval) {
                     clearInterval(realtimeInterval);
                     realtimeInterval = null;
@@ -2038,7 +2038,12 @@
             }
 
             // Add active class to clicked menu item
-            event.target.closest('.menu-item').classList.add('active');
+            if (event && event.target) {
+                const menuItem = event.target.closest('.menu-item');
+                if (menuItem) {
+                    menuItem.classList.add('active');
+                }
+            }
 
             // Load section-specific data
             switch (sectionName) {
@@ -2094,13 +2099,13 @@
                         Created: ${user.createdAt !== 'N/A' ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
                     </div>
                     <div class="user-actions">
-                        <button class="btn btn-warning btn-small" onclick="editUser('${user.username}')" ${user.username === 'admin' ? 'disabled' : ''}>
+                        <button class="btn btn-warning btn-small" onclick="editUser('${user.username}')" ${user.username === 'CricZone' ? 'disabled' : ''}>
                             ✏️ Edit
                         </button>
-                        <button class="btn btn-danger btn-small" onclick="deleteUser('${user.username}')" ${user.username === 'admin' ? 'disabled' : ''}>
+                        <button class="btn btn-danger btn-small" onclick="deleteUser('${user.username}')" ${user.username === 'CricZone' ? 'disabled' : ''}>
                             🗑️ Delete
                         </button>
-                        <button class="btn btn-secondary btn-small" onclick="resetUserPassword('${user.username}')" ${user.username === 'admin' ? 'disabled' : ''}>
+                        <button class="btn btn-secondary btn-small" onclick="resetUserPassword('${user.username}')" ${user.username === 'CricZone' ? 'disabled' : ''}>
                             🔐 Reset Password
                         </button>
                     </div>
@@ -2126,7 +2131,7 @@
                 return;
             }
 
-            if (username === 'admin') {
+            if (username === 'CricZone') {
                 showToast('Cannot delete admin user!', 'error');
                 return;
             }
@@ -2292,7 +2297,7 @@
         }
 
         // Mobile-optimized Toast Notification System
-        function showToast(message, type = 'success') {
+                function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
             toast.textContent = message;
@@ -2325,7 +2330,7 @@
 
         function removeServer(button) {
             const container = document.getElementById('serversContainer');
-                        if (container.children.length > 1) {
+            if (container.children.length > 1) {
                 const serverItem = button.parentElement;
                 serverItem.style.animation = 'slideUp 0.3s ease reverse';
                 setTimeout(() => serverItem.remove(), 300);
@@ -2373,197 +2378,220 @@
 
         // Match CRUD Operations
         function editMatch(matchId) {
-            const match = allMatches.find((m) => m.id === matchId);
-            if (!match) {
-                showToast('Match not found!', 'error');
-                return;
+            try {
+                const match = allMatches.find((m) => m.id === matchId);
+                if (!match) {
+                    showToast('Match not found!', 'error');
+                    return;
+                }
+
+                editingMatchId = matchId;
+                isEditing = true;
+
+                // Store original time
+                originalMatchTime = match.MatchTime;
+
+                document.getElementById('editMatchId').value = matchId;
+                document.getElementById('matchName').value = match.Match || '';
+                document.getElementById('team1').value = match.Team1 || '';
+                document.getElementById('team2').value = match.Team2 || '';
+                document.getElementById('team1Logo').value = match.Team1Logo || '';
+                document.getElementById('team2Logo').value = match.Team2Logo || '';
+
+                // Set the existing match time - PRESERVE ORIGINAL TIME
+                if (match.MatchTime) {
+                    try {
+                        const matchTime = new Date(match.MatchTime);
+                        // Convert to local timezone for datetime-local input
+                        const localTime = new Date(matchTime.getTime() - matchTime.getTimezoneOffset() * 60000);
+                        document.getElementById('matchTime').value = localTime.toISOString().slice(0, 16);
+                    } catch (timeError) {
+                        console.error('Error parsing match time:', timeError);
+                        setDefaultDateTime();
+                    }
+                }
+
+                const container = document.getElementById('serversContainer');
+                container.innerHTML = '';
+
+                if (match.servers && Array.isArray(match.servers) && match.servers.length > 0) {
+                    match.servers.forEach((server) => {
+                        const serverItem = document.createElement('div');
+                        serverItem.className = 'server-item';
+                        serverItem.innerHTML = `
+                            <input type="text" placeholder="Server Name" class="server-name" value="${server.name || ''}" />
+                            <input type="url" placeholder="Server Link" class="server-link" value="${server.link || ''}" />
+                            <button type="button" class="btn btn-danger btn-small server-remove-btn" onclick="removeServer(this)">❌ Remove</button>
+                        `;
+                        container.appendChild(serverItem);
+                    });
+                } else {
+                    addServer();
+                }
+
+                document.getElementById('formTitle').innerHTML = '✏️ Edit Match';
+                document.getElementById('submitBtn').innerHTML = '💾 Update Match';
+                document.getElementById('cancelEditBtn').style.display = 'block';
+
+                // Switch to dashboard section
+                showSection('dashboard');
+
+                setTimeout(() => {
+                    document.querySelector('.form-container').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                    });
+                }, 300);
+
+                showToast('Match loaded for editing!', 'success');
+            } catch (error) {
+                console.error('Error in editMatch:', error);
+                showToast('Error loading match for editing!', 'error');
             }
-
-            editingMatchId = matchId;
-            isEditing = true;
-
-            // Store original time
-            originalMatchTime = match.MatchTime;
-
-            document.getElementById('editMatchId').value = matchId;
-            document.getElementById('matchName').value = match.Match;
-            document.getElementById('team1').value = match.Team1;
-            document.getElementById('team2').value = match.Team2;
-            document.getElementById('team1Logo').value = match.Team1Logo || '';
-            document.getElementById('team2Logo').value = match.Team2Logo || '';
-
-            // Set the existing match time - PRESERVE ORIGINAL TIME
-            if (match.MatchTime) {
-                const matchTime = new Date(match.MatchTime);
-                // Convert to local timezone for datetime-local input
-                const localTime = new Date(matchTime.getTime() - matchTime.getTimezoneOffset() * 60000);
-                document.getElementById('matchTime').value = localTime.toISOString().slice(0, 16);
-            }
-
-            const container = document.getElementById('serversContainer');
-            container.innerHTML = '';
-
-            if (match.servers && match.servers.length > 0) {
-                match.servers.forEach((server) => {
-                    const serverItem = document.createElement('div');
-                    serverItem.className = 'server-item';
-                    serverItem.innerHTML = `
-                        <input type="text" placeholder="Server Name" class="server-name" value="${server.name || ''}" />
-                        <input type="url" placeholder="Server Link" class="server-link" value="${server.link || ''}" />
-                        <button type="button" class="btn btn-danger btn-small server-remove-btn" onclick="removeServer(this)">❌ Remove</button>
-                    `;
-                    container.appendChild(serverItem);
-                });
-            } else {
-                addServer();
-            }
-
-            document.getElementById('formTitle').innerHTML = '✏️ Edit Match';
-            document.getElementById('submitBtn').innerHTML = '💾 Update Match';
-            document.getElementById('cancelEditBtn').style.display = 'block';
-
-            // Switch to dashboard section
-            showSection('dashboard');
-
-            document.querySelector('.form-container').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-            });
-
-            showToast('Match loaded for editing!', 'success');
         }
 
         function deleteMatch(matchId) {
-            const match = allMatches.find((m) => m.id === matchId);
-            if (!match) {
-                showToast('Match not found!', 'error');
-                return;
-            }
+            try {
+                const match = allMatches.find((m) => m.id === matchId);
+                if (!match) {
+                    showToast('Match not found!', 'error');
+                    return;
+                }
 
-            if (confirm(`🗑️ Delete "${match.Match}"?\n\nThis cannot be undone.`)) {
-                const deleteBtn = event.target;
-                const originalText = deleteBtn.innerHTML;
-                deleteBtn.innerHTML = '⏳';
-                deleteBtn.disabled = true;
+                if (confirm(`🗑️ Delete "${match.Match}"?\n\nThis cannot be undone.`)) {
+                    const deleteBtn = event.target;
+                    const originalText = deleteBtn.innerHTML;
+                    deleteBtn.innerHTML = '⏳';
+                    deleteBtn.disabled = true;
 
-                fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'delete',
-                        id: matchId,
-                    }),
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            showToast('Match deleted successfully!', 'success');
-                            
-                            setTimeout(() => {
-                                loadMatches();
-                            }, 500);
-                        } else {
-                            showToast('Error deleting match!', 'error');
-                        }
+                    fetch(CONFIG.API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            action: 'delete',
+                            id: matchId,
+                        }),
                     })
-                    .catch((error) => {
-                        showToast('Network error: ' + error.message, 'error');
-                    })
-                    .finally(() => {
-                        deleteBtn.innerHTML = originalText;
-                        deleteBtn.disabled = false;
-                    });
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.success) {
+                                showToast('Match deleted successfully!', 'success');
+                                
+                                setTimeout(() => {
+                                    loadMatches();
+                                }, 500);
+                            } else {
+                                showToast('Error deleting match!', 'error');
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Delete error:', error);
+                            showToast('Network error: ' + error.message, 'error');
+                        })
+                        .finally(() => {
+                            deleteBtn.innerHTML = originalText;
+                            deleteBtn.disabled = false;
+                        });
+                }
+            } catch (error) {
+                console.error('Error in deleteMatch:', error);
+                showToast('Error deleting match!', 'error');
             }
         }
 
         function viewMatch(matchId) {
-            const match = allMatches.find((m) => m.id === matchId);
-            if (!match) {
-                showToast('Match not found!', 'error');
-                return;
+            try {
+                const match = allMatches.find((m) => m.id === matchId);
+                if (!match) {
+                    showToast('Match not found!', 'error');
+                    return;
+                }
+
+                const matchTime = new Date(match.MatchTime);
+                const now = new Date();
+                const isLive = now >= matchTime && now <= new Date(matchTime.getTime() + 6 * 60 * 60 * 1000);
+
+                let status, statusClass;
+                if (isLive) {
+                    status = '🔴 LIVE';
+                    statusClass = 'status-live';
+                } else {
+                    status = '⏰ UPCOMING';
+                    statusClass = 'status-upcoming';
+                }
+
+                let serversHtml = '';
+                if (match.servers && Array.isArray(match.servers) && match.servers.length > 0) {
+                    serversHtml = match.servers
+                        .map((server, index) => `
+                        <div class="modal-server-item">
+                            <div class="modal-server-name">Server ${index + 1}: ${server.name || 'Unnamed'}</div>
+                            <div class="modal-server-link">${server.link || 'No link'}</div>
+                        </div>`
+                        )
+                        .join('');
+                } else {
+                    serversHtml = '<div style="color: #888; text-align: center; padding: 20px;">No servers available</div>';
+                }
+
+                const modalContent = `
+                    <div style="border: 2px solid #00bcd4; border-radius: 12px; padding: 20px; background: rgba(255, 255, 255, 0.05);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                            <h3 style="color: #00bcd4; margin: 0; font-size: 16px;">${match.Match || 'Unknown Match'}</h3>
+                            <div class="match-status-mobile ${statusClass}">${status}</div>
+                        </div>
+                        
+                        <div class="modal-teams-section">
+                            <div class="modal-team-info">
+                                <img src="${match.Team1Logo || 'https://via.placeholder.com/60x60/333/fff?text=' + (match.Team1 ? match.Team1.charAt(0) : '?')}" 
+                                     alt="${match.Team1 || 'Team 1'}" class="modal-team-logo"
+                                     onerror="this.src='https://via.placeholder.com/60x60/333/fff?text=${match.Team1 ? match.Team1.charAt(0) : '?'}'">
+                                <div style="font-weight: 600; color: #fff; font-size: 14px;">${match.Team1 || 'Team 1'}</div>
+                            </div>
+                            <div style="font-size: 20px; font-weight: bold; color: #00bcd4;">VS</div>
+                            <div class="modal-team-info">
+                                <img src="${match.Team2Logo || 'https://via.placeholder.com/60x60/333/fff?text=' + (match.Team2 ? match.Team2.charAt(0) : '?')}" 
+                                     alt="${match.Team2 || 'Team 2'}" class="modal-team-logo"
+                                     onerror="this.src='https://via.placeholder.com/60x60/333/fff?text=${match.Team2 ? match.Team2.charAt(0) : '?'}'">
+                                <div style="font-weight: 600; color: #fff; font-size: 14px;">${match.Team2 || 'Team 2'}</div>
+                            </div>
+                        </div>
+
+                        <div class="modal-details-grid">
+                            <div class="modal-detail-item">
+                                <div style="font-size: 10px; color: #999; margin-bottom: 5px;">DATE</div>
+                                <div style="font-weight: 600; color: #fff; font-size: 12px;">${matchTime.toLocaleDateString('en-GB')}</div>
+                            </div>
+                            <div class="modal-detail-item">
+                                <div style="font-size: 10px; color: #999; margin-bottom: 5px;">TIME</div>
+                                <div style="font-weight: 600; color: #fff; font-size: 12px;">${matchTime.toLocaleTimeString('en-US', {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true,
+                                })}</div>
+                            </div>
+                            <div class="modal-detail-item">
+                                <div style="font-size: 10px; color: #999; margin-bottom: 5px;">MATCH ID</div>
+                                <div style="font-weight: 600; color: #fff; font-size: 12px;">#${matchId}</div>
+                            </div>
+                            <div class="modal-detail-item">
+                                <div style="font-size: 10px; color: #999; margin-bottom: 5px;">SERVERS</div>
+                                <div style="font-weight: 600; color: #fff; font-size: 12px;">${match.servers ? match.servers.length : 0}</div>
+                            </div>
+                        </div>
+
+                        <div class="modal-servers-section">
+                            <h3 style="color: #00bcd4; margin-bottom: 15px; font-size: 16px;">📡 Streaming Servers</h3>
+                            ${serversHtml}
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('viewModalContent').innerHTML = modalContent;
+                document.getElementById('viewModal').style.display = 'block';
+            } catch (error) {
+                console.error('Error in viewMatch:', error);
+                showToast('Error viewing match details!', 'error');
             }
-
-            const matchTime = new Date(match.MatchTime);
-            const now = new Date();
-            const isLive = now >= matchTime && now <= new Date(matchTime.getTime() + 6 * 60 * 60 * 1000);
-
-            let status, statusClass;
-            if (isLive) {
-                status = '🔴 LIVE';
-                statusClass = 'status-live';
-            } else {
-                status = '⏰ UPCOMING';
-                statusClass = 'status-upcoming';
-            }
-
-            let serversHtml = '';
-            if (match.servers && match.servers.length > 0) {
-                serversHtml = match.servers
-                    .map((server, index) => `
-                    <div class="modal-server-item">
-                        <div class="modal-server-name">Server ${index + 1}: ${server.name}</div>
-                        <div class="modal-server-link">${server.link}</div>
-                    </div>`
-                    )
-                    .join('');
-            } else {
-                serversHtml = '<div style="color: #888; text-align: center; padding: 20px;">No servers available</div>';
-            }
-
-            const modalContent = `
-                <div style="border: 2px solid #00bcd4; border-radius: 12px; padding: 20px; background: rgba(255, 255, 255, 0.05);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-                        <h3 style="color: #00bcd4; margin: 0; font-size: 16px;">${match.Match}</h3>
-                        <div class="match-status-mobile ${statusClass}">${status}</div>
-                    </div>
-                    
-                    <div class="modal-teams-section">
-                        <div class="modal-team-info">
-                            <img src="${match.Team1Logo || 'https://via.placeholder.com/60x60/333/fff?text=' + (match.Team1 ? match.Team1.charAt(0) : '?')}" 
-                                 alt="${match.Team1}" class="modal-team-logo"
-                                 onerror="this.src='https://via.placeholder.com/60x60/333/fff?text=${match.Team1 ? match.Team1.charAt(0) : '?'}'">
-                            <div style="font-weight: 600; color: #fff; font-size: 14px;">${match.Team1}</div>
-                        </div>
-                        <div style="font-size: 20px; font-weight: bold; color: #00bcd4;">VS</div>
-                        <div class="modal-team-info">
-                            <img src="${match.Team2Logo || 'https://via.placeholder.com/60x60/333/fff?text=' + (match.Team2 ? match.Team2.charAt(0) : '?')}" 
-                                 alt="${match.Team2}" class="modal-team-logo"
-                                 onerror="this.src='https://via.placeholder.com/60x60/333/fff?text=${match.Team2 ? match.Team2.charAt(0) : '?'}'">
-                            <div style="font-weight: 600; color: #fff; font-size: 14px;">${match.Team2}</div>
-                        </div>
-                    </div>
-
-                    <div class="modal-details-grid">
-                        <div class="modal-detail-item">
-                            <div style="font-size: 10px; color: #999; margin-bottom: 5px;">DATE</div>
-                            <div style="font-weight: 600; color: #fff; font-size: 12px;">${matchTime.toLocaleDateString('en-GB')}</div>
-                        </div>
-                        <div class="modal-detail-item">
-                            <div style="font-size: 10px; color: #999; margin-bottom: 5px;">TIME</div>
-                            <div style="font-weight: 600; color: #fff; font-size: 12px;">${matchTime.toLocaleTimeString('en-US', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true,
-                            })}</div>
-                        </div>
-                        <div class="modal-detail-item">
-                            <div style="font-size: 10px; color: #999; margin-bottom: 5px;">MATCH ID</div>
-                            <div style="font-weight: 600; color: #fff; font-size: 12px;">#${matchId}</div>
-                        </div>
-                        <div class="modal-detail-item">
-                            <div style="font-size: 10px; color: #999; margin-bottom: 5px;">SERVERS</div>
-                            <div style="font-weight: 600; color: #fff; font-size: 12px;">${match.servers ? match.servers.length : 0}</div>
-                        </div>
-                    </div>
-
-                    <div class="modal-servers-section">
-                        <h3 style="color: #00bcd4; margin-bottom: 15px; font-size: 16px;">📡 Streaming Servers</h3>
-                        ${serversHtml}
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('viewModalContent').innerHTML = modalContent;
-            document.getElementById('viewModal').style.display = 'block';
         }
 
         function closeViewModal() {
@@ -2622,7 +2650,7 @@
 
                 const result = await response.json();
 
-                if (result.success) {
+                                if (result.success) {
                     showToast(
                         isEditing ? 'Match updated successfully! 🎉' : 'Match added successfully! 🎉',
                         'success'
@@ -2636,6 +2664,7 @@
                     showToast('Error saving match! Please try again.', 'error');
                 }
             } catch (error) {
+                console.error('Form submit error:', error);
                 showToast('Network error: ' + error.message, 'error');
             } finally {
                 submitBtn.innerHTML = originalText;
@@ -2670,9 +2699,11 @@
                 displayMatches(allMatches);
                 updateStats();
             } catch (error) {
+                console.error('Load matches error:', error);
                 document.getElementById('matchesList').innerHTML = `
                     <div style="text-align: center; padding: 40px; color: #f44336;">
                         <h3>❌ Error loading matches</h3>
+                        <p>Please check your internet connection</p>
                         <button class="btn btn-primary" onclick="loadMatches()">🔄 Retry</button>
                     </div>
                 `;
@@ -2696,7 +2727,7 @@
             if (matches.length === 0) {
                 container.innerHTML = `
                     <div class="no-matches">
-                                                <div style="font-size: 48px; margin-bottom: 15px;">🏏</div>
+                        <div style="font-size: 48px; margin-bottom: 15px;">🏏</div>
                         <h3>No matches found</h3>
                         <p>Add your first match using the form above.</p>
                     </div>
@@ -2705,106 +2736,125 @@
             }
 
             const cardsHTML = matches.map((match) => {
-                const matchTime = new Date(match.MatchTime);
-                const now = new Date();
-                const status = getMatchStatus(matchTime, now);
-                
-                let statusDisplay, statusClass;
-                switch (status) {
-                    case 'live':
-                        statusDisplay = '🔴 LIVE';
-                        statusClass = 'status-live';
-                        break;
-                    default:
-                        statusDisplay = '⏰ UPCOMING';
-                        statusClass = 'status-upcoming';
-                }
+                try {
+                    const matchTime = new Date(match.MatchTime);
+                    const now = new Date();
+                    const status = getMatchStatus(matchTime, now);
+                    
+                    let statusDisplay, statusClass;
+                    switch (status) {
+                        case 'live':
+                            statusDisplay = '🔴 LIVE';
+                            statusClass = 'status-live';
+                            break;
+                        default:
+                            statusDisplay = '⏰ UPCOMING';
+                            statusClass = 'status-upcoming';
+                    }
 
-                return `
-                    <div class="match-card" data-match-id="${match.id}">
-                        <div class="match-header">
-                            <div class="match-title">${match.Match}</div>
-                            <div class="match-id-mobile">ID: #${match.id}</div>
+                    return `
+                        <div class="match-card" data-match-id="${match.id}">
+                            <div class="match-header">
+                                <div class="match-title">${match.Match || 'Unknown Match'}</div>
+                                <div class="match-id-mobile">ID: #${match.id}</div>
+                            </div>
+                            <div class="teams-section">
+                                <div class="team-info">
+                                    <img src="${match.Team1Logo || 'https://via.placeholder.com/50x50/333/fff?text=' + (match.Team1 ? match.Team1.charAt(0) : '?')}" 
+                                         alt="${match.Team1 || 'Team 1'}" class="team-logo-mobile"
+                                         onerror="this.src='https://via.placeholder.com/50x50/333/fff?text=${match.Team1 ? match.Team1.charAt(0) : '?'}'">
+                                    <div class="team-name-mobile">${match.Team1 || 'Team 1'}</div>
+                                </div>
+                                <div class="vs-divider-mobile">VS</div>
+                                <div class="team-info">
+                                    <img src="${match.Team2Logo || 'https://via.placeholder.com/50x50/333/fff?text=' + (match.Team2 ? match.Team2.charAt(0) : '?')}" 
+                                         alt="${match.Team2 || 'Team 2'}" class="team-logo-mobile"
+                                         onerror="this.src='https://via.placeholder.com/50x50/333/fff?text=${match.Team2 ? match.Team2.charAt(0) : '?'}'">
+                                    <div class="team-name-mobile">${match.Team2 || 'Team 2'}</div>
+                                </div>
+                            </div>
+                            <div class="match-details-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">DATE</div>
+                                    <div class="detail-value">${matchTime.toLocaleDateString('en-GB')}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">TIME</div>
+                                    <div class="detail-value">${matchTime.toLocaleTimeString([], {
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: true,
+                                    })}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">STATUS</div>
+                                    <div class="match-status-mobile ${statusClass}">${statusDisplay}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">SERVERS</div>
+                                    <div class="servers-info-mobile">${match.servers ? match.servers.length : 0}</div>
+                                </div>
+                            </div>
+                            <div class="action-buttons-mobile">
+                                <button class="btn btn-primary action-btn-mobile view-btn" onclick="viewMatch(${match.id})">👁️ View</button>
+                                <button class="btn btn-warning action-btn-mobile edit-btn" onclick="editMatch(${match.id})">✏️ Edit</button>
+                                <button class="btn btn-danger action-btn-mobile delete-btn" onclick="deleteMatch(${match.id})">🗑️ Delete</button>
+                                <button class="btn btn-secondary action-btn-mobile duplicate-btn" onclick="duplicateMatch(${match.id})">📋 Duplicate</button>
+                            </div>
                         </div>
-                        <div class="teams-section">
-                            <div class="team-info">
-                                <img src="${match.Team1Logo || 'https://via.placeholder.com/50x50/333/fff?text=' + (match.Team1 ? match.Team1.charAt(0) : '?')}" 
-                                     alt="${match.Team1}" class="team-logo-mobile"
-                                     onerror="this.src='https://via.placeholder.com/50x50/333/fff?text=${match.Team1 ? match.Team1.charAt(0) : '?'}'">
-                                <div class="team-name-mobile">${match.Team1}</div>
-                            </div>
-                            <div class="vs-divider-mobile">VS</div>
-                            <div class="team-info">
-                                <img src="${match.Team2Logo || 'https://via.placeholder.com/50x50/333/fff?text=' + (match.Team2 ? match.Team2.charAt(0) : '?')}" 
-                                     alt="${match.Team2}" class="team-logo-mobile"
-                                     onerror="this.src='https://via.placeholder.com/50x50/333/fff?text=${match.Team2 ? match.Team2.charAt(0) : '?'}'">
-                                <div class="team-name-mobile">${match.Team2}</div>
+                    `;
+                } catch (error) {
+                    console.error('Error rendering match card:', error);
+                    return `
+                        <div class="match-card">
+                            <div style="color: #f44336; text-align: center; padding: 20px;">
+                                Error displaying match #${match.id}
                             </div>
                         </div>
-                        <div class="match-details-grid">
-                            <div class="detail-item">
-                                <div class="detail-label">DATE</div>
-                                <div class="detail-value">${matchTime.toLocaleDateString('en-GB')}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">TIME</div>
-                                <div class="detail-value">${matchTime.toLocaleTimeString([], {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: true,
-                                })}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">STATUS</div>
-                                <div class="match-status-mobile ${statusClass}">${statusDisplay}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">SERVERS</div>
-                                <div class="servers-info-mobile">${match.servers ? match.servers.length : 0}</div>
-                            </div>
-                        </div>
-                        <div class="action-buttons-mobile">
-                            <button class="btn btn-primary action-btn-mobile view-btn" onclick="viewMatch(${match.id})">👁️ View</button>
-                            <button class="btn btn-warning action-btn-mobile edit-btn" onclick="editMatch(${match.id})">✏️ Edit</button>
-                            <button class="btn btn-danger action-btn-mobile delete-btn" onclick="deleteMatch(${match.id})">🗑️ Delete</button>
-                            <button class="btn btn-secondary action-btn-mobile duplicate-btn" onclick="duplicateMatch(${match.id})">📋 Duplicate</button>
-                        </div>
-                    </div>
-                `;
+                    `;
+                }
             }).join('');
 
             container.innerHTML = cardsHTML;
         }
 
         function updateStats() {
-            const now = new Date();
-            let liveCount = 0;
-            let upcomingCount = 0;
-            let totalServers = 0;
+            try {
+                const now = new Date();
+                let liveCount = 0;
+                let upcomingCount = 0;
+                let totalServers = 0;
 
-            allMatches.forEach((match) => {
-                const matchTime = new Date(match.MatchTime);
-                const status = getMatchStatus(matchTime, now);
+                allMatches.forEach((match) => {
+                    try {
+                        const matchTime = new Date(match.MatchTime);
+                        const status = getMatchStatus(matchTime, now);
 
-                if (status === 'live') liveCount++;
-                else if (status === 'upcoming') upcomingCount++;
+                        if (status === 'live') liveCount++;
+                        else if (status === 'upcoming') upcomingCount++;
 
-                if (match.servers) {
-                    totalServers += match.servers.length;
-                }
-            });
+                        if (match.servers && Array.isArray(match.servers)) {
+                            totalServers += match.servers.length;
+                        }
+                    } catch (error) {
+                        console.error('Error processing match stats:', error);
+                    }
+                });
 
-            // Update dashboard stats
-            document.getElementById('totalMatches').textContent = allMatches.length;
-            document.getElementById('liveMatches').textContent = liveCount;
-            document.getElementById('upcomingMatches').textContent = upcomingCount;
-            document.getElementById('totalServers').textContent = totalServers;
+                // Update dashboard stats
+                document.getElementById('totalMatches').textContent = allMatches.length;
+                document.getElementById('liveMatches').textContent = liveCount;
+                document.getElementById('upcomingMatches').textContent = upcomingCount;
+                document.getElementById('totalServers').textContent = totalServers;
 
-            // Update profile stats
-            document.getElementById('profileTotalMatches').textContent = allMatches.length;
-            document.getElementById('profileLiveMatches').textContent = liveCount;
-            document.getElementById('profileUpcomingMatches').textContent = upcomingCount;
-            document.getElementById('profileTotalServers').textContent = totalServers;
+                // Update profile stats
+                document.getElementById('profileTotalMatches').textContent = allMatches.length;
+                document.getElementById('profileLiveMatches').textContent = liveCount;
+                document.getElementById('profileUpcomingMatches').textContent = upcomingCount;
+                document.getElementById('profileTotalServers').textContent = totalServers;
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
         }
 
         function updateProfileStats() {
@@ -2813,106 +2863,126 @@
 
         // Duplicate Match Function
         function duplicateMatch(matchId) {
-            const match = allMatches.find((m) => m.id === matchId);
-            if (!match) {
-                showToast('Match not found!', 'error');
-                return;
-            }
-
-            // Switch to dashboard section first
-            showSection('dashboard');
-
-            setTimeout(() => {
-                document.getElementById('matchName').value = match.Match + ' (Copy)';
-                document.getElementById('team1').value = match.Team1;
-                document.getElementById('team2').value = match.Team2;
-                document.getElementById('team1Logo').value = match.Team1Logo || '';
-                document.getElementById('team2Logo').value = match.Team2Logo || '';
-
-                const newTime = new Date();
-                newTime.setHours(newTime.getHours() + 1);
-                newTime.setMinutes(newTime.getMinutes() - newTime.getTimezoneOffset());
-                document.getElementById('matchTime').value = newTime.toISOString().slice(0, 16);
-
-                const container = document.getElementById('serversContainer');
-                container.innerHTML = '';
-
-                if (match.servers && match.servers.length > 0) {
-                    match.servers.forEach((server) => {
-                        const serverItem = document.createElement('div');
-                        serverItem.className = 'server-item';
-                        serverItem.innerHTML = `
-                            <input type="text" placeholder="Server Name" class="server-name" value="${server.name || ''}" />
-                            <input type="url" placeholder="Server Link" class="server-link" value="${server.link || ''}" />
-                            <button type="button" class="btn btn-danger btn-small server-remove-btn" onclick="removeServer(this)">❌ Remove</button>
-                        `;
-                        container.appendChild(serverItem);
-                    });
+            try {
+                const match = allMatches.find((m) => m.id === matchId);
+                if (!match) {
+                    showToast('Match not found!', 'error');
+                    return;
                 }
 
-                document.querySelector('.form-container').scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start',
-                });
+                // Switch to dashboard section first
+                showSection('dashboard');
 
-                showToast('Match duplicated! Please review and save.', 'success');
-            }, 300);
+                setTimeout(() => {
+                    document.getElementById('matchName').value = (match.Match || 'Unknown Match') + ' (Copy)';
+                    document.getElementById('team1').value = match.Team1 || '';
+                    document.getElementById('team2').value = match.Team2 || '';
+                    document.getElementById('team1Logo').value = match.Team1Logo || '';
+                    document.getElementById('team2Logo').value = match.Team2Logo || '';
+
+                    const newTime = new Date();
+                    newTime.setHours(newTime.getHours() + 1);
+                    newTime.setMinutes(newTime.getMinutes() - newTime.getTimezoneOffset());
+                    document.getElementById('matchTime').value = newTime.toISOString().slice(0, 16);
+
+                    const container = document.getElementById('serversContainer');
+                    container.innerHTML = '';
+
+                    if (match.servers && Array.isArray(match.servers) && match.servers.length > 0) {
+                        match.servers.forEach((server) => {
+                            const serverItem = document.createElement('div');
+                            serverItem.className = 'server-item';
+                            serverItem.innerHTML = `
+                                <input type="text" placeholder="Server Name" class="server-name" value="${server.name || ''}" />
+                                <input type="url" placeholder="Server Link" class="server-link" value="${server.link || ''}" />
+                                <button type="button" class="btn btn-danger btn-small server-remove-btn" onclick="removeServer(this)">❌ Remove</button>
+                            `;
+                            container.appendChild(serverItem);
+                        });
+                    } else {
+                        addServer();
+                    }
+
+                    document.querySelector('.form-container').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                    });
+
+                    showToast('Match duplicated! Please review and save.', 'success');
+                }, 300);
+            } catch (error) {
+                console.error('Error duplicating match:', error);
+                showToast('Error duplicating match!', 'error');
+            }
         }
 
         // Search Functionality
         document.getElementById('searchMatches').addEventListener('input', function (e) {
-            const searchTerm = e.target.value.toLowerCase();
+            try {
+                const searchTerm = e.target.value.toLowerCase();
 
-            if (searchTerm === '') {
-                displayMatches(allMatches);
-                return;
+                if (searchTerm === '') {
+                    displayMatches(allMatches);
+                    return;
+                }
+
+                const filteredMatches = allMatches.filter((match) => {
+                    return (
+                        (match.Match && match.Match.toLowerCase().includes(searchTerm)) ||
+                        (match.Team1 && match.Team1.toLowerCase().includes(searchTerm)) ||
+                        (match.Team2 && match.Team2.toLowerCase().includes(searchTerm)) ||
+                        (match.servers &&
+                            Array.isArray(match.servers) &&
+                            match.servers.some((server) =>
+                                server.name && server.name.toLowerCase().includes(searchTerm)
+                            ))
+                    );
+                });
+
+                displayMatches(filteredMatches);
+            } catch (error) {
+                console.error('Search error:', error);
             }
-
-            const filteredMatches = allMatches.filter((match) => {
-                return (
-                    match.Match.toLowerCase().includes(searchTerm) ||
-                    match.Team1.toLowerCase().includes(searchTerm) ||
-                    match.Team2.toLowerCase().includes(searchTerm) ||
-                    (match.servers &&
-                        match.servers.some((server) =>
-                            server.name.toLowerCase().includes(searchTerm)
-                        ))
-                );
-            });
-
-            displayMatches(filteredMatches);
         });
 
         // Keyboard shortcuts
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                closeViewModal();
-                closeMenu();
-            }
+            try {
+                if (e.key === 'Escape') {
+                    closeViewModal();
+                    closeMenu();
+                }
 
-            if (e.ctrlKey && e.key === 'n') {
-                e.preventDefault();
-                showSection('dashboard');
-                setTimeout(() => {
-                    resetForm();
-                    document.getElementById('matchName').focus();
-                }, 300);
-            }
+                if (e.ctrlKey && e.key === 'n') {
+                    e.preventDefault();
+                    showSection('dashboard');
+                    setTimeout(() => {
+                        resetForm();
+                        document.getElementById('matchName').focus();
+                    }, 300);
+                }
 
-            if (e.ctrlKey && e.key === 'f') {
-                e.preventDefault();
-                showSection('dashboard');
-                setTimeout(() => {
-                    document.getElementById('searchMatches').focus();
-                }, 300);
+                if (e.ctrlKey && e.key === 'f') {
+                    e.preventDefault();
+                    showSection('dashboard');
+                    setTimeout(() => {
+                        document.getElementById('searchMatches').focus();
+                    }, 300);
+                }
+            } catch (error) {
+                console.error('Keyboard shortcut error:', error);
             }
         });
 
         // Modal click outside to close
         window.onclick = function (event) {
-            const modal = document.getElementById('viewModal');
-            if (event.target === modal) {
-                closeViewModal();
+            try {
+                const modal = document.getElementById('viewModal');
+                if (event.target === modal) {
+                    closeViewModal();
+                }
+            } catch (error) {
+                console.error('Modal click error:', error);
             }
         };
 
@@ -2935,81 +3005,100 @@
 
         // Listen for storage events (cross-tab communication)
         window.addEventListener('storage', function (e) {
-            if (e.key === 'cricstream_last_update' && e.newValue) {
-                try {
+            try {
+                if (e.key === 'cricstream_last_update' && e.newValue) {
                     const updateData = JSON.parse(e.newValue);
                     if (updateData.type === 'ADMIN_UPDATE') {
                         setTimeout(() => {
                             loadMatches();
                         }, 1000);
                     }
-                } catch (error) {
-                    console.error('Error parsing storage event:', error);
                 }
+            } catch (error) {
+                console.error('Error parsing storage event:', error);
             }
         });
 
         // Page visibility change handler
         document.addEventListener('visibilitychange', function () {
-            if (!document.hidden && realtimeUpdater) {
-                realtimeUpdater.checkForUpdates();
+            try {
+                if (!document.hidden && realtimeUpdater) {
+                    realtimeUpdater.checkForUpdates();
+                }
+            } catch (error) {
+                console.error('Visibility change error:', error);
             }
         });
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function () {
-            if (checkAuth()) {
-                setDefaultDateTime();
-            }
-
-            // Add loading animation to buttons
-            document.addEventListener('click', function (e) {
-                if (e.target.classList.contains('btn') && !e.target.disabled) {
-                    e.target.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        e.target.style.transform = '';
-                    }, 150);
-                }
-            });
-
-            // Prevent form submission on Enter in search
-            document.getElementById('searchMatches').addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                }
-            });
-
-            // Auto-save form data to localStorage (draft)
-            const formInputs = ['matchName', 'team1', 'team2', 'team1Logo', 'team2Logo', 'matchTime'];
-            formInputs.forEach((inputId) => {
-                const input = document.getElementById(inputId);
-
-                const savedValue = localStorage.getItem(`draft_${inputId}`);
-                if (savedValue && !isEditing) {
-                    input.value = savedValue;
+            try {
+                if (checkAuth()) {
+                    setDefaultDateTime();
                 }
 
-                input.addEventListener('input', function () {
-                    if (!isEditing) {
-                        localStorage.setItem(`draft_${inputId}`, this.value);
+                // Add loading animation to buttons
+                document.addEventListener('click', function (e) {
+                    try {
+                        if (e.target.classList.contains('btn') && !e.target.disabled) {
+                            e.target.style.transform = 'scale(0.95)';
+                                                        setTimeout(() => {
+                                e.target.style.transform = '';
+                            }, 150);
+                        }
+                    } catch (error) {
+                        console.error('Button animation error:', error);
                     }
                 });
-            });
 
-            // Clear draft on successful submission
-            document.getElementById('matchForm').addEventListener('submit', function () {
-                setTimeout(() => {
-                    formInputs.forEach((inputId) => {
-                        localStorage.removeItem(`draft_${inputId}`);
-                    });
-                }, 1000);
-            });
+                // Prevent form submission on Enter in search
+                document.getElementById('searchMatches').addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                    }
+                });
+
+                // Auto-save form data to localStorage (draft)
+                const formInputs = ['matchName', 'team1', 'team2', 'team1Logo', 'team2Logo', 'matchTime'];
+                formInputs.forEach((inputId) => {
+                    try {
+                        const input = document.getElementById(inputId);
+
+                        const savedValue = localStorage.getItem(`draft_${inputId}`);
+                        if (savedValue && !isEditing) {
+                            input.value = savedValue;
+                        }
+
+                        input.addEventListener('input', function () {
+                            if (!isEditing) {
+                                localStorage.setItem(`draft_${inputId}`, this.value);
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Auto-save setup error:', error);
+                    }
+                });
+
+                // Clear draft on successful submission
+                document.getElementById('matchForm').addEventListener('submit', function () {
+                    setTimeout(() => {
+                        formInputs.forEach((inputId) => {
+                            localStorage.removeItem(`draft_${inputId}`);
+                        });
+                    }, 1000);
+                });
+            } catch (error) {
+                console.error('DOMContentLoaded error:', error);
+            }
         });
 
         // Enhanced error handling
         window.addEventListener('error', function (e) {
             console.error('Global error:', e.error);
-            showToast('An unexpected error occurred. Please refresh the page.', 'error');
+            // Don't show toast for every error to avoid spam
+            if (e.error && e.error.message && !e.error.message.includes('Script error')) {
+                showToast('An error occurred. Please try again.', 'error');
+            }
         });
 
         window.addEventListener('unhandledrejection', function (e) {
@@ -3019,8 +3108,12 @@
 
         // Cleanup on page unload
         window.addEventListener('beforeunload', function () {
-            if (realtimeUpdater) {
-                realtimeUpdater.stop();
+            try {
+                if (realtimeUpdater) {
+                    realtimeUpdater.stop();
+                }
+            } catch (error) {
+                console.error('Cleanup error:', error);
             }
         });
 
@@ -3038,10 +3131,245 @@
             });
         }
 
+        // Additional utility functions
+        function safeExecute(func, errorMessage = 'An error occurred') {
+            try {
+                return func();
+            } catch (error) {
+                console.error(errorMessage, error);
+                showToast(errorMessage, 'error');
+                return null;
+            }
+        }
+
+        function validateMatchData(matchData) {
+            const errors = [];
+            
+            if (!matchData.Match || matchData.Match.trim() === '') {
+                errors.push('Match name is required');
+            }
+            
+            if (!matchData.Team1 || matchData.Team1.trim() === '') {
+                errors.push('Team 1 name is required');
+            }
+            
+            if (!matchData.Team2 || matchData.Team2.trim() === '') {
+                errors.push('Team 2 name is required');
+            }
+            
+            if (!matchData.MatchTime) {
+                errors.push('Match time is required');
+            }
+            
+            if (!matchData.servers || !Array.isArray(matchData.servers) || matchData.servers.length === 0) {
+                errors.push('At least one server is required');
+            }
+            
+            return errors;
+        }
+
+        function formatDateTime(dateString) {
+            try {
+                const date = new Date(dateString);
+                return {
+                    date: date.toLocaleDateString('en-GB'),
+                    time: date.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                    })
+                };
+            } catch (error) {
+                console.error('Date formatting error:', error);
+                return {
+                    date: 'Invalid Date',
+                    time: 'Invalid Time'
+                };
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Debounced search function
+        const debouncedSearch = debounce(function(searchTerm) {
+            try {
+                if (searchTerm === '') {
+                    displayMatches(allMatches);
+                    return;
+                }
+
+                const filteredMatches = allMatches.filter((match) => {
+                    return (
+                        (match.Match && match.Match.toLowerCase().includes(searchTerm)) ||
+                        (match.Team1 && match.Team1.toLowerCase().includes(searchTerm)) ||
+                        (match.Team2 && match.Team2.toLowerCase().includes(searchTerm)) ||
+                        (match.servers &&
+                            Array.isArray(match.servers) &&
+                            match.servers.some((server) =>
+                                server.name && server.name.toLowerCase().includes(searchTerm)
+                            ))
+                    );
+                });
+
+                displayMatches(filteredMatches);
+            } catch (error) {
+                console.error('Search error:', error);
+            }
+        }, 300);
+
+        // Update search event listener to use debounced function
+        document.getElementById('searchMatches').addEventListener('input', function (e) {
+            const searchTerm = e.target.value.toLowerCase();
+            debouncedSearch(searchTerm);
+        });
+
+        // Performance monitoring
+        function measurePerformance(name, func) {
+            const start = performance.now();
+            const result = func();
+            const end = performance.now();
+            console.log(`${name} took ${end - start} milliseconds`);
+            return result;
+        }
+
+        // Local storage management
+        function clearLocalStorage() {
+            try {
+                const keys = Object.keys(localStorage);
+                keys.forEach(key => {
+                    if (key.startsWith('cricstream_') || key.startsWith('draft_')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+                showToast('Local storage cleared!', 'success');
+            } catch (error) {
+                console.error('Error clearing local storage:', error);
+                showToast('Error clearing local storage!', 'error');
+            }
+        }
+
+        // Add to settings section
+        function addClearStorageButton() {
+            const settingsSection = document.getElementById('settingsSection');
+            if (settingsSection) {
+                const dangerZone = settingsSection.querySelector('.form-container:last-child');
+                if (dangerZone) {
+                    const clearStorageBtn = document.createElement('button');
+                    clearStorageBtn.className = 'btn btn-warning';
+                    clearStorageBtn.innerHTML = '🗑️ Clear Local Storage';
+                    clearStorageBtn.onclick = clearLocalStorage;
+                    clearStorageBtn.style.marginTop = '10px';
+                    dangerZone.appendChild(clearStorageBtn);
+                }
+            }
+        }
+
+        // Initialize additional features
+        setTimeout(() => {
+            addClearStorageButton();
+        }, 1000);
+
+        // Touch gesture support for mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            try {
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                const deltaX = touchEndX - touchStartX;
+                const deltaY = touchEndY - touchStartY;
+
+                // Swipe right to open menu (from left edge)
+                if (deltaX > 100 && Math.abs(deltaY) < 100 && touchStartX < 50) {
+                    toggleMenu();
+                }
+
+                // Swipe left to close menu
+                if (deltaX < -100 && Math.abs(deltaY) < 100) {
+                    const menu = document.getElementById('sideMenu');
+                    if (menu.classList.contains('open')) {
+                        closeMenu();
+                    }
+                }
+            } catch (error) {
+                console.error('Touch gesture error:', error);
+            }
+        });
+
+        // Accessibility improvements
+        function addAccessibilityFeatures() {
+            // Add ARIA labels
+            document.querySelectorAll('.btn').forEach(btn => {
+                if (!btn.getAttribute('aria-label')) {
+                    btn.setAttribute('aria-label', btn.textContent.trim());
+                }
+            });
+
+            // Add role attributes
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.setAttribute('role', 'menuitem');
+            });
+
+            // Add keyboard navigation for menu
+            document.getElementById('sideMenu').setAttribute('role', 'menu');
+            document.getElementById('sideMenu').setAttribute('aria-label', 'Main navigation');
+        }
+
+        // Initialize accessibility features
+        setTimeout(addAccessibilityFeatures, 500);
+
         // Final initialization
-        console.log('🏏 CricStreamZone Admin Panel with User Management Loaded Successfully!');
-        console.log('Version: 4.0.0');
-        console.log('Features: User Management, Role-based Access, Enhanced Security, Mobile Optimized');
+        console.log('🏏 CricStreamZone Admin Panel v4.1.0 Loaded Successfully!');
+        console.log('Features: User Management, Role-based Access, Enhanced Security, Mobile Optimized, Error Handling');
+        console.log('Menu: Left Side Navigation');
+        console.log('Status: All systems operational');
+
+        // Health check function
+        function performHealthCheck() {
+            const checks = {
+                localStorage: typeof(Storage) !== "undefined",
+                fetch: typeof(fetch) !== "undefined",
+                broadcastChannel: typeof(BroadcastChannel) !== "undefined",
+                serviceWorker: 'serviceWorker' in navigator,
+                online: navigator.onLine
+            };
+
+            console.log('System Health Check:', checks);
+            
+            const failedChecks = Object.keys(checks).filter(key => !checks[key]);
+            if (failedChecks.length > 0) {
+                console.warn('Some features may not work properly:', failedChecks);
+            }
+
+            return checks;
+        }
+
+        // Run health check on load
+        setTimeout(performHealthCheck, 2000);
+
+        // Auto-refresh matches every 30 seconds when page is visible
+        setInterval(() => {
+            if (!document.hidden && currentUser) {
+                loadMatches();
+            }
+        }, 30000);
+
     </script>
 </body>
 </html>
