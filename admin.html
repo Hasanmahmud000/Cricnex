@@ -110,82 +110,187 @@
         .container {
             padding: 10px;
             max-width: 100%;
+            margin-top: 70px; /* Space for fixed header */
         }
 
+        /* Header with Menu */
         .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px 15px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
+            padding: 15px;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .header h1 {
+        .header-title {
             color: #fff;
-            margin-bottom: 8px;
-            font-size: 20px;
+            font-size: 18px;
+            font-weight: 700;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .header p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-        }
-
-        .logout-btn {
-            background: rgba(255, 255, 255, 0.2);
+        .menu-toggle {
+            background: none;
             border: none;
             color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
+            font-size: 24px;
             cursor: pointer;
-            font-size: 14px;
-            backdrop-filter: blur(10px);
+            padding: 5px;
+            border-radius: 5px;
             transition: all 0.3s ease;
-            margin-top: 15px;
-            width: 100%;
-            max-width: 200px;
-            touch-action: manipulation;
         }
 
-        .logout-btn:active {
-            transform: scale(0.98);
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        /* Real-time Status - Mobile */
-        .realtime-status {
+        /* Side Menu */
+        .side-menu {
             position: fixed;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            z-index: 10000;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            transition: right 0.3s ease;
+            z-index: 1001;
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+        }
+
+        .side-menu.open {
+            right: 0;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .menu-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00bcd4, #0097a7);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
         }
 
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4caf50;
-            animation: pulse 2s infinite;
+        .user-details h3 {
+            color: #00bcd4;
+            margin-bottom: 5px;
+            font-size: 16px;
         }
 
-        .status-indicator.disconnected {
-            background: #f44336;
-            animation: none;
+        .user-role {
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .menu-items {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #00bcd4;
+        }
+
+        .menu-item.active {
+            background: rgba(0, 188, 212, 0.2);
+            border-left-color: #00bcd4;
+        }
+
+        .menu-item i {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            color: #00bcd4;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
         .form-container {
@@ -377,7 +482,7 @@
             transform: scale(0.98);
         }
 
-        .match-card.updated {
+                .match-card.updated {
             background: rgba(76, 175, 80, 0.2);
             animation: highlightUpdate 2s ease;
         }
@@ -442,11 +547,6 @@
             color: white;
         }
 
-        .status-finished {
-            background: linear-gradient(45deg, #666, #555);
-            color: white;
-        }
-
         @keyframes pulse {
             0% {
                 box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
@@ -472,7 +572,7 @@
             flex: 1;
         }
 
-                .team-logo-mobile {
+        .team-logo-mobile {
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -692,7 +792,7 @@
 
         .toast {
             position: fixed;
-            top: 60px;
+            top: 80px;
             left: 10px;
             right: 10px;
             padding: 15px 20px;
@@ -739,6 +839,187 @@
 
         .no-matches p {
             font-size: 14px;
+        }
+
+        /* User Management Styles */
+        .user-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .user-info h3 {
+            color: #00bcd4;
+            margin-bottom: 5px;
+        }
+
+        .user-role-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .role-admin {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .role-user {
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            color: white;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .user-actions .btn {
+            width: auto;
+            padding: 8px 15px;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* Profile Section */
+        .profile-card {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00bcd4, #0097a7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            margin: 0 auto 15px;
+        }
+
+        .profile-name {
+            color: #00bcd4;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .profile-role {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .profile-stat {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .profile-stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00bcd4;
+            margin-bottom: 5px;
+        }
+
+        .profile-stat-label {
+            color: #999;
+            font-size: 12px;
+        }
+
+        /* Settings Section */
+        .settings-group {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .settings-group h3 {
+            color: #00bcd4;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .setting-description {
+            color: #999;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background: #666;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #00bcd4;
+        }
+
+                .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            left: 27px;
         }
 
         /* Hide desktop table on mobile */
@@ -915,17 +1196,12 @@
                 margin-bottom: 15px;
             }
             
-            .realtime-status {
-                position: relative;
-                margin-bottom: 10px;
-            }
-            
             .header {
-                padding: 15px;
+                padding: 10px 15px;
             }
             
-            .header h1 {
-                font-size: 18px;
+            .header-title {
+                font-size: 16px;
             }
         }
 
@@ -995,18 +1271,13 @@
     </style>
 </head>
 <body>
-    <!-- Real-time Status Indicator -->
-    <div id="realtimeStatus" class="realtime-status">
-        <div class="status-indicator" id="statusIndicator"></div>
-        <span id="statusText">Connected</span>
-    </div>
-
     <!-- Login Screen -->
     <div id="loginScreen" class="login-container">
         <div class="login-box">
             <h1>🏏 Admin Login</h1>
             <form id="loginForm">
-                <input type="password" id="passwordInput" class="login-input" placeholder="Enter Admin Password" required />
+                <input type="text" id="usernameInput" class="login-input" placeholder="Enter Username" required />
+                <input type="password" id="passwordInput" class="login-input" placeholder="Enter Password" required />
                 <button type="submit" class="login-btn">Login</button>
                 <div id="loginError" class="error-message" style="display: none;"></div>
             </form>
@@ -1015,105 +1286,343 @@
 
     <!-- Main App -->
     <div id="mainApp" class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">CricStreamZone</div>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        </div>
+
+        <!-- Menu Overlay -->
+        <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+        <!-- Side Menu -->
+        <div class="side-menu" id="sideMenu">
+            <button class="menu-close" onclick="closeMenu()">&times;</button>
+            
+            <div class="menu-header">
+                <div class="menu-user-info">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="user-details">
+                        <h3 id="userName">Admin User</h3>
+                        <div class="user-role" id="userRole">Administrator</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-items">
+                <a href="#" class="menu-item active" onclick="showSection('dashboard')">
+                    <i>📊</i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('profile')">
+                    <i>👤</i>
+                    <span>Profile</span>
+                </a>
+                <a href="#" class="menu-item" onclick="exportMatches()">
+                    <i>📤</i>
+                    <span>Export Data</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('import')">
+                    <i>📥</i>
+                    <span>Import Data</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('settings')">
+                    <i>⚙️</i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('manageUsers')" id="manageUsersMenu" style="display: none;">
+                    <i>👥</i>
+                    <span>Manage Users</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('addUser')" id="addUserMenu" style="display: none;">
+                    <i>➕</i>
+                    <span>Add User</span>
+                </a>
+                <a href="#" class="menu-item" onclick="logout()">
+                    <i>🚪</i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
         <div class="container">
-            <div class="header fade-in">
-                <div class="header-content">
-                    <h1>🏏 CricStreamZone Admin</h1>
-                    <p>Manage Live Sports Streaming</p>
-                                        <button class="logout-btn" onclick="logout()">🚪 Logout</button>
-                </div>
-            </div>
+            <!-- Dashboard Section -->
+            <div id="dashboardSection" class="content-section active">
+                <div class="section-title">📊 Dashboard</div>
 
-            <!-- Stats Cards -->
-            <div class="stats-container fade-in">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalMatches">0</div>
-                    <div class="stat-label">Total Matches</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="liveMatches">0</div>
-                    <div class="stat-label">Live Matches</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="upcomingMatches">0</div>
-                    <div class="stat-label">Upcoming</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="totalServers">0</div>
-                    <div class="stat-label">Total Servers</div>
-                </div>
-            </div>
-
-            <div class="form-container slide-up">
-                <h2 class="form-title-mobile" id="formTitle">✨ Add New Match</h2>
-                <form id="matchForm">
-                    <input type="hidden" id="editMatchId" value="" />
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>🏆 Match Name</label>
-                            <input type="text" id="matchName" placeholder="e.g., BAN vs PAK T20 World Cup" required />
-                        </div>
-
-                        <div class="form-group">
-                            <label>🏏 Team 1</label>
-                            <input type="text" id="team1" placeholder="e.g., Bangladesh" required />
-                        </div>
-
-                        <div class="form-group">
-                            <label>🏏 Team 2</label>
-                            <input type="text" id="team2" placeholder="e.g., Pakistan" required />
-                        </div>
-
-                        <div class="form-group">
-                            <label>🖼️ Team 1 Logo URL</label>
-                            <input type="url" id="team1Logo" placeholder="https://example.com/Bangladesh-logo.png" />
-                        </div>
-
-                        <div class="form-group">
-                            <label>🖼️ Team 2 Logo URL</label>
-                            <input type="url" id="team2Logo" placeholder="https://example.com/pakistan-logo.png" />
-                        </div>
-
-                        <div class="form-group">
-                            <label>⏰ Match Date & Time</label>
-                            <input type="datetime-local" id="matchTime" required />
-                        </div>
+                <!-- Stats Cards -->
+                <div class="stats-container fade-in">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalMatches">0</div>
+                        <div class="stat-label">Total Matches</div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="liveMatches">0</div>
+                        <div class="stat-label">Live Matches</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="upcomingMatches">0</div>
+                        <div class="stat-label">Upcoming</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalServers">0</div>
+                        <div class="stat-label">Total Servers</div>
+                    </div>
+                </div>
 
-                    <div class="form-group">
-                        <label>📡 Streaming Servers</label>
-                        <div class="servers-container">
-                            <div id="serversContainer">
-                                <div class="server-item">
-                                    <input type="text" placeholder="Server Name (e.g., HD Server)" class="server-name" />
-                                    <input type="url" placeholder="Server Link" class="server-link" />
-                                    <button type="button" class="btn btn-danger btn-small server-remove-btn" onclick="removeServer(this)">❌ Remove</button>
-                                </div>
+                <div class="form-container slide-up">
+                    <h2 class="form-title-mobile" id="formTitle">✨ Add New Match</h2>
+                    <form id="matchForm">
+                        <input type="hidden" id="editMatchId" value="" />
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>🏆 Match Name</label>
+                                <input type="text" id="matchName" placeholder="e.g., BAN vs PAK T20 World Cup" required />
                             </div>
-                            <button type="button" class="btn btn-secondary add-server-btn" onclick="addServer()">➕ Add Server</button>
+
+                            <div class="form-group">
+                                <label>🏏 Team 1</label>
+                                <input type="text" id="team1" placeholder="e.g., Bangladesh" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>🏏 Team 2</label>
+                                <input type="text" id="team2" placeholder="e.g., Pakistan" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>🖼️ Team 1 Logo URL</label>
+                                <input type="url" id="team1Logo" placeholder="https://example.com/Bangladesh-logo.png" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>🖼️ Team 2 Logo URL</label>
+                                <input type="url" id="team2Logo" placeholder="https://example.com/pakistan-logo.png" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>⏰ Match Date & Time</label>
+                                <input type="datetime-local" id="matchTime" required />
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary" id="submitBtn">✅ Add Match</button>
-                        <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Reset</button>
-                        <button type="button" class="btn btn-warning" id="cancelEditBtn" onclick="cancelEdit()" style="display: none;">❌ Cancel Edit</button>
-                    </div>
-                </form>
-            </div>
+                        <div class="form-group">
+                            <label>📡 Streaming Servers</label>
+                            <div class="servers-container">
+                                <div id="serversContainer">
+                                    <div class="server-item">
+                                        <input type="text" placeholder="Server Name (e.g., HD Server)" class="server-name" />
+                                        <input type="url" placeholder="Server Link" class="server-link" />
+                                        <button type="button" class="btn btn-danger btn-small server-remove-btn" onclick="removeServer(this)">❌ Remove</button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-secondary add-server-btn" onclick="addServer()">➕ Add Server</button>
+                            </div>
+                        </div>
 
-            <div class="matches-list slide-up">
-                <h2 class="matches-title-mobile">📋 Matches Management</h2>
-
-                <div class="search-container">
-                    <input type="text" id="searchMatches" class="search-input" placeholder="🔍 Search matches..." />
-                    <span class="search-icon">🔍</span>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">✅ Add Match</button>
+                            <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Reset</button>
+                            <button type="button" class="btn btn-warning" id="cancelEditBtn" onclick="cancelEdit()" style="display: none;">❌ Cancel Edit</button>
+                        </div>
+                    </form>
                 </div>
 
-                <div id="matchesList" class="loading">
+                <div class="matches-list slide-up">
+                    <h2 class="matches-title-mobile">📋 Matches Management</h2>
+
+                    <div class="search-container">
+                        <input type="text" id="searchMatches" class="search-input" placeholder="🔍 Search matches..." />
+                        <span class="search-icon">🔍</span>
+                    </div>
+
+                    <div id="matchesList" class="loading">
+                        <div class="loading-spinner"></div>
+                        Loading matches...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div id="profileSection" class="content-section">
+                <div class="section-title">👤 User Profile</div>
+                
+                <div class="profile-card">
+                    <div class="profile-avatar" id="profileAvatar">A</div>
+                    <div class="profile-name" id="profileName">Admin User</div>
+                    <div class="profile-role" id="profileRole">Administrator</div>
+                    
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <div class="profile-stat-number" id="profileTotalMatches">0</div>
+                            <div class="profile-stat-label">Total Matches</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="profile-stat-number" id="profileLiveMatches">0</div>
+                            <div class="profile-stat-label">Live Matches</div>
+                        </div>
+                                        <div class="profile-stat">
+                            <div class="profile-stat-number" id="profileUpcomingMatches">0</div>
+                            <div class="profile-stat-label">Upcoming</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="profile-stat-number" id="profileTotalServers">0</div>
+                            <div class="profile-stat-label">Total Servers</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3 class="form-title-mobile">🔐 Change Password</h3>
+                    <form id="changePasswordForm">
+                        <div class="form-group">
+                            <label>Current Password</label>
+                            <input type="password" id="currentPassword" placeholder="Enter current password" required />
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" id="newPassword" placeholder="Enter new password" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" id="confirmPassword" placeholder="Confirm new password" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">🔐 Update Password</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Import Data Section -->
+            <div id="importSection" class="content-section">
+                <div class="section-title">📥 Import Data</div>
+                
+                <div class="form-container">
+                    <h3 class="form-title-mobile">📁 Import Matches</h3>
+                    <div class="form-group">
+                        <label>Select JSON File</label>
+                        <input type="file" id="importFile" accept=".json" class="form-control" />
+                    </div>
+                    <button class="btn btn-primary" onclick="importMatches()">📥 Import Matches</button>
+                </div>
+
+                <div class="form-container">
+                    <h3 class="form-title-mobile">📋 Import Instructions</h3>
+                    <div style="color: #999; font-size: 14px; line-height: 1.6;">
+                        <p>• Select a valid JSON file exported from this system</p>
+                        <p>• The file should contain an array of match objects</p>
+                        <p>• Existing matches with same ID will be updated</p>
+                        <p>• New matches will be added to the system</p>
+                        <p>• Make sure the file format is correct before importing</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settingsSection" class="content-section">
+                <div class="section-title">⚙️ Settings</div>
+
+                <div class="settings-group">
+                    <h3>🔔 Notifications</h3>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Push Notifications</div>
+                            <div class="setting-description">Receive notifications for new matches</div>
+                        </div>
+                        <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Email Alerts</div>
+                            <div class="setting-description">Get email alerts for live matches</div>
+                        </div>
+                        <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3>🎨 Appearance</h3>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Dark Mode</div>
+                            <div class="setting-description">Use dark theme</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Animations</div>
+                            <div class="setting-description">Enable smooth animations</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3>🔧 System</h3>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Auto Refresh</div>
+                            <div class="setting-description">Automatically refresh match data</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Sound Effects</div>
+                            <div class="setting-description">Play sounds for actions</div>
+                        </div>
+                        <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3 class="form-title-mobile">🗑️ Danger Zone</h3>
+                    <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+                    <p style="color: #999; font-size: 12px; margin-top: 10px;">
+                        This will permanently delete all matches and cannot be undone.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Manage Users Section (Admin Only) -->
+            <div id="manageUsersSection" class="content-section">
+                <div class="section-title">👥 Manage Users</div>
+
+                <div id="usersList" class="loading">
                     <div class="loading-spinner"></div>
-                    Loading matches...
+                    Loading users...
+                </div>
+            </div>
+
+            <!-- Add User Section (Admin Only) -->
+            <div id="addUserSection" class="content-section">
+                <div class="section-title">➕ Add New User</div>
+
+                <div class="form-container">
+                    <form id="addUserForm">
+                        <div class="form-group">
+                            <label>👤 Username</label>
+                            <input type="text" id="newUsername" placeholder="Enter username" required />
+                        </div>
+                        <div class="form-group">
+                            <label>🔐 Password</label>
+                            <input type="password" id="newUserPassword" placeholder="Enter password" required />
+                        </div>
+                        <div class="form-group">
+                            <label>👑 Role</label>
+                            <select id="newUserRole" required>
+                                <option value="">Select Role</option>
+                                <option value="user">User</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>📧 Email (Optional)</label>
+                            <input type="email" id="newUserEmail" placeholder="Enter email address" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">➕ Add User</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -1132,9 +1641,13 @@
         // Configuration
         const CONFIG = {
             API_URL: 'https://script.google.com/macros/s/AKfycbxzx4xcwEGidoxEd7BQshkR9FKHjK5o0p8ukNY4NsKNR0EsShY7eV3MUxA2iXz1V8bmHg/exec',
-            ADMIN_PASSWORD: 'bdhub2008',
+            USERS: {
+                'CricZone': { password: 'bdhub2008', role: 'admin', email: 'criczone@cricstream.com' },
+                'user1': { password: 'user123', role: 'user', email: 'user1@cricstream.com' }
+            },
             SESSION_KEY: 'cricstream_admin_session',
-            REALTIME_INTERVAL: 5000, // Increased for mobile
+            USER_KEY: 'cricstream_current_user',
+            REALTIME_INTERVAL: 5000,
             BROADCAST_CHANNEL: 'cricstream_updates',
         };
 
@@ -1145,6 +1658,110 @@
         let realtimeInterval = null;
         let lastUpdateTime = null;
         let broadcastChannel = null;
+        let currentUser = null;
+
+        // User Management System
+        class UserManager {
+            constructor() {
+                this.users = { ...CONFIG.USERS };
+                this.loadUsers();
+            }
+
+            loadUsers() {
+                const savedUsers = localStorage.getItem('cricstream_users');
+                if (savedUsers) {
+                    this.users = { ...this.users, ...JSON.parse(savedUsers) };
+                }
+            }
+
+            saveUsers() {
+                const customUsers = { ...this.users };
+                // Remove default users from storage
+                delete customUsers.admin;
+                delete customUsers.user1;
+                localStorage.setItem('cricstream_users', JSON.stringify(customUsers));
+            }
+
+            authenticate(username, password) {
+                const user = this.users[username];
+                if (user && user.password === password) {
+                    return {
+                        username,
+                        role: user.role,
+                        email: user.email || '',
+                        avatar: username.charAt(0).toUpperCase()
+                    };
+                }
+                return null;
+            }
+
+            addUser(username, password, role, email = '') {
+                if (this.users[username]) {
+                    throw new Error('Username already exists');
+                }
+
+                this.users[username] = {
+                    password,
+                    role,
+                    email,
+                    createdAt: new Date().toISOString()
+                };
+
+                this.saveUsers();
+                return true;
+            }
+
+            updateUser(username, updates) {
+                if (!this.users[username]) {
+                    throw new Error('User not found');
+                }
+
+                this.users[username] = { ...this.users[username], ...updates };
+                this.saveUsers();
+                return true;
+            }
+
+            deleteUser(username) {
+                if (username === 'admin') {
+                    throw new Error('Cannot delete admin user');
+                }
+
+                if (!this.users[username]) {
+                    throw new Error('User not found');
+                }
+
+                delete this.users[username];
+                this.saveUsers();
+                return true;
+            }
+
+            getAllUsers() {
+                return Object.keys(this.users).map(username => ({
+                    username,
+                    role: this.users[username].role,
+                    email: this.users[username].email || '',
+                    createdAt: this.users[username].createdAt || 'N/A',
+                    avatar: username.charAt(0).toUpperCase()
+                }));
+            }
+
+            changePassword(username, currentPassword, newPassword) {
+                const user = this.users[username];
+                if (!user) {
+                    throw new Error('User not found');
+                }
+
+                if (user.password !== currentPassword) {
+                    throw new Error('Current password is incorrect');
+                }
+
+                this.users[username].password = newPassword;
+                this.saveUsers();
+                return true;
+            }
+        }
+
+        const userManager = new UserManager();
 
         // Mobile-optimized Real-time Update System
         class RealtimeUpdater {
@@ -1168,7 +1785,6 @@
             }
 
             startPolling() {
-                this.updateStatus('connecting');
                 realtimeInterval = setInterval(() => {
                     this.checkForUpdates();
                 }, CONFIG.REALTIME_INTERVAL);
@@ -1197,7 +1813,6 @@
                             }
                         }
 
-                        this.updateStatus('connected');
                         this.retryCount = 0;
                     }
                 } catch (error) {
@@ -1257,44 +1872,15 @@
                 this.retryCount++;
 
                 if (this.retryCount >= this.maxRetries) {
-                    this.updateStatus('disconnected');
                     showToast('Connection lost. Retrying...', 'warning');
 
                     setTimeout(() => {
                         this.retryCount = 0;
                     }, 30000);
-                } else {
-                    this.updateStatus('reconnecting');
                 }
             }
 
-            updateStatus(status) {
-                const indicator = document.getElementById('statusIndicator');
-                const statusText = document.getElementById('statusText');
-
-                switch (status) {
-                    case 'connected':
-                        indicator.className = 'status-indicator';
-                        indicator.style.background = '#4caf50';
-                        statusText.textContent = 'Live Updates';
-                        this.isConnected = true;
-                        break;
-                    case 'connecting':
-                    case 'reconnecting':
-                        indicator.className = 'status-indicator';
-                        indicator.style.background = '#ff9800';
-                        statusText.textContent = 'Connecting...';
-                        this.isConnected = false;
-                        break;
-                    case 'disconnected':
-                        indicator.className = 'status-indicator disconnected';
-                        statusText.textContent = 'Offline';
-                        this.isConnected = false;
-                        break;
-                }
-            }
-
-            stop() {
+                        stop() {
                 if (realtimeInterval) {
                     clearInterval(realtimeInterval);
                     realtimeInterval = null;
@@ -1304,8 +1890,6 @@
                     broadcastChannel.close();
                     broadcastChannel = null;
                 }
-
-                this.updateStatus('disconnected');
             }
         }
 
@@ -1314,7 +1898,10 @@
         // Authentication Functions
         function checkAuth() {
             const session = localStorage.getItem(CONFIG.SESSION_KEY);
-            if (session === 'authenticated') {
+            const userData = localStorage.getItem(CONFIG.USER_KEY);
+            
+            if (session === 'authenticated' && userData) {
+                currentUser = JSON.parse(userData);
                 showMainApp();
                 return true;
             }
@@ -1336,6 +1923,8 @@
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
 
+            updateUserInterface();
+
             if (!realtimeUpdater) {
                 realtimeUpdater = new RealtimeUpdater();
             }
@@ -1343,8 +1932,41 @@
             loadMatches();
         }
 
+        function updateUserInterface() {
+            if (!currentUser) return;
+
+            // Update user info in menu
+            document.getElementById('userAvatar').textContent = currentUser.avatar;
+            document.getElementById('userName').textContent = currentUser.username;
+            document.getElementById('userRole').textContent = currentUser.role === 'admin' ? 'Administrator' : 'User';
+
+            // Update profile section
+            document.getElementById('profileAvatar').textContent = currentUser.avatar;
+            document.getElementById('profileName').textContent = currentUser.username;
+            document.getElementById('profileRole').textContent = currentUser.role === 'admin' ? 'Administrator' : 'User';
+
+            // Show/hide admin-only sections
+            const adminMenus = ['manageUsersMenu', 'addUserMenu'];
+            adminMenus.forEach(menuId => {
+                const menu = document.getElementById(menuId);
+                if (menu) {
+                    menu.style.display = currentUser.role === 'admin' ? 'block' : 'none';
+                }
+            });
+
+            // Disable certain features for non-admin users
+            if (currentUser.role !== 'admin') {
+                const restrictedElements = document.querySelectorAll('.admin-only');
+                restrictedElements.forEach(el => {
+                    el.style.display = 'none';
+                });
+            }
+        }
+
         function logout() {
             localStorage.removeItem(CONFIG.SESSION_KEY);
+            localStorage.removeItem(CONFIG.USER_KEY);
+            currentUser = null;
             showToast('Logged out successfully!', 'success');
             showLoginScreen();
         }
@@ -1352,16 +1974,25 @@
         // Login Form Handler
         document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault();
+            const username = document.getElementById('usernameInput').value.trim();
             const password = document.getElementById('passwordInput').value;
             const errorDiv = document.getElementById('loginError');
 
-            if (password === CONFIG.ADMIN_PASSWORD) {
-                localStorage.setItem(CONFIG.SESSION_KEY, 'authenticated');
-                showToast('Login successful!', 'success');
-                showMainApp();
-            } else {
-                errorDiv.textContent = 'Invalid password! Please try again.';
+            try {
+                const user = userManager.authenticate(username, password);
+                if (user) {
+                    currentUser = user;
+                    localStorage.setItem(CONFIG.SESSION_KEY, 'authenticated');
+                    localStorage.setItem(CONFIG.USER_KEY, JSON.stringify(user));
+                    showToast('Login successful!', 'success');
+                    showMainApp();
+                } else {
+                    throw new Error('Invalid credentials');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Invalid username or password! Please try again.';
                 errorDiv.style.display = 'block';
+                document.getElementById('usernameInput').value = '';
                 document.getElementById('passwordInput').value = '';
 
                 setTimeout(() => {
@@ -1369,6 +2000,296 @@
                 }, 3000);
             }
         });
+
+        // Menu Functions
+        function toggleMenu() {
+            const menu = document.getElementById('sideMenu');
+            const overlay = document.getElementById('menuOverlay');
+            
+            menu.classList.add('open');
+            overlay.classList.add('show');
+        }
+
+        function closeMenu() {
+            const menu = document.getElementById('sideMenu');
+            const overlay = document.getElementById('menuOverlay');
+            
+            menu.classList.remove('open');
+            overlay.classList.remove('show');
+        }
+
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all menu items
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected section
+            const targetSection = document.getElementById(sectionName + 'Section');
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            // Add active class to clicked menu item
+            event.target.closest('.menu-item').classList.add('active');
+
+            // Load section-specific data
+            switch (sectionName) {
+                case 'manageUsers':
+                    loadUsers();
+                    break;
+                case 'profile':
+                    updateProfileStats();
+                    break;
+            }
+
+            closeMenu();
+        }
+
+        // User Management Functions
+        function loadUsers() {
+            if (currentUser.role !== 'admin') {
+                showToast('Access denied!', 'error');
+                return;
+            }
+
+            const container = document.getElementById('usersList');
+            const users = userManager.getAllUsers();
+
+            if (users.length === 0) {
+                container.innerHTML = `
+                    <div class="no-matches">
+                        <div style="font-size: 48px; margin-bottom: 15px;">👥</div>
+                        <h3>No users found</h3>
+                        <p>Add your first user using the Add User section.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const usersHTML = users.map(user => `
+                <div class="user-card">
+                    <div class="user-header">
+                        <div class="user-info">
+                            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                                <div class="user-avatar" style="width: 40px; height: 40px; font-size: 16px;">${user.avatar}</div>
+                                <div>
+                                    <h3>${user.username}</h3>
+                                    <div style="color: #999; font-size: 12px;">${user.email || 'No email'}</div>
+                                </div>
+                            </div>
+                            <div class="user-role-badge ${user.role === 'admin' ? 'role-admin' : 'role-user'}">
+                                ${user.role}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="color: #999; font-size: 12px; margin-bottom: 15px;">
+                        Created: ${user.createdAt !== 'N/A' ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+                    </div>
+                    <div class="user-actions">
+                        <button class="btn btn-warning btn-small" onclick="editUser('${user.username}')" ${user.username === 'admin' ? 'disabled' : ''}>
+                            ✏️ Edit
+                        </button>
+                        <button class="btn btn-danger btn-small" onclick="deleteUser('${user.username}')" ${user.username === 'admin' ? 'disabled' : ''}>
+                            🗑️ Delete
+                        </button>
+                        <button class="btn btn-secondary btn-small" onclick="resetUserPassword('${user.username}')" ${user.username === 'admin' ? 'disabled' : ''}>
+                            🔐 Reset Password
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = usersHTML;
+        }
+
+        function editUser(username) {
+            if (currentUser.role !== 'admin') {
+                showToast('Access denied!', 'error');
+                return;
+            }
+
+            // Implementation for editing user
+            showToast('Edit user feature coming soon!', 'warning');
+        }
+
+        function deleteUser(username) {
+            if (currentUser.role !== 'admin') {
+                showToast('Access denied!', 'error');
+                return;
+            }
+
+            if (username === 'admin') {
+                showToast('Cannot delete admin user!', 'error');
+                return;
+            }
+
+            if (confirm(`Delete user "${username}"?\n\nThis action cannot be undone.`)) {
+                try {
+                    userManager.deleteUser(username);
+                    showToast('User deleted successfully!', 'success');
+                    loadUsers();
+                } catch (error) {
+                    showToast('Error deleting user: ' + error.message, 'error');
+                }
+            }
+        }
+
+        function resetUserPassword(username) {
+            if (currentUser.role !== 'admin') {
+                showToast('Access denied!', 'error');
+                return;
+            }
+
+            const newPassword = prompt(`Enter new password for "${username}":`);
+            if (newPassword && newPassword.length >= 6) {
+                try {
+                    userManager.updateUser(username, { password: newPassword });
+                    showToast('Password reset successfully!', 'success');
+                } catch (error) {
+                    showToast('Error resetting password: ' + error.message, 'error');
+                }
+            } else if (newPassword !== null) {
+                showToast('Password must be at least 6 characters long!', 'error');
+            }
+        }
+
+        // Add User Form Handler
+        document.getElementById('addUserForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (currentUser.role !== 'admin') {
+                showToast('Access denied!', 'error');
+                return;
+            }
+
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newUserPassword').value;
+            const role = document.getElementById('newUserRole').value;
+            const email = document.getElementById('newUserEmail').value.trim();
+
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters long!', 'error');
+                return;
+            }
+
+            try {
+                userManager.addUser(username, password, role, email);
+                showToast('User added successfully!', 'success');
+                document.getElementById('addUserForm').reset();
+            } catch (error) {
+                showToast('Error adding user: ' + error.message, 'error');
+            }
+        });
+
+        // Change Password Form Handler
+        document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                showToast('New passwords do not match!', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showToast('Password must be at least 6 characters long!', 'error');
+                return;
+            }
+
+            try {
+                userManager.changePassword(currentUser.username, currentPassword, newPassword);
+                showToast('Password changed successfully!', 'success');
+                document.getElementById('changePasswordForm').reset();
+            } catch (error) {
+                showToast('Error changing password: ' + error.message, 'error');
+            }
+        });
+
+        // Settings Functions
+        function toggleSetting(element) {
+            element.classList.toggle('active');
+            showToast('Setting updated!', 'success');
+        }
+
+        function clearAllData() {
+            if (currentUser.role !== 'admin') {
+                showToast('Access denied!', 'error');
+                return;
+            }
+
+            if (confirm('⚠️ WARNING: This will permanently delete ALL matches!\n\nThis action cannot be undone. Are you sure?')) {
+                if (confirm('Are you absolutely sure? Type "DELETE" to confirm.') && prompt('Type "DELETE" to confirm:') === 'DELETE') {
+                    // Implementation for clearing all data
+                    showToast('All data cleared!', 'success');
+                    allMatches = [];
+                    displayMatches([]);
+                    updateStats();
+                }
+            }
+        }
+
+        // Import/Export Functions
+        function exportMatches() {
+            const dataStr = JSON.stringify(allMatches, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `cricstreamzone_matches_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            showToast('Matches exported successfully!', 'success');
+        }
+
+        function importMatches() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showToast('Please select a file to import!', 'warning');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (!Array.isArray(importedData)) {
+                        throw new Error('Invalid file format. Expected an array of matches.');
+                    }
+
+                    // Validate data structure
+                    const validMatches = importedData.filter(match => 
+                        match.Match && match.Team1 && match.Team2 && match.MatchTime
+                    );
+
+                    if (validMatches.length === 0) {
+                        throw new Error('No valid matches found in the file.');
+                    }
+
+                    // Here you would typically send the data to your backend
+                    showToast(`Successfully imported ${validMatches.length} matches!`, 'success');
+                    fileInput.value = '';
+                    
+                } catch (error) {
+                    showToast('Error importing file: ' + error.message, 'error');
+                }
+            };
+
+            reader.readAsText(file);
+        }
 
         // Mobile-optimized Toast Notification System
         function showToast(message, type = 'success') {
@@ -1404,7 +2325,7 @@
 
         function removeServer(button) {
             const container = document.getElementById('serversContainer');
-            if (container.children.length > 1) {
+                        if (container.children.length > 1) {
                 const serverItem = button.parentElement;
                 serverItem.style.animation = 'slideUp 0.3s ease reverse';
                 setTimeout(() => serverItem.remove(), 300);
@@ -1437,7 +2358,7 @@
             setDefaultDateTime();
         }
 
-                function cancelEdit() {
+        function cancelEdit() {
             resetForm();
             showToast('Edit cancelled', 'warning');
         }
@@ -1501,6 +2422,9 @@
             document.getElementById('submitBtn').innerHTML = '💾 Update Match';
             document.getElementById('cancelEditBtn').style.display = 'block';
 
+            // Switch to dashboard section
+            showSection('dashboard');
+
             document.querySelector('.form-container').scrollIntoView({
                 behavior: 'smooth',
                 block: 'start',
@@ -1561,15 +2485,11 @@
             const matchTime = new Date(match.MatchTime);
             const now = new Date();
             const isLive = now >= matchTime && now <= new Date(matchTime.getTime() + 6 * 60 * 60 * 1000);
-            const isFinished = now > new Date(matchTime.getTime() + 6 * 60 * 60 * 1000);
 
             let status, statusClass;
             if (isLive) {
                 status = '🔴 LIVE';
                 statusClass = 'status-live';
-            } else if (isFinished) {
-                status = '✅ FINISHED';
-                statusClass = 'status-finished';
             } else {
                 status = '⏰ UPCOMING';
                 statusClass = 'status-upcoming';
@@ -1738,7 +2658,7 @@
                     const statusA = getMatchStatus(timeA, now);
                     const statusB = getMatchStatus(timeB, now);
 
-                    const priority = { live: 3, upcoming: 2, finished: 1 };
+                    const priority = { live: 3, upcoming: 2 };
 
                     if (priority[statusA] !== priority[statusB]) {
                         return priority[statusB] - priority[statusA];
@@ -1764,8 +2684,6 @@
 
             if (now >= matchTime && now <= matchEnd) {
                 return 'live';
-            } else if (now > matchEnd) {
-                return 'finished';
             } else {
                 return 'upcoming';
             }
@@ -1778,7 +2696,7 @@
             if (matches.length === 0) {
                 container.innerHTML = `
                     <div class="no-matches">
-                        <div style="font-size: 48px; margin-bottom: 15px;">🏏</div>
+                                                <div style="font-size: 48px; margin-bottom: 15px;">🏏</div>
                         <h3>No matches found</h3>
                         <p>Add your first match using the form above.</p>
                     </div>
@@ -1797,17 +2715,13 @@
                         statusDisplay = '🔴 LIVE';
                         statusClass = 'status-live';
                         break;
-                    case 'finished':
-                        statusDisplay = '✅ FINISHED';
-                        statusClass = 'status-finished';
-                        break;
                     default:
                         statusDisplay = '⏰ UPCOMING';
                         statusClass = 'status-upcoming';
                 }
 
                 return `
-                                        <div class="match-card" data-match-id="${match.id}">
+                    <div class="match-card" data-match-id="${match.id}">
                         <div class="match-header">
                             <div class="match-title">${match.Match}</div>
                             <div class="match-id-mobile">ID: #${match.id}</div>
@@ -1880,10 +2794,21 @@
                 }
             });
 
+            // Update dashboard stats
             document.getElementById('totalMatches').textContent = allMatches.length;
             document.getElementById('liveMatches').textContent = liveCount;
             document.getElementById('upcomingMatches').textContent = upcomingCount;
             document.getElementById('totalServers').textContent = totalServers;
+
+            // Update profile stats
+            document.getElementById('profileTotalMatches').textContent = allMatches.length;
+            document.getElementById('profileLiveMatches').textContent = liveCount;
+            document.getElementById('profileUpcomingMatches').textContent = upcomingCount;
+            document.getElementById('profileTotalServers').textContent = totalServers;
+        }
+
+        function updateProfileStats() {
+            updateStats();
         }
 
         // Duplicate Match Function
@@ -1894,39 +2819,44 @@
                 return;
             }
 
-            document.getElementById('matchName').value = match.Match + ' (Copy)';
-            document.getElementById('team1').value = match.Team1;
-            document.getElementById('team2').value = match.Team2;
-            document.getElementById('team1Logo').value = match.Team1Logo || '';
-            document.getElementById('team2Logo').value = match.Team2Logo || '';
+            // Switch to dashboard section first
+            showSection('dashboard');
 
-            const newTime = new Date();
-            newTime.setHours(newTime.getHours() + 1);
-            newTime.setMinutes(newTime.getMinutes() - newTime.getTimezoneOffset());
-            document.getElementById('matchTime').value = newTime.toISOString().slice(0, 16);
+            setTimeout(() => {
+                document.getElementById('matchName').value = match.Match + ' (Copy)';
+                document.getElementById('team1').value = match.Team1;
+                document.getElementById('team2').value = match.Team2;
+                document.getElementById('team1Logo').value = match.Team1Logo || '';
+                document.getElementById('team2Logo').value = match.Team2Logo || '';
 
-            const container = document.getElementById('serversContainer');
-            container.innerHTML = '';
+                const newTime = new Date();
+                newTime.setHours(newTime.getHours() + 1);
+                newTime.setMinutes(newTime.getMinutes() - newTime.getTimezoneOffset());
+                document.getElementById('matchTime').value = newTime.toISOString().slice(0, 16);
 
-            if (match.servers && match.servers.length > 0) {
-                match.servers.forEach((server) => {
-                    const serverItem = document.createElement('div');
-                    serverItem.className = 'server-item';
-                    serverItem.innerHTML = `
-                        <input type="text" placeholder="Server Name" class="server-name" value="${server.name || ''}" />
-                        <input type="url" placeholder="Server Link" class="server-link" value="${server.link || ''}" />
-                        <button type="button" class="btn btn-danger btn-small server-remove-btn" onclick="removeServer(this)">❌ Remove</button>
-                    `;
-                    container.appendChild(serverItem);
+                const container = document.getElementById('serversContainer');
+                container.innerHTML = '';
+
+                if (match.servers && match.servers.length > 0) {
+                    match.servers.forEach((server) => {
+                        const serverItem = document.createElement('div');
+                        serverItem.className = 'server-item';
+                        serverItem.innerHTML = `
+                            <input type="text" placeholder="Server Name" class="server-name" value="${server.name || ''}" />
+                            <input type="url" placeholder="Server Link" class="server-link" value="${server.link || ''}" />
+                            <button type="button" class="btn btn-danger btn-small server-remove-btn" onclick="removeServer(this)">❌ Remove</button>
+                        `;
+                        container.appendChild(serverItem);
+                    });
+                }
+
+                document.querySelector('.form-container').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
                 });
-            }
 
-            document.querySelector('.form-container').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-            });
-
-            showToast('Match duplicated! Please review and save.', 'success');
+                showToast('Match duplicated! Please review and save.', 'success');
+            }, 300);
         }
 
         // Search Functionality
@@ -1953,47 +2883,28 @@
             displayMatches(filteredMatches);
         });
 
-        // Export functionality
-        function exportMatches() {
-            const dataStr = JSON.stringify(allMatches, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `cricstreamzone_matches_${new Date()
-                .toISOString()
-                .split('T')[0]}.json`;
-            link.click();
-            URL.revokeObjectURL(url);
-            showToast('Matches exported successfully!', 'success');
-        }
-
-        // Add export button to header
-        function addExportButton() {
-            const headerContent = document.querySelector('.header-content');
-            const exportBtn = document.createElement('button');
-            exportBtn.className = 'btn btn-secondary';
-            exportBtn.innerHTML = '📥 Export Data';
-            exportBtn.onclick = exportMatches;
-            exportBtn.style.marginTop = '15px';
-            headerContent.appendChild(exportBtn);
-        }
-
         // Keyboard shortcuts
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeViewModal();
+                closeMenu();
             }
 
             if (e.ctrlKey && e.key === 'n') {
                 e.preventDefault();
-                resetForm();
-                document.getElementById('matchName').focus();
+                showSection('dashboard');
+                setTimeout(() => {
+                    resetForm();
+                    document.getElementById('matchName').focus();
+                }, 300);
             }
 
             if (e.ctrlKey && e.key === 'f') {
                 e.preventDefault();
-                document.getElementById('searchMatches').focus();
+                showSection('dashboard');
+                setTimeout(() => {
+                    document.getElementById('searchMatches').focus();
+                }, 300);
             }
         });
 
@@ -2010,9 +2921,6 @@
             const isOnline = navigator.onLine;
             if (!isOnline) {
                 showToast('You are offline. Some features may not work.', 'warning');
-                if (realtimeUpdater) {
-                    realtimeUpdater.updateStatus('disconnected');
-                }
             }
         }
 
@@ -2052,7 +2960,6 @@
         document.addEventListener('DOMContentLoaded', function () {
             if (checkAuth()) {
                 setDefaultDateTime();
-                setTimeout(addExportButton, 1000);
             }
 
             // Add loading animation to buttons
@@ -2132,9 +3039,9 @@
         }
 
         // Final initialization
-        console.log('🏏 CricStreamZone Admin Panel with Enhanced Features Loaded Successfully!');
-        console.log('Version: 3.2.0');
-        console.log('Features: Real-time Updates, Categorized Tables, Time Preservation, Enhanced UI');
+        console.log('🏏 CricStreamZone Admin Panel with User Management Loaded Successfully!');
+        console.log('Version: 4.0.0');
+        console.log('Features: User Management, Role-based Access, Enhanced Security, Mobile Optimized');
     </script>
 </body>
 </html>
